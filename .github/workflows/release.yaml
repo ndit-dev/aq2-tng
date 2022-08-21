@@ -57,6 +57,9 @@ jobs:
           workflow: build.yaml
           name: tng-win-64
 
+      - name: Verify files
+        run: ls -l
+
       - name: Upload dist tarball to release
         uses: softprops/action-gh-release@v1
         env:
@@ -67,6 +70,6 @@ jobs:
           files: |
             tng-win-64.zip
             tng-win-32.zip
-            tng-lin-arm64.tar.gz
-            tng-lin-x86_64.tar.gz
+            tng-lin-arm64.zip
+            tng-lin-x86_64.zip
 
