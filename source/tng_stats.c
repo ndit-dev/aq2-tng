@@ -488,58 +488,61 @@ void Cmd_Statmode_f(edict_t* ent)
 }
 
 #if USE_AQTION
-#include <curl/curl.h>
-// AQtion stats addon
-// Utilizes AWS API Gateway and AWS SQS
-// Review documentation to understand their use
 
-size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp)
-{
-   return size * nmemb;
-}
-void StatSend(const char *payload, ...)
-{	
-	va_list argptr;
-	char text[1024];
-	char apikeyheader[64] = "x-api-key: ";
-	char apiurl[128] = "\0";
-	int apikey_check;
+// Revisit one day...
 
-	// If stat logs are disabled or stat-apikey is default, just return
-	apikey_check = Q_stricmp(stat_apikey->string, "none");
-	if (!stat_logs->value || apikey_check == 0) {
-		return;
-	}
+// #include <curl/curl.h>
+// // AQtion stats addon
+// // Utilizes AWS API Gateway and AWS SQS
+// // Review documentation to understand their use
+
+// size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp)
+// {
+//    return size * nmemb;
+// }
+// void StatSend(const char *payload, ...)
+// {	
+// 	va_list argptr;
+// 	char text[1024];
+// 	char apikeyheader[64] = "x-api-key: ";
+// 	char apiurl[128] = "\0";
+// 	int apikey_check;
+
+// 	// If stat logs are disabled or stat-apikey is default, just return
+// 	apikey_check = Q_stricmp(stat_apikey->string, "none");
+// 	if (!stat_logs->value || apikey_check == 0) {
+// 		return;
+// 	}
 	
-	Q_strncatz(apikeyheader, stat_apikey->string, sizeof(apikeyheader));
-	Q_strncpyz(apiurl, stat_url->string, sizeof(apiurl));
+// 	Q_strncatz(apikeyheader, stat_apikey->string, sizeof(apikeyheader));
+// 	Q_strncpyz(apiurl, stat_url->string, sizeof(apiurl));
 	
-	va_start (argptr, payload);
-	vsnprintf (text, sizeof(text), payload, argptr);
-	va_end (argptr);
+// 	va_start (argptr, payload);
+// 	vsnprintf (text, sizeof(text), payload, argptr);
+// 	va_end (argptr);
 
-	CURL *curl = curl_easy_init();
-	struct curl_slist *headers = NULL;
-	headers = curl_slist_append(headers, "Accept: application/json");
-	headers = curl_slist_append(headers, "Content-Type: application/json");
-	headers = curl_slist_append(headers, apikeyheader);
+// 	CURL *curl = curl_easy_init();
+// 	struct curl_slist *headers = NULL;
+// 	headers = curl_slist_append(headers, "Accept: application/json");
+// 	headers = curl_slist_append(headers, "Content-Type: application/json");
+// 	headers = curl_slist_append(headers, apikeyheader);
 
-	curl_easy_setopt(curl, CURLOPT_URL, apiurl);
-	curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "POST");
-	curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, text);
+// 	curl_easy_setopt(curl, CURLOPT_URL, apiurl);
+// 	curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "POST");
+// 	curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+// 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, text);
 
-	// Do not print responses from curl request
-	// Comment below if you are debugging responses
-	// Hint: Forbidden would mean your stat_url is malformed,
-	// and a key error indicates your api key is bad or expired
-	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
+// 	// Do not print responses from curl request
+// 	// Comment below if you are debugging responses
+// 	// Hint: Forbidden would mean your stat_url is malformed,
+// 	// and a key error indicates your api key is bad or expired
+// 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
 
-	// Run it!
-	curl_easy_perform(curl);
-	curl_easy_cleanup(curl);
-	curl_global_cleanup();
-}
+// 	// Run it!
+// 	curl_easy_perform(curl);
+// 	curl_easy_cleanup(curl);
+// 	curl_global_cleanup();
+// }
 
 int Gamemode(void) // These are distinct game modes; you cannot have a teamdm tourney mode, for example
 {
@@ -640,22 +643,20 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 
 		Q_strncpyz(
 			msg,
-			"{\"frag\":{\"sid\":\"%s\",\"mid\":\"%s\",\"v\":\"%s\",\"vd\":\"%s\",\"vn\":\"%s\",\"vi\":\"%s\",\"vt\":%i,\"vl\":%i,\"k\":\"%s\",\"kd\":\"%s\",\"kn\":\"%s\",\"ki\":\"%s\",\"kt\":%i,\"kl\":%i,\"w\":%i,\"i\":%i,\"l\":%i,\"ks\":%i,\"gm\":%i,\"gmf\":%i,\"ttk\":\"%d\",\"t\":%d,\"gt\":%d,\"m\":\"%s\",\"r\":\"%i\"}}\n",
+			"{\"frag\":{\"sid\":\"%s\",\"mid\":\"%s\",\"v\":\"%s\",\"vn\":\"%s\",\"vi\":\"%s\",\"vt\":%i,\"vl\":%i,\"k\":\"%s\",\"kn\":\"%s\",\"ki\":\"%s\",\"kt\":%i,\"kl\":%i,\"w\":%i,\"i\":%i,\"l\":%i,\"ks\":%i,\"gm\":%i,\"gmf\":%i,\"ttk\":%d,\"t\":%d,\"gt\":%d,\"m\":\"%s\",\"r\":%i,\"vd\":\"%s\",\"kd\":\"%s\"}}\n",
 			sizeof(msg)
 		);
 
-		StatSend(
+		Com_Printf(
 			msg,
 			server_id->string,
 			game.matchid,
 			v,
-			vd,
 			vn,
 			vi,
 			vt,
 			vl,
 			k,
-			kd,
 			kn,
 			ki,
 			kt,
@@ -670,7 +671,9 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 			eventtime,
 			gametime,
 			level.mapname,
-			roundNum
+			roundNum,
+			vd,
+			kd
 		);
 	}
 }
@@ -723,22 +726,20 @@ void LogWorldKill(edict_t *self)
 
 		Q_strncpyz(
 			msg,
-			"{\"frag\":{\"sid\":\"%s\",\"mid\":\"%s\",\"v\":\"%s\",\"vd\":\"%s\",\"vn\":\"%s\",\"vi\":\"%s\",\"vt\":%i,\"vl\":%i,\"k\":\"%s\",\"kd\":\"%s\",\"kn\":\"%s\",\"ki\":\"%s\",\"kt\":%i,\"kl\":%i,\"w\":%i,\"i\":%i,\"l\":%i,\"ks\":%i,\"gm\":%i,\"gmf\":%i,\"ttk\":\"%d\",\"t\":%d,\"gt\":%d,\"m\":\"%s\",\"r\":\"%i\"}}\n",
+			"{\"frag\":{\"sid\":\"%s\",\"mid\":\"%s\",\"v\":\"%s\",\"vn\":\"%s\",\"vi\":\"%s\",\"vt\":%i,\"vl\":%i,\"k\":\"%s\",\"kn\":\"%s\",\"ki\":\"%s\",\"kt\":%i,\"kl\":%i,\"w\":%i,\"i\":%i,\"l\":%i,\"ks\":%i,\"gm\":%i,\"gmf\":%i,\"ttk\":%d,\"t\":%d,\"gt\":%d,\"m\":\"%s\",\"r\":%i,\"vd\":\"%s\",\"kd\":\"%s\"}}\n",
 			sizeof(msg)
 		);
 
-		StatSend(
+		Com_Printf(
 			msg,
 			server_id->string,
 			game.matchid,
 			v,
-			vd,
 			vn,
 			vi,
 			vt,
 			vl,
 			v,
-			vd,
 			vn,
 			vi,
 			vt,
@@ -753,7 +754,9 @@ void LogWorldKill(edict_t *self)
 			eventtime,
 			gametime,
 			level.mapname,
-			roundNum
+			roundNum,
+			vd,
+			vd
 		);
 	}
 }
@@ -774,11 +777,11 @@ void LogMatch()
 
 	Q_strncpyz(
 		msg,
-		"{\"gamematch\":{\"mid\":\"%s\",\"sid\":\"%s\",\"t\":\"%d\",\"m\":\"%s\",\"gm\":\"%i\",\"gmf\":%i,\"t1\":%i,\"t2\":\"%i\",\"t3\":\"%i\"}}\n",
+		"{\"gamematch\":{\"mid\":\"%s\",\"sid\":\"%s\",\"t\":\"%d\",\"m\":\"%s\",\"gm\":%i,\"gmf\":%i,\"t1\":%i,\"t2\":%i,\"t3\":%i}}\n",
 		sizeof(msg)
 	);
 
-	StatSend(
+	Com_Printf(
 		msg,
 		game.matchid,
 		server_id->string,
@@ -810,11 +813,11 @@ void LogAward(char* steamid, char* discordid, int award)
 
 	Q_strncpyz(
 		msg,
-		"{\"award\":{\"sid\":\"%s\",\"mid\":\"%s\",\"t\":\"%d\",\"gt\":\"%d\",\"a\":%i,\"k\":%s,\"d\":%s,\"w\":\"%i\"}}\n",
+		"{\"award\":{\"sid\":\"%s\",\"mid\":\"%s\",\"t\":\"%d\",\"gt\":\"%d\",\"a\":%i,\"k\":\"%s\",\"w\":%i,\"d\":\"%s\"}}\n",
 		sizeof(msg)
 	);
 
-	StatSend(
+	Com_Printf(
 		msg,
 		server_id->string,
 		game.matchid,
@@ -822,8 +825,8 @@ void LogAward(char* steamid, char* discordid, int award)
 		gametime,
 		award,
 		steamid,
-		discordid,
-		mod
+		mod,
+		discordid
 	);
 }
 
@@ -862,16 +865,15 @@ void LogEndMatchStats()
 		Q_strncpyz(discordid, Info_ValueForKey(cl->pers.userinfo, "cl_discord_id"), sizeof(discordid));
 		Q_strncpyz(
 			msg,
-			"{\"matchstats\":{\"sid\":\"%s\",\"mid\":\"%s\",\"s\":\"%s\",\"dis\":\"%s\",\"sc\":\"%i\",\"sh\":\"%i\",\"a\":\"%f\",\"f\":\"%f\",\"dd\":\"%i\",\"d\":\"%i\",\"k\":\"%i\",\"ctfc\":\"%i\",\"ctfcs\":\"%i\",\"ht\":\"%i\",\"tk\":\"%i\",\"t\":\"%i\",\"hks\":\"%i\",\"hhs\":\"%i\"}}\n",
+			"{\"matchstats\":{\"sid\":\"%s\",\"mid\":\"%s\",\"s\":\"%s\",\"sc\":%i,\"sh\":%i,\"a\":%f,\"f\":%f,\"dd\":%i,\"d\":%i,\"k\":%i,\"ctfc\":%i,\"ctfcs\":%i,\"ht\":%i,\"tk\":%i,\"t\":%i,\"hks\":%i,\"hhs\":%i,\"dis\":\"%s\"}}\n",
 			sizeof(msg)
 		);
 
-		StatSend(
+		Com_Printf(
 			msg,
 			server_id->string,
 			game.matchid,
 			steamid,
-			discordid,
 			cl->resp.score,
 			shots,
 			accuracy,
@@ -885,7 +887,8 @@ void LogEndMatchStats()
 			cl->resp.team_kills,
 			cl->resp.team,
 			cl->resp.streakKillsHighest,
-			cl->resp.streakHSHighest
+			cl->resp.streakHSHighest,
+			discordid
 		);
 	}
 }
