@@ -344,7 +344,7 @@ void InitGame( void )
 	steamid = gi.cvar( "steamid", "0", CVAR_NOSET );
 
 	sv_cheats = gi.cvar( "cheats", "0", CVAR_SERVERINFO | CVAR_LATCH );
-	gi.cvar( "gamename", GAMEVERSION, CVAR_SERVERINFO | CVAR_NOSET );
+	gi.cvar( "gamename", GAMEVERSION, /*CVAR_SERVERINFO |*/ CVAR_NOSET ); 	// Removed it from Serverinfo, we already have game and gamedir
 	gi.cvar( "gamedate", __DATE__, CVAR_SERVERINFO | CVAR_NOSET );
 	actionversion = gi.cvar( "actionversion", "TNG " VERSION, CVAR_SERVERINFO | CVAR_NOSET );
 	gi.cvar_set( "actionversion", "TNG " VERSION );
@@ -504,8 +504,8 @@ void InitGame( void )
 	unique_items = gi.cvar( "items", "1", CVAR_SERVERINFO | CVAR_LATCH );
 	ir = gi.cvar( "ir", "1", 0 );
 	knifelimit = gi.cvar( "knifelimit", "40", 0 );
-	allweapon = gi.cvar( "allweapon", "0", CVAR_SERVERINFO );
-	allitem = gi.cvar( "allitem", "0", CVAR_SERVERINFO );
+	allweapon = gi.cvar( "allweapon", "0", 0 ); 	// Removed it from Serverinfo
+	allitem = gi.cvar( "allitem", "0", 0 ); 	// Removed it from Serverinfo
 	allow_hoarding = gi.cvar( "allow_hoarding", "0", CVAR_LATCH );
 	tgren = gi.cvar( "tgren", "0", CVAR_SERVERINFO );
 	//SLIC2
@@ -551,11 +551,11 @@ void InitGame( void )
 	// END AQ2 ETE
 
 	// 2022
-	server_id = gi.cvar( "server_id", "", CVAR_SERVERINFO );
+	server_id = gi.cvar( "server_id", "", 0 ); 	// Removed it from Serverinfo
 	stat_logs = gi.cvar( "stat_logs", "0", 0);
-  sv_antilag = gi.cvar("sv_antilag", "1", CVAR_SERVERINFO);
+    sv_antilag = gi.cvar("sv_antilag", "1", CVAR_SERVERINFO);
 	sv_antilag_interp = gi.cvar("sv_antilag_interp", "0", CVAR_SERVERINFO);
-	sv_limp_highping = gi.cvar("sv_limp_highping", "70", CVAR_SERVERINFO);
+	sv_limp_highping = gi.cvar("sv_limp_highping", "70", 0); 	// Removed it from Serverinfo
 	mapvote_next_limit = gi.cvar( "mapvote_next_limit", "0", 0);
 	stat_apikey = gi.cvar("stat_apikey", "none", 0);
 	stat_url = gi.cvar("stat_url", "https://apigateway.aq2world.com/api/v1/stats", 0);
@@ -569,8 +569,15 @@ void InitGame( void )
 
 #ifndef NO_BOTS
 	// bots
+
+	// Only show ltk_skill in serverinfo if ltk_loadbots is enabled
+	if (ltk_loadbots->value) {
+		ltk_skill = gi.cvar( "ltk_skill", "5", CVAR_SERVERINFO );
+	} else {
+		ltk_skill = gi.cvar( "ltk_skill", "5", 0 );
+	}
+
 	ltk_jumpy = gi.cvar( "ltk_jumpy", "1", 0 );
-	ltk_skill = gi.cvar( "ltk_skill", "5", CVAR_SERVERINFO );
 	ltk_showpath = gi.cvar( "ltk_showpath", "0", 0 );
 	ltk_chat = gi.cvar( "ltk_chat", "1", 0 );
 	ltk_routing = gi.cvar( "ltk_routing", "0", 0 );
