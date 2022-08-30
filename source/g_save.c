@@ -373,7 +373,7 @@ void InitGame( void )
 	silenceban = gi.cvar( "silenceban", "1", 0); //rekkie -- silence ban
 	needpass = gi.cvar( "needpass", "0", CVAR_SERVERINFO );
 	radiolog = gi.cvar( "radiolog", "0", 0 );
-	teamplay = gi.cvar( "teamplay", "0", CVAR_SERVERINFO | CVAR_LATCH );
+	teamplay = gi.cvar( "teamplay", "0", /*CVAR_SERVERINFO | */  CVAR_LATCH ); //Removed in favor of 'gm' (gamemode)
 	motd_time = gi.cvar( "motd_time", "2", 0 );
 	hostname = gi.cvar( "hostname", "unnamed", CVAR_SERVERINFO );
 	strtwpn = gi.cvar( "dmweapon", MK23_NAME, 0 );
@@ -401,13 +401,13 @@ void InitGame( void )
 	use_voice = gi.cvar( "use_voice", "1", 0 );	//slicer
 	ppl_idletime = gi.cvar( "ppl_idletime", "15", 0 );
 	use_buggy_bandolier = gi.cvar( "use_buggy_bandolier", "0", 0 );
-	use_tourney = gi.cvar( "use_tourney", "0", CVAR_SERVERINFO | CVAR_LATCH );
-	use_3teams = gi.cvar( "use_3teams", "0", CVAR_SERVERINFO | CVAR_LATCH );
+	use_tourney = gi.cvar( "use_tourney", "0", /*CVAR_SERVERINFO | */ CVAR_LATCH ); //Removed in favor of 'gm' (gamemode)
+	use_3teams = gi.cvar( "use_3teams", "0", /*CVAR_SERVERINFO | */ CVAR_LATCH ); //Removed in favor of 'gmf' (gamemodeflags)
 	use_randoms = gi.cvar( "use_randoms", "0", CVAR_SERVERINFO | CVAR_LATCH ); // Random weapons and items mode
 	use_kickvote = gi.cvar( "use_kickvote", "1", 0 );	//slicer
 	use_mapvote = gi.cvar( "use_mapvote", "1", 0 );	//slicer
 	use_scramblevote = gi.cvar( "use_scramblevote", "1", 0 );	//slicer
-	ctf = gi.cvar( "ctf", "0", CVAR_SERVERINFO | CVAR_LATCH );
+	ctf = gi.cvar( "ctf", "0", /*CVAR_SERVERINFO | */ CVAR_LATCH );  //Removed in favor of 'gm' (gamemode)
 	ctf_forcejoin = gi.cvar( "ctf_forcejoin", "", 0 );
 	ctf_mode = gi.cvar( "ctf_mode", "0", 0 );
 	ctf_dropflag = gi.cvar( "ctf_dropflag", "1", 0 );
@@ -416,7 +416,7 @@ void InitGame( void )
 	medkit_drop = gi.cvar( "medkit_drop", "0", 0 );
 	medkit_time = gi.cvar( "medkit_time", "30", 0 );
 	medkit_instant = gi.cvar( "medkit_instant", "0", 0 );
-	dom = gi.cvar( "dom", "0", CVAR_SERVERINFO | CVAR_LATCH );
+	dom = gi.cvar( "dom", "0", /*CVAR_SERVERINFO | */ CVAR_LATCH ); //Removed in favor of 'gmf' (gamemodeflags)
 	use_grapple = gi.cvar( "use_grapple", "0", 0 );
 	mv_public = gi.cvar( "mv_public", "0", 0 );	//slicer 
 	vk_public = gi.cvar( "vk_public", "0", 0 );	//slicer
