@@ -1196,11 +1196,13 @@ int   Ghud_AddNumber(int x, int y, int value);
 
 // 2022
 extern cvar_t *sv_limp_highping;
-extern cvar_t *server_id;
-extern cvar_t *stat_logs;
-extern cvar_t *mapvote_next_limit;
-extern cvar_t *stat_apikey;
-extern cvar_t *stat_url;
+extern cvar_t *server_id; // Unique server_id
+extern cvar_t *stat_logs; // Enables/disables logging of stats
+extern cvar_t *mapvote_next_limit; // Time left that disables map voting
+extern cvar_t *stat_apikey; // Stats URL key
+extern cvar_t *stat_url; // Stats URL endpoint
+extern cvar_t *gm; // Gamemode
+extern cvar_t *gmf; // Gamemodeflags
 
 // Discord SDK integration with Q2Pro
 extern cvar_t *cl_discord;

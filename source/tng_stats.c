@@ -579,6 +579,7 @@ int Gamemodeflag(void)
 	if (matchmode->value) {
 		gamemodeflag += GMF_MATCHMODE;
 	}
+	gi.cvar_forceset("gmf", gamemodeflag);
 	return gamemodeflag;
 }
 

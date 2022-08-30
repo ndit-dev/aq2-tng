@@ -560,6 +560,8 @@ void InitGame( void )
 	mapvote_next_limit = gi.cvar( "mapvote_next_limit", "0", 0);
 	stat_apikey = gi.cvar("stat_apikey", "none", 0);
 	stat_url = gi.cvar("stat_url", "https://apigateway.aq2world.com/api/v1/stats", 0);
+	gm = gi.cvar("gm", "dm", CVAR_SERVERINFO);
+	gmf = gi.cvar("gmf", "0", CVAR_SERVERINFO);
 
 	// Discord SDK integration with Q2Pro
 	cl_discord = gi.cvar("cl_discord", "0", 0);
