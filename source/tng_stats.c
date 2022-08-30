@@ -566,7 +566,7 @@ int Gamemodeflag(void)
 // For example, you can have a darkmatch matchmode 3team teamplay server
 {
 	int gamemodeflag = 0;
-	char *gmfstr;
+	char gmfstr[16];
 
 	if (use_3teams->value) {
 		gamemodeflag += GMF_3TEAMS;
