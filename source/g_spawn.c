@@ -861,7 +861,6 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	char *com_token;
 	int saved_team;
 	char *gamemode;
-	char *gamemodeflag;
 
 	// Reset teamplay stuff
 	for(i = TEAM1; i < TEAM_TOP; i++)
