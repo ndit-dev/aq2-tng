@@ -344,7 +344,7 @@ void InitGame( void )
 	steamid = gi.cvar( "steamid", "0", CVAR_NOSET );
 
 	sv_cheats = gi.cvar( "cheats", "0", CVAR_SERVERINFO | CVAR_LATCH );
-	gi.cvar( "gamename", GAMEVERSION, /*CVAR_SERVERINFO |*/ CVAR_NOSET ); 	// Removed it from Serverinfo, we already have game and gamedir
+	gi.cvar( "gamename", GAMEVERSION, CVAR_SERVERINFO | CVAR_NOSET ); 	// Removed it from Serverinfo, we already have game and gamedir
 	gi.cvar( "gamedate", __DATE__, CVAR_SERVERINFO | CVAR_NOSET );
 	actionversion = gi.cvar( "actionversion", "TNG " VERSION, CVAR_SERVERINFO | CVAR_NOSET );
 	gi.cvar_set( "actionversion", "TNG " VERSION );
@@ -538,7 +538,7 @@ void InitGame( void )
 	// flood control
 	flood_threshold = gi.cvar( "flood_threshold", "4", 0 );
 
-	jump = gi.cvar ("jump", "0", CVAR_SERVERINFO|CVAR_LATCH); // jumping mod
+	jump = gi.cvar ("jump", "0", /*CVAR_SERVERINFO|*/ CVAR_LATCH); // jumping mod -- removed from serverinfo 2022
 
 	warmup = gi.cvar( "warmup", "0", CVAR_LATCH );
 	round_begin = gi.cvar( "round_begin", "15", 0 );
@@ -571,14 +571,7 @@ void InitGame( void )
 
 #ifndef NO_BOTS
 	// bots
-
-	// Only show ltk_skill in serverinfo if ltk_loadbots is enabled
-	if (ltk_loadbots->value) {
-		ltk_skill = gi.cvar( "ltk_skill", "5", CVAR_SERVERINFO );
-	} else {
-		ltk_skill = gi.cvar( "ltk_skill", "5", 0 );
-	}
-
+	ltk_skill = gi.cvar( "ltk_skill", "5", 0 );
 	ltk_jumpy = gi.cvar( "ltk_jumpy", "1", 0 );
 	ltk_showpath = gi.cvar( "ltk_showpath", "0", 0 );
 	ltk_chat = gi.cvar( "ltk_chat", "1", 0 );

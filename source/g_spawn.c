@@ -881,7 +881,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 
 	if (jump->value)
 	{
-	//gi.cvar_forceset(gm->name, "jump");
+	gi.cvar_forceset(gm->name, "jump");
 	gi.cvar_forceset(stat_logs->name, "0"); // Turn off stat logs for jump mode
 		if (teamplay->value)
 		{
@@ -921,7 +921,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	}
 	else if (ctf->value)
 	{
-	//gi.cvar_forceset(gm->name, "ctf");
+	gi.cvar_forceset(gm->name, "ctf");
 		if (ctf->value == 2)
 			gi.cvar_forceset(ctf->name, "1"); //for now
 
@@ -972,7 +972,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	}
 	else if (dom->value)
 	{
-		//gi.cvar_forceset(gm->name, "dom");
+		gi.cvar_forceset(gm->name, "dom");
 		gameSettings |= GS_WEAPONCHOOSE;
 		if (!teamplay->value)
 		{
@@ -1006,7 +1006,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	}
 	else if(teamdm->value)
 	{
-		//gi.cvar_forceset(gm->name, "tdm");
+		gi.cvar_forceset(gm->name, "tdm");
 		gameSettings |= GS_DEATHMATCH;
 
 		if (dm_choose->value)
@@ -1054,7 +1054,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	}
 	else if (use_tourney->value)
 	{
-		//gi.cvar_forceset(gm->name, "tourney");
+		gi.cvar_forceset(gm->name, "tourney");
 		gameSettings |= (GS_ROUNDBASED | GS_WEAPONCHOOSE);
 
 		if (!teamplay->value)
@@ -1065,11 +1065,11 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	}
 	else if (teamplay->value)
 	{
-		//gi.cvar_forceset(gm->name, "tp");
+		gi.cvar_forceset(gm->name, "tp");
 		gameSettings |= (GS_ROUNDBASED | GS_WEAPONCHOOSE);
 	}
 	else { //Its deathmatch
-		//gi.cvar_forceset(gm->name, "dm");
+		gi.cvar_forceset(gm->name, "dm");
 		gameSettings |= GS_DEATHMATCH;
 		if (dm_choose->value)
 			gameSettings |= GS_WEAPONCHOOSE;
