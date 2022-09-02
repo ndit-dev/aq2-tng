@@ -62,6 +62,12 @@ int G_customizeentityforclient(edict_t *client, edict_t *ent, entity_state_t *st
 	if (!(max(1, ent->dimension_visible) & max(1, client->client->dimension_observe)))
 		return false;
 	
+	if (ent->client) // client specific changes
+	{
+		// don't show teammates in irvision
+		if (teamplay->value && (ent->client->resp.team == client->client->resp.team))
+			state->renderfx &= ~RF_IR_VISIBLE;
+	}
 	// extrapolation, if we want that kind of thing, which we pretty much don't because antilag exists.
 	// this could be used in future if antilag is disabled.
 #if 0
