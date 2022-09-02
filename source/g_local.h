@@ -798,6 +798,9 @@ typedef struct
 
   int model_null;
   int model_lsight;
+#ifdef AQTION_EXTENSION
+  int model_arrow;
+#endif
 
   edict_t *current_entity;	// entity running from G_RunFrame
 
@@ -1870,6 +1873,10 @@ struct gclient_s
 	int			ctf_grapplestate;		// true if pulling
 	int			ctf_grapplereleaseframe;	// frame of grapple release
 
+#ifdef AQTION_EXTENSION
+	//AQTION - Reki: Teammate indicators
+	edict_t		*arrow;
+#endif
 
 	// used for extrapolation
 	usercmd_t	cmd_last;

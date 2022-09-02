@@ -339,6 +339,14 @@ static void FreeClientEdicts(gclient_t *client)
 		G_FreeEdict(client->ctf_grapple);
 		client->ctf_grapple = NULL;
 	}
+
+#ifdef AQTION_EXTENSION
+	//remove arrow
+	if (client->arrow) {
+		G_FreeEdict(client->arrow);
+		client->arrow = NULL;
+	}
+#endif
 }
 
 void Add_Frag(edict_t * ent, int mod)
@@ -2437,6 +2445,18 @@ void PutClientInServer(edict_t * ent)
 	ent->s.skinnum = ent - g_edicts - 1;
 	ent->s.modelindex = 255;	// will use the skin specified model
 
+#ifdef AQTION_EXTENSION
+	// teammate indicator arrows
+	if (!client->arrow && teamplay->value && client->resp.team)
+	{
+		client->arrow = G_Spawn();
+		client->arrow->solid = SOLID_NOT;
+		client->arrow->movetype = MOVETYPE_NOCLIP;
+		client->arrow->classname = "ind_arrow";
+		client->arrow->owner = ent;
+	}
+#endif
+
 	// zucc vwep
 	//ent->s.modelindex2 = 255;             // custom gun model
 	ShowGun(ent);
@@ -3467,6 +3487,20 @@ void ClientBeginServerFrame(edict_t * ent)
 
 	// update dimension mask for team-only entities
 	client->dimension_observe = 1 | (1 << client->resp.team);
+	if (teamplay->value && client->resp.team == NOTEAM)
+		client->dimension_observe |= 0xE; // true spectators can see all teams
+
+
+	if (client->arrow)
+	{
+		VectorCopy(ent->s.origin, client->arrow->s.origin);
+		client->arrow->s.origin[2] += ent->maxs[2];
+		client->arrow->s.origin[2] += 8 + sin(level.time * 2);
+
+		client->arrow->s.modelindex = level.model_arrow + (client->resp.team - 1);
+		client->arrow->s.renderfx = RF_TRANSLUCENT | RF_FULLBRIGHT | RF_DEPTHHACK;
+		client->arrow->dimension_visible = (1 << client->resp.team);
+	}
 #endif
 
 	if (client->resp.penalty > 0 && level.realFramenum % HZ == 0)

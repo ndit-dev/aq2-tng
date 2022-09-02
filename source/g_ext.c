@@ -68,6 +68,29 @@ int G_customizeentityforclient(edict_t *client, edict_t *ent, entity_state_t *st
 		if (teamplay->value && (ent->client->resp.team == client->client->resp.team))
 			state->renderfx &= ~RF_IR_VISIBLE;
 	}
+
+	if (!strcmp(ent->classname, "ind_arrow"))
+	{
+		if (client == ent->owner || ent->owner == client->client->chase_target)
+			return false;
+
+		trace_t trace;
+		vec3_t view_pos, arrow_pos, vnull;
+		VectorClear(vnull);
+
+		VectorCopy(ent->owner->s.origin, arrow_pos);
+		arrow_pos[2] += ent->owner->maxs[2] - 4;
+
+		VectorCopy(client->s.origin, view_pos);
+		view_pos[2] += client->viewheight;
+		
+		trace = gi.trace(view_pos, vnull, vnull, arrow_pos, ent->owner, CONTENTS_SOLID);
+		if (trace.fraction < 1)
+			return false;
+
+		VectorCopy(client->client->v_angle, state->angles);
+	}
+
 	// extrapolation, if we want that kind of thing, which we pretty much don't because antilag exists.
 	// this could be used in future if antilag is disabled.
 #if 0
