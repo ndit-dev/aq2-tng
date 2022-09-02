@@ -4,6 +4,7 @@ on:
   push:
     branches: ["master", "aqtion"]
   pull_request:
+  workflow_dispatch:
 
 env:
   LIN64_DIST_DIR: "linux-x64-tng"
