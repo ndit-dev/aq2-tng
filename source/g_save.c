@@ -344,7 +344,7 @@ void InitGame( void )
 	steamid = gi.cvar( "steamid", "0", CVAR_NOSET );
 
 	sv_cheats = gi.cvar( "cheats", "0", CVAR_SERVERINFO | CVAR_LATCH );
-	gi.cvar( "gamename", GAMEVERSION, CVAR_SERVERINFO | CVAR_NOSET ); 	// Removed it from Serverinfo, we already have game and gamedir
+	gi.cvar( "gamename", GAMEVERSION, /*CVAR_SERVERINFO |*/ CVAR_NOSET ); 	// Removed it from Serverinfo, we already have game and gamedir
 	gi.cvar( "gamedate", __DATE__, CVAR_SERVERINFO | CVAR_NOSET );
 	actionversion = gi.cvar( "actionversion", "TNG " VERSION, CVAR_SERVERINFO | CVAR_NOSET );
 	gi.cvar_set( "actionversion", "TNG " VERSION );
