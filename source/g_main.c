@@ -488,6 +488,10 @@ cvar_t *stat_logs;
 cvar_t *mapvote_next_limit;
 cvar_t *stat_apikey;
 cvar_t *stat_url;
+#ifdef AQTION_EXTENSION
+cvar_t *use_newirvision;
+cvar_t *use_indicators;
+#endif
 
 // Discord SDK integration with Q2Pro
 cvar_t *cl_discord;

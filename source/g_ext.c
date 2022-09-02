@@ -64,9 +64,12 @@ int G_customizeentityforclient(edict_t *client, edict_t *ent, entity_state_t *st
 	
 	if (ent->client) // client specific changes
 	{
-		// don't show teammates in irvision
-		if (teamplay->value && (ent->client->resp.team == client->client->resp.team))
-			state->renderfx &= ~RF_IR_VISIBLE;
+		if ((int)use_newirvision->value)
+		{
+			// don't show teammates in irvision
+			if (teamplay->value && (ent->client->resp.team == client->client->resp.team))
+				state->renderfx &= ~RF_IR_VISIBLE;
+		}
 	}
 
 	if (!strcmp(ent->classname, "ind_arrow"))

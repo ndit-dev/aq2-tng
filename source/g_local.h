@@ -1203,6 +1203,10 @@ extern cvar_t *stat_logs;
 extern cvar_t *mapvote_next_limit;
 extern cvar_t *stat_apikey;
 extern cvar_t *stat_url;
+#ifdef AQTION_EXTENSION
+extern cvar_t *use_newirvision;
+extern cvar_t *use_indicators;
+#endif
 
 // Discord SDK integration with Q2Pro
 extern cvar_t *cl_discord;

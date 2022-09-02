@@ -2447,7 +2447,7 @@ void PutClientInServer(edict_t * ent)
 
 #ifdef AQTION_EXTENSION
 	// teammate indicator arrows
-	if (!client->arrow && teamplay->value && client->resp.team)
+	if (use_indicators->value && teamplay->value && !client->arrow && client->resp.team)
 	{
 		client->arrow = G_Spawn();
 		client->arrow->solid = SOLID_NOT;
