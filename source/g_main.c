@@ -488,6 +488,8 @@ cvar_t *stat_logs;
 cvar_t *mapvote_next_limit;
 cvar_t *stat_apikey;
 cvar_t *stat_url;
+cvar_t *gm;
+cvar_t *gmf;
 cvar_t *g_spawn_items;
 
 // Discord SDK integration with Q2Pro
