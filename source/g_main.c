@@ -303,8 +303,7 @@ cvar_t *hud_items_cycle;
 cvar_t *noscore;
 cvar_t *hud_noscore;
 cvar_t *use_newscore;
-cvar_t *scores2teamplay;
-cvar_t *scores2ctf;
+cvar_t *scoreboard;
 cvar_t *actionversion;
 cvar_t *needpass;
 cvar_t *use_voice;
@@ -489,6 +488,8 @@ cvar_t *stat_logs;
 cvar_t *mapvote_next_limit;
 cvar_t *stat_apikey;
 cvar_t *stat_url;
+cvar_t *gm;
+cvar_t *gmf;
 
 // Discord SDK integration with Q2Pro
 cvar_t *cl_discord;
