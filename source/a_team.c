@@ -710,7 +710,7 @@ void SelectRandomWeaponAndItem(edict_t *ent, pmenu_t *p)
 
 	// ITEM
 	// Create array with limited items on certain weapons to not have silly kombos
-	menu_list_item item_list[4] = {
+	menu_list_item item_list[6] = {
 		{ num: KEV_NUM, sound: "misc/veston.wav", name: KEV_NAME },
 		{ num: SLIP_NUM, sound: "misc/veston.wav", name: SLIP_NAME },
 		{ num: BAND_NUM, sound: "misc/veston.wav", name: BAND_NAME },
@@ -1240,8 +1240,7 @@ void JoinTeam (edict_t * ent, int desired_team, int skip_menuclose)
 
 	if (use_randoms->value)
 	{
-		pmenu_t *p;
-		SelectRandomWeaponAndItem(ent, p);
+		SelectRandomWeaponAndItem(ent, weapmenu);
 	}
 
 	teams_changed = true;
@@ -1810,8 +1809,7 @@ static void SpawnPlayers(void)
 		// Force random weapon and item on spawn.
 		if (use_randoms->value)
 		{
-			pmenu_t *p;
-			SelectRandomWeaponAndItem(ent, p);
+			SelectRandomWeaponAndItem(ent, weapmenu);
 		}
 
 #ifndef NO_BOTS
