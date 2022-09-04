@@ -3630,6 +3630,7 @@ void ClientBeginServerFrame(edict_t * ent)
 			//Places player on team 0 if idle for sv_idleremove time in seconds, if player isn't already on team 0
 			client->resp.team = 0;
 			client->resp.idletime = 0;
+			gi.dprintf("%s has been removed from play due to reaching the idle timer of %s seconds", client->pers.netname, sv_idleremove->value);
 		}
 
 		if (client->autoreloading && (client->weaponstate == WEAPON_END_MAG)
