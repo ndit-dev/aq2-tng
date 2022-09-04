@@ -3624,6 +3624,14 @@ void ClientBeginServerFrame(edict_t * ent)
 			client->resp.idletime = 0;
 		}
 
+		idleframes = sv_idleremove->value * HZ;
+		if( sv_idleremove->value > 0 && (idleframes > 0) && client->resp.idletime && (level.framenum >= client->resp.idletime + idleframes) && client->resp.team != 0 )
+		{
+			//Places player on team 0 if idle for sv_idleremove time in seconds, if player isn't already on team 0
+			client->resp.team = 0;
+			client->resp.idletime = 0;
+		}
+
 		if (client->autoreloading && (client->weaponstate == WEAPON_END_MAG)
 			&& (client->curr_weap == MK23_NUM)) {
 			client->autoreloading = false;

@@ -490,6 +490,7 @@ cvar_t *stat_apikey;
 cvar_t *stat_url;
 cvar_t *gm;
 cvar_t *gmf;
+cvar_t *sv_idleremove;
 
 // Discord SDK integration with Q2Pro
 cvar_t *cl_discord;

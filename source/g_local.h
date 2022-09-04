@@ -1202,6 +1202,7 @@ extern cvar_t *stat_apikey; // Stats URL key
 extern cvar_t *stat_url; // Stats URL endpoint
 extern cvar_t *gm; // Gamemode
 extern cvar_t *gmf; // Gamemodeflags
+extern cvar_t *sv_idleremove; // Remove idlers
 
 // Discord SDK integration with Q2Pro
 extern cvar_t *cl_discord;
