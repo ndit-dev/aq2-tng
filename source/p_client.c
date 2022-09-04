@@ -1203,8 +1203,6 @@ void ClientObituary(edict_t * self, edict_t * inflictor, edict_t * attacker)
 			if (stat_logs->value && !ltk_loadbots->value) { // Only create stats logs if stat_logs is 1 and ltk_loadbots is 0
 				LogKill(self, inflictor, attacker);
 			}
-			// Gungame
-			HandleGunGameKill(attacker);
 			#endif
 
 			if (friendlyFire) {
