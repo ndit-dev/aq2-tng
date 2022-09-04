@@ -974,7 +974,7 @@ void ClientObituary(edict_t * self, edict_t * inflictor, edict_t * attacker)
 			}
 			break;
 		case MOD_HC:
-			n = rand() % 2 + 1;
+			n = rand() % 3 + 1;
 			if (n == 1) {
 				if (attacker->client->pers.hc_mode)	// AQ2:TNG Deathwatch - Single Barreled HC Death Messages
 				{
@@ -984,7 +984,7 @@ void ClientObituary(edict_t * self, edict_t * inflictor, edict_t * attacker)
 					message = " ate";
 					message2 = "'s sawed-off 12 gauge";
 				}
-			} else {
+			} else if (n == 2 ){
 				if (attacker->client->pers.hc_mode)	// AQ2:TNG Deathwatch - Single Barreled HC Death Messages
 				{
 					message = " won't be able to pass a metal detector anymore thanks to";
@@ -992,7 +992,10 @@ void ClientObituary(edict_t * self, edict_t * inflictor, edict_t * attacker)
 				} else {
 					message = " is full of buckshot from";
 					message2 = "'s sawed off shotgun";
-				}
+				} 
+			} else {
+				// minch <3
+				message = " was minched by";
 			}
 			break;
 		case MOD_SNIPER:
