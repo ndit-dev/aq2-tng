@@ -640,6 +640,9 @@ void InitGame( void )
 			game.framediv = framediv;
 			
 			gi.dprintf( "sv_fps = %d\n", (int) cv->value );
+			if ((int) cv->value > 30) {
+				gi.dprintf("Server FPS is %d, optimal values are 10/20/30\n", cv->value);
+			}
 		}
 		else
 			gi.dprintf( "sv_fps not set\n" );
