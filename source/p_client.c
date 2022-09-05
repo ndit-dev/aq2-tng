@@ -3642,6 +3642,7 @@ void ClientBeginServerFrame(edict_t * ent)
 				}
 				if (matchmode->value) {
 					MM_LeftTeam(ent);
+					teams[idler_team].ready = 0;
 				}
 				client->resp.totalidletime = 0;
 				client->resp.idletime = 0;
