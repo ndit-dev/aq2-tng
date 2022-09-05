@@ -396,7 +396,9 @@ void ED_CallSpawn (edict_t * ent)
 			//FIXME: We do same checks in SpawnItem, do we need these here? -M
 			if (gameSettings & GS_DEATHMATCH)
 			{
-				if (gameSettings & GS_WEAPONCHOOSE)
+				if ((gameSettings & GS_WEAPONCHOOSE) && g_spawn_items->value && matchmode->value == 0) // Force spawn ammo/items/weapons, non-matchmode
+					SpawnItem(ent, item);
+				else if (gameSettings & GS_WEAPONCHOOSE) // Traditional teamplay / dm_choose 1 mode
 					G_FreeEdict( ent );
 				else if (item->flags & (IT_AMMO|IT_WEAPON))
 					SpawnItem(ent, item);
@@ -1041,6 +1043,9 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	else if (matchmode->value)
 	{
 		gameSettings |= (GS_ROUNDBASED | GS_WEAPONCHOOSE);
+
+		gi.dprintf ("Matchmode Enabled - Forcing g_spawn_items off\n");
+		gi.cvar_forceset(g_spawn_items, "0"); // Turn off spawning of items for matchmode games
 		if (!teamplay->value)
 		{
 			gi.dprintf ("Matchmode Enabled - Forcing teamplay on\n");

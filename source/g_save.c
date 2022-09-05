@@ -553,7 +553,7 @@ void InitGame( void )
 	// 2022
 	server_id = gi.cvar( "server_id", "", 0 ); 	// Removed it from Serverinfo
 	stat_logs = gi.cvar( "stat_logs", "0", 0);
-    sv_antilag = gi.cvar("sv_antilag", "1", CVAR_SERVERINFO);
+	sv_antilag = gi.cvar("sv_antilag", "1", CVAR_SERVERINFO);
 	sv_antilag_interp = gi.cvar("sv_antilag_interp", "0", CVAR_SERVERINFO);
 	sv_limp_highping = gi.cvar("sv_limp_highping", "70", 0); 	// Removed it from Serverinfo
 	mapvote_next_limit = gi.cvar( "mapvote_next_limit", "0", 0);
@@ -561,6 +561,7 @@ void InitGame( void )
 	stat_url = gi.cvar("stat_url", "https://apigateway.aq2world.com/api/v1/stats", 0);
 	gm = gi.cvar("gm", "dm", CVAR_SERVERINFO);
 	gmf = gi.cvar("gmf", "0", CVAR_SERVERINFO);
+  	g_spawn_items = gi.cvar( "g_spawn_items", "0", CVAR_LATCH);
 
 	// Discord SDK integration with Q2Pro
 	cl_discord = gi.cvar("cl_discord", "0", 0);
