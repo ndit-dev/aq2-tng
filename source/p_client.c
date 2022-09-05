@@ -3635,7 +3635,6 @@ void ClientBeginServerFrame(edict_t * ent)
 			if (client->resp.team != 0) {
 				// Get team number of idle player
 				idler_team = client->resp.team;
-
 				// Removes member from team once sv_idleremove value in seconds has been reached in resp.totalidletime
 				if (teamplay->value) {
 					LeaveTeam(ent);
@@ -3646,8 +3645,7 @@ void ClientBeginServerFrame(edict_t * ent)
 				}
 				client->resp.totalidletime = 0;
 				client->resp.idletime = 0;
-				gi.bprintf(PRINT_MEDIUM,
-				"%s has been removed from play due to reaching the sv_idleremove timer of %i seconds\n",
+				gi.dprintf("%s has been removed from play due to reaching the sv_idleremove timer of %i seconds\n",
 				client->pers.netname, (int) sv_idleremove->value );
 			}
 		}
