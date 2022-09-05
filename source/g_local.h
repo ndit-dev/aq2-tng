@@ -1638,6 +1638,7 @@ typedef struct
   int team_wounds;
   
   int idletime;
+  int totalidletime;
   int tourneynumber;
   edict_t *kickvote;
 
