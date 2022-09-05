@@ -553,7 +553,7 @@ void InitGame( void )
 	// 2022
 	server_id = gi.cvar( "server_id", "", 0 ); 	// Removed it from Serverinfo
 	stat_logs = gi.cvar( "stat_logs", "0", 0);
-    sv_antilag = gi.cvar("sv_antilag", "1", CVAR_SERVERINFO);
+	sv_antilag = gi.cvar("sv_antilag", "1", CVAR_SERVERINFO);
 	sv_antilag_interp = gi.cvar("sv_antilag_interp", "0", CVAR_SERVERINFO);
 	sv_limp_highping = gi.cvar("sv_limp_highping", "70", 0); 	// Removed it from Serverinfo
 	mapvote_next_limit = gi.cvar( "mapvote_next_limit", "0", 0);
@@ -562,6 +562,7 @@ void InitGame( void )
 	gm = gi.cvar("gm", "dm", CVAR_SERVERINFO);
 	gmf = gi.cvar("gmf", "0", CVAR_SERVERINFO);
 	sv_idleremove = gi.cvar("sv_idleremove", "0", 0);
+  g_spawn_items = gi.cvar( "g_spawn_items", "0", CVAR_LATCH);
 
 	// Discord SDK integration with Q2Pro
 	cl_discord = gi.cvar("cl_discord", "0", 0);
@@ -640,6 +641,9 @@ void InitGame( void )
 			game.framediv = framediv;
 			
 			gi.dprintf( "sv_fps = %d\n", (int) cv->value );
+			if ((int) cv->value > 30) {
+				gi.dprintf("Server FPS is %d, optimal values are 10/20/30\n", cv->value);
+			}
 		}
 		else
 			gi.dprintf( "sv_fps not set\n" );
