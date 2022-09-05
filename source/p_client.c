@@ -3613,7 +3613,7 @@ void ClientBeginServerFrame(edict_t * ent)
 
 	if (ent->solid != SOLID_NOT)
 	{
-		int idleframes, remove_idleframes;
+		int idleframes, remove_idleframes, idler_team;
 
 		if( client->punch_desired && ! client->jumping && ! lights_camera_action && ! client->uvTime )
 			punch_attack( ent );
@@ -3632,9 +3632,17 @@ void ClientBeginServerFrame(edict_t * ent)
 		if( sv_idleremove->value > 0 && (remove_idleframes > 0) && client->resp.totalidletime &&
 			(level.framenum >= client->resp.totalidletime + remove_idleframes))
 		{
-			if (teamplay->value && client->resp.team != 0) {
+			if (client->resp.team != 0) {
+				// Get team number of idle player
+				idler_team = client->resp.team;
+
 				// Removes member from team once sv_idleremove value in seconds has been reached in resp.totalidletime
-				LeaveTeam(ent);
+				if (teamplay->value) {
+					LeaveTeam(ent);
+				}
+				if (matchmode->value) {
+					MM_LeftTeam(ent);
+				}
 				client->resp.totalidletime = 0;
 				client->resp.idletime = 0;
 				gi.bprintf(PRINT_MEDIUM,
