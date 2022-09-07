@@ -631,11 +631,11 @@ void SelectRandomItem(edict_t *ent, pmenu_t *p)
 
 	// Create array with limited items on certain weapons to not have silly kombos
 	menu_list_item item_list[6] = {
-		{ .num: KEV_NUM, .sound: "misc/veston.wav", .name: KEV_NAME },
-		{ .num: SLIP_NUM, .sound: "misc/veston.wav", .name: SLIP_NAME },
-		{ .num: BAND_NUM, .sound: "misc/veston.wav", .name: BAND_NAME },
-		{ .num: HELM_NUM, .sound: "misc/veston.wav", .name: HELM_NAME },
-	};
+		{ .num = KEV_NUM, .sound = "misc/veston.wav", .name = KEV_NAME },
+		{ .num = SLIP_NUM, .sound = "misc/veston.wav", .name = SLIP_NAME },
+		{ .num = BAND_NUM, .sound = "misc/veston.wav", .name = BAND_NAME },
+		{ .num = HELM_NUM, .sound = "misc/veston.wav", .name = HELM_NAME },
+    };
 	int listCount = 4;
 
 	menu_list_item item_sil = { num: SIL_NUM, sound: "misc/screw.wav", name: SIL_NAME };
