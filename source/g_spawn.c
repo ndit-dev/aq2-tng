@@ -1047,9 +1047,6 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	else if (matchmode->value)
 	{
 		gameSettings |= (GS_ROUNDBASED | GS_WEAPONCHOOSE);
-
-		gi.dprintf ("Matchmode Enabled - Forcing g_spawn_items off\n");
-		gi.cvar_forceset(g_spawn_items->name, "0"); // Turn off spawning of items for matchmode games
 		if (!teamplay->value)
 		{
 			gi.dprintf ("Matchmode Enabled - Forcing teamplay on\n");
@@ -1088,6 +1085,8 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 		gameSettings |= GS_TEAMPLAY;
 	if (matchmode->value)
 		gameSettings |= GS_MATCHMODE;
+		gi.dprintf ("Matchmode Enabled - Forcing g_spawn_items off\n");
+		gi.cvar_forceset(g_spawn_items->name, "0"); // Turn off spawning of items for matchmode games
 	if (use_3teams->value)
 	{
 		teamCount = 3;
