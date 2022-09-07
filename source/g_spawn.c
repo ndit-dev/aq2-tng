@@ -394,9 +394,13 @@ void ED_CallSpawn (edict_t * ent)
 		{	// found it
 
 			//FIXME: We do same checks in SpawnItem, do we need these here? -M
-			if (gameSettings & GS_DEATHMATCH)
+			if ((gameSettings & GS_TEAMPLAY) && g_spawn_items->value && !matchmode->value) // Force spawn ammo/items/weapons for teamplay, non-matchmode
 			{
-				if ((gameSettings & GS_WEAPONCHOOSE) && g_spawn_items->value && matchmode->value == 0) // Force spawn ammo/items/weapons, non-matchmode
+				SpawnItem(ent, item);
+			}
+			else if (gameSettings & GS_DEATHMATCH)
+			{
+				if ((gameSettings & GS_WEAPONCHOOSE) && g_spawn_items->value) // Force spawn ammo/items/weapons for DM modes
 					SpawnItem(ent, item);
 				else if (gameSettings & GS_WEAPONCHOOSE) // Traditional teamplay / dm_choose 1 mode
 					G_FreeEdict( ent );

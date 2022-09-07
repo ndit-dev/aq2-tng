@@ -642,7 +642,7 @@ void InitGame( void )
 			
 			gi.dprintf( "sv_fps = %d\n", (int) cv->value );
 			if ((int) cv->value > 30) {
-				gi.dprintf("Server FPS is %d, optimal values are 10/20/30\n", cv->value);
+				gi.dprintf("Server FPS is %i, optimal values are 10/20/30\n", (int) cv->value);
 			}
 		}
 		else
