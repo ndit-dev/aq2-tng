@@ -630,11 +630,11 @@ void SelectRandomItem(edict_t *ent, pmenu_t *p)
 	int selected_weapon = ent->client->pers.chosenWeapon->typeNum;
 
 	// Create array with limited items on certain weapons to not have silly kombos
-	menu_list_item item_list[4] = {
-		{ num: KEV_NUM, sound: "misc/veston.wav", name: KEV_NAME },
-		{ num: SLIP_NUM, sound: "misc/veston.wav", name: SLIP_NAME },
-		{ num: BAND_NUM, sound: "misc/veston.wav", name: BAND_NAME },
-		{ num: HELM_NUM, sound: "misc/veston.wav", name: HELM_NAME },
+	menu_list_item item_list[6] = {
+		{ .num: KEV_NUM, .sound: "misc/veston.wav", .name: KEV_NAME },
+		{ .num: SLIP_NUM, .sound: "misc/veston.wav", .name: SLIP_NAME },
+		{ .num: BAND_NUM, .sound: "misc/veston.wav", .name: BAND_NAME },
+		{ .num: HELM_NUM, .sound: "misc/veston.wav", .name: HELM_NAME },
 	};
 	int listCount = 4;
 
