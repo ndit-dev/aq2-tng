@@ -432,6 +432,7 @@ T_Damage (edict_t * targ, edict_t * inflictor, edict_t * attacker, vec3_t dir,
 	float from_top;
 	vec_t dist;
 	float targ_maxs2;		//FB 6/1/99
+	int ai_ent_found;
 
 	// do this before teamplay check
 	if (!targ->takedamage)
@@ -547,6 +548,14 @@ T_Damage (edict_t * targ, edict_t * inflictor, edict_t * attacker, vec3_t dir,
 								gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD, gi.soundindex("tng/accuracy.wav"), 1.0, ATTN_NONE, 0.0);
 
 								#if USE_AQTION
+
+								#ifndef NO_BOTS
+									// Check if there's an AI bot in the game, if so, do nothing
+									ai_ent_found = StatBotCheck();
+									if (ai_ent_found == 1) {
+										return;
+									}
+								#endif
 								if (stat_logs->value && !ltk_loadbots->value) {
 									char steamid[24];
 									char discordid[24];

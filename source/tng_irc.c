@@ -279,9 +279,11 @@ irc_parse ( void )
     if (ircdebug->value)
 		gi.dprintf ("IRC: << %s\n", irc_data.input);
 //DEBUG
-		for ( pos=1; irc_data.input[pos]; pos++) {
-			wer[pos-1] = irc_data.input[pos];
-			gi.dprintf ("%s\n", wer);
+		if (Q_strnicmp (&irc_data.input[pos], "PRIVMSG ", 8) == 0) {
+			for ( pos=8; irc_data.input[pos]; pos++) {
+				wer[pos-1] = irc_data.input[pos];
+				gi.dprintf ("position: %i, value: %s\n", pos, wer);
+			}
 		};
 //ENDEBUG
     if (*irc_data.input == ':') {

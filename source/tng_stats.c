@@ -586,12 +586,37 @@ int Gamemodeflag(void)
 }
 
 /*
+=================
+Bot Check
+=================
+*/
+int StatBotCheck(void)
+{
+	int ai_ent_found = 0;
+
+	for (int i = 0; i < num_players; i++)
+    {
+        if (players[i]->is_bot)
+        {
+			ai_ent_found = 1;
+			if (stat_logs->value) {
+				gi.dprintf("Bot detected, forcing stat_logs off\n");
+				gi.cvar_forceset(stat_logs->name, "0");    // Turn off stat collection
+				break;
+			}
+			return ai_ent_found;
+        }
+    }
+}
+
+/*
 ==================
 LogKill
 =================
 */
 void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 {
+	int ai_ent_found;
 	int mod;
 	int loc;
 	int gametime = 0;
@@ -613,6 +638,12 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 	char kip[24]; // Killer's IP:port
 	char kd[24]; // Killer's Discord ID
 	char *ki; // Killer's IP (without port)
+
+	// Check if there's an AI bot in the game, if so, do nothing
+	ai_ent_found = StatBotCheck();
+	if (ai_ent_found == 1) {
+		return;
+	}
 
 	if ((team_round_going && !in_warmup) || (gameSettings & GS_DEATHMATCH)) // If round is active OR if deathmatch
 	{
@@ -703,6 +734,12 @@ void LogWorldKill(edict_t *self)
 	char vd[24];
 	char *vi;
 
+	// Check if there's an AI bot in the game, if so, do nothing
+	ai_ent_found = StatBotCheck();
+	if (ai_ent_found == 1) {
+		return;
+	}
+
 	if ((team_round_going && !in_warmup) || (gameSettings & GS_DEATHMATCH)) // If round is active OR if deathmatch
 	{
 		mod = meansOfDeath & ~MOD_FRIENDLY_FIRE;
@@ -778,6 +815,12 @@ void LogMatch()
 	int t3 = teams[TEAM3].score;
 	eventtime = (int)time(NULL);
 
+	// Check if there's an AI bot in the game, if so, do nothing
+	ai_ent_found = StatBotCheck();
+	if (ai_ent_found == 1) {
+		return;
+	}
+
 	Q_strncpyz(
 		msg,
 		"{\"gamematch\":{\"mid\":\"%s\",\"sid\":\"%s\",\"t\":\"%d\",\"m\":\"%s\",\"gm\":%i,\"gmf\":%i,\"t1\":%i,\"t2\":%i,\"t3\":%i}}\n",
@@ -814,6 +857,12 @@ void LogAward(char* steamid, char* discordid, int award)
 	gametime = level.matchTime;
 	eventtime = (int)time(NULL);
 
+	// Check if there's an AI bot in the game, if so, do nothing
+	ai_ent_found = StatBotCheck();
+	if (ai_ent_found == 1) {
+		return;
+	}
+
 	Q_strncpyz(
 		msg,
 		"{\"award\":{\"sid\":\"%s\",\"mid\":\"%s\",\"t\":\"%d\",\"gt\":\"%d\",\"a\":%i,\"k\":\"%s\",\"w\":%i,\"d\":\"%s\"}}\n",
@@ -848,6 +897,12 @@ void LogEndMatchStats()
 	char steamid[24];
 	char discordid[24];
 	totalClients = G_SortedClients(sortedClients);
+
+	// Check if there's an AI bot in the game, if so, do nothing
+	ai_ent_found = StatBotCheck();
+	if (ai_ent_found == 1) {
+		return;
+	}
 
 	for (i = 0; i < totalClients; i++){
 		cl = sortedClients[i];
