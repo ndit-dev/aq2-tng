@@ -2736,7 +2736,9 @@ void ClientBeginDeathmatch(edict_t * ent)
     {
         if (players[i]->is_bot)
         {
+			gi.dprintf("Bot detected");
             gi.cvar_forceset(stat_logs->name, "0");    // Turn off stat collection
+			gi.dprintf("Forcing stat_logs off");
             break;
         }
     }
