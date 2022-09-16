@@ -600,6 +600,11 @@ edict_t *ACESP_SpawnBot( char *team_str, char *name, char *skin, char *userinfo 
 	else
 		ClientConnect( bot, userinfo );
 	
+	// Disable stat_logs before spawning bot
+	if (stat_logs->value) {
+		gi.cvar_forceset(stat_logs->name, "0");
+		gi.dprintf("Forcing stat_logs off due to bot spawn");
+	}
 	ClientBeginDeathmatch( bot );
 	
 	// Balance the teams!

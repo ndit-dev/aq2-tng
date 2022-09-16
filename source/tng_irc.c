@@ -278,12 +278,11 @@ irc_parse ( void )
   if (strlen (irc_data.input)) {
     if (ircdebug->value)
 		gi.dprintf ("IRC: << %s\n", irc_data.input);
-//DEBUG
-		for ( pos=1; irc_data.input[pos]; pos++) {
-			wer[pos-1] = irc_data.input[pos];
-			gi.dprintf ("%s\n", wer);
-		};
-//ENDEBUG
+		gi.dprintf ("IRC: << %s\n", irc_data.input[0]);
+		gi.dprintf ("IRC: << %s\n", irc_data.input[1]);
+		gi.dprintf ("IRC: << %s\n", irc_data.input[2]);
+		gi.dprintf ("IRC: << %s\n", irc_data.input[3]);
+
     if (*irc_data.input == ':') {
       for ( pos=1; irc_data.input[pos]; pos++) {
 		if (irc_data.input[pos] == ' ') {
