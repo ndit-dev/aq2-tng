@@ -604,9 +604,9 @@ int StatBotCheck(void)
 				gi.cvar_forceset(stat_logs->name, "0");    // Turn off stat collection
 				break;
 			}
-			return ai_ent_found;
         }
     }
+	return ai_ent_found;
 }
 
 /*
