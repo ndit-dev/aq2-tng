@@ -336,6 +336,7 @@ irc_parse ( void )
 	strcpy (ircstatus->string, IRC_ST_CONNECTED);
       } else if (Q_strnicmp (&irc_data.input[pos], "PRIVMSG ", 8) == 0) {
 	pos += 8;
+	//gi.dprintf("Msg %s", irc_data.input);
 	if (Q_strnicmp (&irc_data.input[pos], irc_data.ircuser, strlen(irc_data.ircuser)) == 0) {
 	  pos += strlen(irc_data.ircuser) + 2;
 	  if ((Q_strnicmp (&irc_data.input[pos], ircadminpwd->string, strlen(ircadminpwd->string)) == 0) &&

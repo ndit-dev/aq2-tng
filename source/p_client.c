@@ -2732,14 +2732,11 @@ void ClientBeginDeathmatch(edict_t * ent)
 
     //rekkie -- s
     // TODO: Move the bot stats check into ACEIT_RebuildPlayerList() equiv when we replace this code
-    qboolean found_bot = false;
     for (int i = 0; i < num_players; i++)
     {
         if (players[i]->is_bot)
         {
             gi.cvar_forceset(stat_logs->name, "0");    // Turn off stat collection
-            gi.cvar_forceset("logfile_flush", "2"); // Flush the log file (do not write to log)
-            found_bot = true;
             break;
         }
     }
