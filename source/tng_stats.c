@@ -719,6 +719,7 @@ LogWorldKill
 */
 void LogWorldKill(edict_t *self)
 {
+	int ai_ent_found;
 	int mod;
 	int loc = 16;
 	int gametime = 0;
@@ -808,6 +809,7 @@ LogMatch
 */
 void LogMatch()
 {
+	int ai_ent_found;
 	int eventtime;
 	char msg[1024];
 	int t1 = teams[TEAM1].score;
@@ -848,6 +850,7 @@ LogAward
 */
 void LogAward(char* steamid, char* discordid, int award)
 {
+	int ai_ent_found;
 	int gametime = 0;
 	int eventtime;
 	char msg[1024];
@@ -889,6 +892,7 @@ LogEndMatchStats
 */
 void LogEndMatchStats()
 {
+	int ai_ent_found;
 	int i;
 	char msg[1024];
 	gclient_t *sortedClients[MAX_CLIENTS], *cl;
