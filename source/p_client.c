@@ -2745,21 +2745,6 @@ void ClientBeginDeathmatch(edict_t * ent)
 
 #ifndef NO_BOTS
     ACEIT_RebuildPlayerList();
-
-    //rekkie -- s
-    // TODO: Move the bot stats check into ACEIT_RebuildPlayerList() equiv when we replace this code
-    // for (int i = 0; i < num_players; i++)
-    // {
-    //     if (players[i]->is_bot)
-    //     {
-	// 		if (stat_logs->value) {
-	// 			gi.dprintf("Bot detected, forcing stat_logs off\n");
-	// 			gi.cvar_forceset(stat_logs->name, "0");    // Turn off stat collection
-	// 			break;
-	// 		}
-    //     }
-    // }
-    //rekkie -- e
 #endif
 
 	// locate ent at a spawn point
