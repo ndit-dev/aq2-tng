@@ -592,13 +592,13 @@ Bot Check
 */
 int StatBotCheck(void)
 {
-	int ai_ent_found = 0;
+	int local_ai_ent_found = 0;
 
 	for (int i = 0; i < num_players; i++)
     {
         if (players[i]->is_bot)
         {
-			ai_ent_found = 1;
+			local_ai_ent_found = 1;
 			if (stat_logs->value) {
 				gi.dprintf("Bot detected, forcing stat_logs off\n");
 				gi.cvar_forceset(stat_logs->name, "0");    // Turn off stat collection
@@ -606,7 +606,7 @@ int StatBotCheck(void)
 			}
         }
     }
-	return ai_ent_found;
+	return local_ai_ent_found;
 }
 
 /*
@@ -616,7 +616,6 @@ LogKill
 */
 void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 {
-	int ai_ent_found;
 	int mod;
 	int loc;
 	int gametime = 0;
@@ -640,8 +639,8 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 	char *ki; // Killer's IP (without port)
 
 	// Check if there's an AI bot in the game, if so, do nothing
-	ai_ent_found = StatBotCheck();
-	if (ai_ent_found == 1) {
+	game.ai_ent_found = StatBotCheck();
+	if (game.ai_ent_found == 1) {
 		return;
 	}
 
@@ -719,7 +718,6 @@ LogWorldKill
 */
 void LogWorldKill(edict_t *self)
 {
-	int ai_ent_found;
 	int mod;
 	int loc = 16;
 	int gametime = 0;
@@ -736,8 +734,8 @@ void LogWorldKill(edict_t *self)
 	char *vi;
 
 	// Check if there's an AI bot in the game, if so, do nothing
-	ai_ent_found = StatBotCheck();
-	if (ai_ent_found == 1) {
+	game.ai_ent_found = StatBotCheck();
+	if (game.ai_ent_found == 1) {
 		return;
 	}
 
@@ -809,7 +807,6 @@ LogMatch
 */
 void LogMatch()
 {
-	int ai_ent_found;
 	int eventtime;
 	char msg[1024];
 	int t1 = teams[TEAM1].score;
@@ -818,8 +815,8 @@ void LogMatch()
 	eventtime = (int)time(NULL);
 
 	// Check if there's an AI bot in the game, if so, do nothing
-	ai_ent_found = StatBotCheck();
-	if (ai_ent_found == 1) {
+	game.ai_ent_found = StatBotCheck();
+	if (game.ai_ent_found == 1) {
 		return;
 	}
 
@@ -850,7 +847,6 @@ LogAward
 */
 void LogAward(char* steamid, char* discordid, int award)
 {
-	int ai_ent_found;
 	int gametime = 0;
 	int eventtime;
 	char msg[1024];
@@ -861,8 +857,8 @@ void LogAward(char* steamid, char* discordid, int award)
 	eventtime = (int)time(NULL);
 
 	// Check if there's an AI bot in the game, if so, do nothing
-	ai_ent_found = StatBotCheck();
-	if (ai_ent_found == 1) {
+	game.ai_ent_found = StatBotCheck();
+	if (game.ai_ent_found == 1) {
 		return;
 	}
 
@@ -892,7 +888,6 @@ LogEndMatchStats
 */
 void LogEndMatchStats()
 {
-	int ai_ent_found;
 	int i;
 	char msg[1024];
 	gclient_t *sortedClients[MAX_CLIENTS], *cl;
@@ -903,8 +898,8 @@ void LogEndMatchStats()
 	totalClients = G_SortedClients(sortedClients);
 
 	// Check if there's an AI bot in the game, if so, do nothing
-	ai_ent_found = StatBotCheck();
-	if (ai_ent_found == 1) {
+	game.ai_ent_found = StatBotCheck();
+	if (game.ai_ent_found == 1) {
 		return;
 	}
 

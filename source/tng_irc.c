@@ -16,7 +16,7 @@
 #ifdef WIN32
 #include <io.h>
 #include <winsock2.h>
-#define bzero(a,b)		memset(a,0,b)
+#define bzero(a,b) memset(a,0,b)
 #else
 #include <unistd.h>
 #include <sys/types.h>

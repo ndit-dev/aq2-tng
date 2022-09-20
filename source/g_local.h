@@ -738,6 +738,7 @@ typedef struct
   int gamemode;
   int gamemodeflags;
   int roundNum;
+  int ai_ent_found;
 }
 game_locals_t;
 

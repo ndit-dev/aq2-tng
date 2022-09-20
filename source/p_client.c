@@ -345,7 +345,6 @@ void Add_Frag(edict_t * ent, int mod)
 {
 	char buf[256];
 	int frags = 0;
-	int ai_ent_found;
 
 	if (in_warmup)
 		return;
@@ -376,8 +375,8 @@ void Add_Frag(edict_t * ent, int mod)
 
 				#ifndef NO_BOTS
 					// Check if there's an AI bot in the game, if so, do nothing
-					ai_ent_found = StatBotCheck();
-					if (ai_ent_found == 1) {
+					game.ai_ent_found = StatBotCheck();
+					if (game.ai_ent_found == 1) {
 						return;
 					}
 				#endif
@@ -400,8 +399,8 @@ void Add_Frag(edict_t * ent, int mod)
 				#if USE_AQTION
 				#ifndef NO_BOTS
 					// Check if there's an AI bot in the game, if so, do nothing
-					ai_ent_found = StatBotCheck();
-					if (ai_ent_found == 1) {
+					game.ai_ent_found = StatBotCheck();
+					if (game.ai_ent_found == 1) {
 						return;
 					}
 				#endif
@@ -2744,7 +2743,7 @@ void ClientBeginDeathmatch(edict_t * ent)
 	vInitClient(ent);
 
 #ifndef NO_BOTS
-    ACEIT_RebuildPlayerList();
+    	ACEIT_RebuildPlayerList();
 #endif
 
 	// locate ent at a spawn point
