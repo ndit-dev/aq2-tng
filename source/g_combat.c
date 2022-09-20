@@ -547,6 +547,14 @@ T_Damage (edict_t * targ, edict_t * inflictor, edict_t * attacker, vec3_t dir,
 								gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD, gi.soundindex("tng/accuracy.wav"), 1.0, ATTN_NONE, 0.0);
 
 								#if USE_AQTION
+
+								#ifndef NO_BOTS
+									// Check if there's an AI bot in the game, if so, do nothing
+									game.ai_ent_found = StatBotCheck();
+									if (game.ai_ent_found == 1) {
+										return;
+									}
+								#endif
 								if (stat_logs->value && !ltk_loadbots->value) {
 									char steamid[24];
 									char discordid[24];

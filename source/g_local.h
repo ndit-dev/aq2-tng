@@ -738,6 +738,7 @@ typedef struct
   int gamemode;
   int gamemodeflags;
   int roundNum;
+  int ai_ent_found;
 }
 game_locals_t;
 
@@ -1502,6 +1503,7 @@ void InitTookDamage(void);
 void ProduceShotgunDamageReport(edict_t*);
 
 //tng_stats.c
+int StatBotCheck(void);
 void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker);
 void LogWorldKill(edict_t *self);
 void LogMatch();

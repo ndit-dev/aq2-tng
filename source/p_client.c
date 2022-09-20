@@ -372,6 +372,14 @@ void Add_Frag(edict_t * ent, int mod)
 					 gi.soundindex("tng/impressive.wav"), 1.0, ATTN_NONE, 0.0);
 
 				#if USE_AQTION
+
+				#ifndef NO_BOTS
+					// Check if there's an AI bot in the game, if so, do nothing
+					game.ai_ent_found = StatBotCheck();
+					if (game.ai_ent_found == 1) {
+						return;
+					}
+				#endif
 				if (stat_logs->value && !ltk_loadbots->value) {
 					char steamid[24];
 					char discordid[24];
@@ -389,6 +397,13 @@ void Add_Frag(edict_t * ent, int mod)
 					 gi.soundindex("tng/excellent.wav"), 1.0, ATTN_NONE, 0.0);
 
 				#if USE_AQTION
+				#ifndef NO_BOTS
+					// Check if there's an AI bot in the game, if so, do nothing
+					game.ai_ent_found = StatBotCheck();
+					if (game.ai_ent_found == 1) {
+						return;
+					}
+				#endif
 				if (stat_logs->value && !ltk_loadbots->value) {
 					char steamid[24];
 					char discordid[24];
@@ -2728,7 +2743,7 @@ void ClientBeginDeathmatch(edict_t * ent)
 	vInitClient(ent);
 
 #ifndef NO_BOTS
-	ACEIT_RebuildPlayerList();
+    	ACEIT_RebuildPlayerList();
 #endif
 
 	// locate ent at a spawn point
