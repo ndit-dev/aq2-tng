@@ -585,29 +585,28 @@ int Gamemodeflag(void)
 	return gamemodeflag;
 }
 
+#ifndef NO_BOTS
 /*
 =================
 Bot Check
 =================
 */
-int StatBotCheck(void)
+qboolean StatBotCheck(void)
 {
-	int local_ai_ent_found = 0;
-
-	for (int i = 0; i < num_players; i++)
+    for (int i = 0; i < num_players; i++)
     {
         if (players[i]->is_bot)
         {
-			local_ai_ent_found = 1;
-			if (stat_logs->value) {
-				gi.dprintf("Bot detected, forcing stat_logs off\n");
-				gi.cvar_forceset(stat_logs->name, "0");    // Turn off stat collection
-				break;
-			}
+            game.ai_ent_found = true;
+            if (stat_logs->value) {
+                gi.dprintf("Bot detected, forcing stat_logs off\n");
+                gi.cvar_forceset(stat_logs->name, "0");    // Turn off stat collection
+                break;
+            }
         }
     }
-	return local_ai_ent_found;
 }
+#endif
 
 /*
 ==================
@@ -640,7 +639,7 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 
 	// Check if there's an AI bot in the game, if so, do nothing
 	game.ai_ent_found = StatBotCheck();
-	if (game.ai_ent_found == 1) {
+	if (game.ai_ent_found) {
 		return;
 	}
 
@@ -735,7 +734,7 @@ void LogWorldKill(edict_t *self)
 
 	// Check if there's an AI bot in the game, if so, do nothing
 	game.ai_ent_found = StatBotCheck();
-	if (game.ai_ent_found == 1) {
+	if (game.ai_ent_found) {
 		return;
 	}
 
@@ -816,7 +815,7 @@ void LogMatch()
 
 	// Check if there's an AI bot in the game, if so, do nothing
 	game.ai_ent_found = StatBotCheck();
-	if (game.ai_ent_found == 1) {
+	if (game.ai_ent_found) {
 		return;
 	}
 
@@ -858,7 +857,7 @@ void LogAward(char* steamid, char* discordid, int award)
 
 	// Check if there's an AI bot in the game, if so, do nothing
 	game.ai_ent_found = StatBotCheck();
-	if (game.ai_ent_found == 1) {
+	if (game.ai_ent_found) {
 		return;
 	}
 
@@ -899,7 +898,7 @@ void LogEndMatchStats()
 
 	// Check if there's an AI bot in the game, if so, do nothing
 	game.ai_ent_found = StatBotCheck();
-	if (game.ai_ent_found == 1) {
+	if (game.ai_ent_found) {
 		return;
 	}
 

@@ -376,7 +376,7 @@ void Add_Frag(edict_t * ent, int mod)
 				#ifndef NO_BOTS
 					// Check if there's an AI bot in the game, if so, do nothing
 					game.ai_ent_found = StatBotCheck();
-					if (game.ai_ent_found == 1) {
+					if (game.ai_ent_found) {
 						return;
 					}
 				#endif
@@ -400,7 +400,7 @@ void Add_Frag(edict_t * ent, int mod)
 				#ifndef NO_BOTS
 					// Check if there's an AI bot in the game, if so, do nothing
 					game.ai_ent_found = StatBotCheck();
-					if (game.ai_ent_found == 1) {
+					if (game.ai_ent_found) {
 						return;
 					}
 				#endif
