@@ -550,8 +550,7 @@ T_Damage (edict_t * targ, edict_t * inflictor, edict_t * attacker, vec3_t dir,
 
 								#ifndef NO_BOTS
 									// Check if there's an AI bot in the game, if so, do nothing
-									game.ai_ent_found = StatBotCheck();
-									if (game.ai_ent_found == 1) {
+									if (game.ai_ent_found) {
 										return;
 									}
 								#endif

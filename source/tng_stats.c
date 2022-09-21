@@ -585,29 +585,29 @@ int Gamemodeflag(void)
 	return gamemodeflag;
 }
 
+#ifndef NO_BOTS
 /*
 =================
 Bot Check
 =================
 */
-int StatBotCheck(void)
+void StatBotCheck(void)
 {
-	int local_ai_ent_found = 0;
-
-	for (int i = 0; i < num_players; i++)
+    for (int i = 0; i < num_players; i++)
     {
         if (players[i]->is_bot)
         {
-			local_ai_ent_found = 1;
-			if (stat_logs->value) {
-				gi.dprintf("Bot detected, forcing stat_logs off\n");
-				gi.cvar_forceset(stat_logs->name, "0");    // Turn off stat collection
-				break;
-			}
+            game.ai_ent_found = true;
+            if (stat_logs->value) {
+                gi.dprintf("Bot detected, forcing stat_logs off\n");
+                gi.cvar_forceset(stat_logs->name, "0");    // Turn off stat collection
+            }
+            return;
         }
     }
-	return local_ai_ent_found;
+    game.ai_ent_found = false;
 }
+#endif
 
 /*
 ==================
@@ -639,8 +639,7 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 	char *ki; // Killer's IP (without port)
 
 	// Check if there's an AI bot in the game, if so, do nothing
-	game.ai_ent_found = StatBotCheck();
-	if (game.ai_ent_found == 1) {
+	if (game.ai_ent_found) {
 		return;
 	}
 
@@ -734,8 +733,7 @@ void LogWorldKill(edict_t *self)
 	char *vi;
 
 	// Check if there's an AI bot in the game, if so, do nothing
-	game.ai_ent_found = StatBotCheck();
-	if (game.ai_ent_found == 1) {
+	if (game.ai_ent_found) {
 		return;
 	}
 
@@ -815,8 +813,7 @@ void LogMatch()
 	eventtime = (int)time(NULL);
 
 	// Check if there's an AI bot in the game, if so, do nothing
-	game.ai_ent_found = StatBotCheck();
-	if (game.ai_ent_found == 1) {
+	if (game.ai_ent_found) {
 		return;
 	}
 
@@ -857,8 +854,7 @@ void LogAward(char* steamid, char* discordid, int award)
 	eventtime = (int)time(NULL);
 
 	// Check if there's an AI bot in the game, if so, do nothing
-	game.ai_ent_found = StatBotCheck();
-	if (game.ai_ent_found == 1) {
+	if (game.ai_ent_found) {
 		return;
 	}
 
@@ -898,8 +894,7 @@ void LogEndMatchStats()
 	totalClients = G_SortedClients(sortedClients);
 
 	// Check if there's an AI bot in the game, if so, do nothing
-	game.ai_ent_found = StatBotCheck();
-	if (game.ai_ent_found == 1) {
+	if (game.ai_ent_found) {
 		return;
 	}
 
