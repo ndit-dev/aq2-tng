@@ -557,6 +557,8 @@ int Gamemode(void) // These are distinct game modes; you cannot have a teamdm to
 		gamemode = GM_TEAMPLAY;  
 	} else if (deathmatch->value) {
 		gamemode = GM_DEATHMATCH;
+	} else if (domination->value) {
+		gamemode = GM_DOMINATION;
 	}
 	return gamemode;
 }
@@ -570,9 +572,6 @@ int Gamemodeflag(void)
 
 	if (use_3teams->value) {
 		gamemodeflag += GMF_3TEAMS;
-	}
-	if (dom->value) {
-		gamemodeflag += GMF_DOMINATION;
 	}
 	if (darkmatch->value) {
 		gamemodeflag += GMF_DARKMATCH;
