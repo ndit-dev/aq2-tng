@@ -555,10 +555,10 @@ int Gamemode(void) // These are distinct game modes; you cannot have a teamdm to
 		gamemode = GM_TOURNEY;
 	} else if (teamplay->value) {
 		gamemode = GM_TEAMPLAY;  
-	} else if (deathmatch->value) {
-		gamemode = GM_DEATHMATCH;
 	} else if (domination->value) {
 		gamemode = GM_DOMINATION;
+	} else if (deathmatch->value) {
+		gamemode = GM_DEATHMATCH;
 	}
 	return gamemode;
 }
