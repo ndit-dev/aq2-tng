@@ -645,15 +645,13 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 
 	// Check if there's only one player in the server, if so, don't record stats
 	int i;
-	int index[MAX_CLIENTS];
 	pcount = 0;
 	for (i = 0; i < game.maxclients; i++) {
 		if (game.clients[i].pers.connected) {
-			index[pcount] = i;
 			pcount++;
 		}
 	}
-	if ((gameSettings & GS_DEATHMATCH) && pcount = 1) {
+	if ((gameSettings & GS_DEATHMATCH) && pcount == 1) {
 		return;
 	}
 
@@ -754,15 +752,13 @@ void LogWorldKill(edict_t *self)
 
 	// Check if there's only one player in the server, if so, don't record stats
 	int i;
-	int index[MAX_CLIENTS];
 	pcount = 0;
 	for (i = 0; i < game.maxclients; i++) {
 		if (game.clients[i].pers.connected) {
-			index[pcount] = i;
 			pcount++;
 		}
 	}
-	if ((gameSettings & GS_DEATHMATCH) && pcount = 1) {
+	if ((gameSettings & GS_DEATHMATCH) && pcount == 1) {
 		return;
 	}
 
