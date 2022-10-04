@@ -644,6 +644,7 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 
 	// Check if there's only one player in the server, if so, don't record stats
 	int pcount, i;
+	int index[256];
 	for (i = 0; i < game.maxclients; i++) {
 		if (game.clients[i].pers.connected) {
 			index[pcount] = i;
@@ -750,6 +751,7 @@ void LogWorldKill(edict_t *self)
 
 	// Check if there's only one player in the server, if so, don't record stats
 	int pcount, i;
+	int index[256];
 	for (i = 0; i < game.maxclients; i++) {
 		if (game.clients[i].pers.connected) {
 			index[pcount] = i;
