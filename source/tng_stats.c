@@ -646,7 +646,7 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 	int pcount = 0;
 	for (i = 0; i < game.maxclients; i++) {
 		if (game.clients[i].pers.connected) {
-			index[count] = i;
+			index[pcount] = i;
 			pcount++;
 		}
 	}
@@ -752,7 +752,7 @@ void LogWorldKill(edict_t *self)
 	int pcount = 0;
 	for (i = 0; i < game.maxclients; i++) {
 		if (game.clients[i].pers.connected) {
-			index[count] = i;
+			index[pcount] = i;
 			pcount++;
 		}
 	}
