@@ -620,6 +620,7 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 	int gametime = 0;
 	int roundNum;
 	int eventtime;
+	int pcount;
 	int vt = 0; //Default victim team is 0 (no team)
 	int kt = 0; //Default killer team is 0 (no team)
 	int ttk = 0; //Default TTK (time to kill) is 0
@@ -643,8 +644,9 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 	}
 
 	// Check if there's only one player in the server, if so, don't record stats
-	int pcount, i;
-	int index[256];
+	int i;
+	int index[MAX_CLIENTS];
+	pcount = 0;
 	for (i = 0; i < game.maxclients; i++) {
 		if (game.clients[i].pers.connected) {
 			index[pcount] = i;
@@ -734,6 +736,7 @@ void LogWorldKill(edict_t *self)
 	int gametime = 0;
 	int roundNum;
 	int eventtime;
+	int pcount;
 	int vt = 0; //Default victim team is 0 (no team)
 	int ttk = 0; //Default TTK (time to kill) is 0
 	int vl = 0; //Placeholder victimleader until Espionage gets ported
@@ -750,8 +753,9 @@ void LogWorldKill(edict_t *self)
 	}
 
 	// Check if there's only one player in the server, if so, don't record stats
-	int pcount, i;
-	int index[256];
+	int i;
+	int index[MAX_CLIENTS];
+	pcount = 0;
 	for (i = 0; i < game.maxclients; i++) {
 		if (game.clients[i].pers.connected) {
 			index[pcount] = i;
