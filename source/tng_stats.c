@@ -642,6 +642,18 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 		return;
 	}
 
+	// Check if there's only one player in the server, if so, don't record stats
+	int pcount = 0;
+	for (i = 0; i < game.maxclients; i++) {
+		if (game.clients[i].pers.connected) {
+			index[count] = i;
+			pcount++;
+		}
+	}
+	if ((gameSettings & GS_DEATHMATCH) && pcount = 1) {
+		return;
+	}
+
 	if ((team_round_going && !in_warmup) || (gameSettings & GS_DEATHMATCH)) // If round is active OR if deathmatch
 	{
 		mod = meansOfDeath & ~MOD_FRIENDLY_FIRE;
@@ -733,6 +745,18 @@ void LogWorldKill(edict_t *self)
 
 	// Check if there's an AI bot in the game, if so, do nothing
 	if (game.ai_ent_found) {
+		return;
+	}
+
+	// Check if there's only one player in the server, if so, don't record stats
+	int pcount = 0;
+	for (i = 0; i < game.maxclients; i++) {
+		if (game.clients[i].pers.connected) {
+			index[count] = i;
+			pcount++;
+		}
+	}
+	if ((gameSettings & GS_DEATHMATCH) && pcount = 1) {
 		return;
 	}
 
