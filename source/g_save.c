@@ -552,7 +552,7 @@ void InitGame( void )
 
 	// 2022
 	server_id = gi.cvar( "server_id", "", 0 ); 	// Removed it from Serverinfo
-	stat_logs = gi.cvar( "stat_logs", "0", CVAR_NOSET);
+	stat_logs = gi.cvar( "stat_logs", "0", CVAR_SERVERINFO);
 	if (stat_logs->value)
     {
 		gi.dprintf( "stat_logs is enabled, forcing logfile_flush to 2\n" );

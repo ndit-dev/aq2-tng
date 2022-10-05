@@ -3217,7 +3217,7 @@ void TallyEndOfLevelTeamScores (void)
 
 	// Stats begin
 	#if USE_AQTION
-	if (stat_logs->value && !ltk_loadbots->value) {
+	if (stat_logs->value) {
 		LogMatch();  // Generates end of match logs
 	}
 	#endif
