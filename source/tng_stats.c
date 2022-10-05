@@ -738,7 +738,6 @@ void LogWorldKill(edict_t *self)
 	int gametime = 0;
 	int roundNum;
 	int eventtime;
-	int pcount;
 	int vt = 0; //Default victim team is 0 (no team)
 	int ttk = 0; //Default TTK (time to kill) is 0
 	int vl = 0; //Placeholder victimleader until Espionage gets ported
