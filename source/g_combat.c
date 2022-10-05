@@ -554,7 +554,7 @@ T_Damage (edict_t * targ, edict_t * inflictor, edict_t * attacker, vec3_t dir,
 										return;
 									}
 								#endif
-								if (stat_logs->value && !ltk_loadbots->value) {
+								if (stat_logs->value) {
 									char steamid[24];
 									char discordid[24];
 									Q_strncpyz(steamid, Info_ValueForKey(attacker->client->pers.userinfo, "steamid"), sizeof(steamid));

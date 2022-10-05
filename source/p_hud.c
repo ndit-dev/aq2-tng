@@ -136,7 +136,7 @@ void BeginIntermission(edict_t *targ)
 
 	// Stats begin
 	#if USE_AQTION
-	if (stat_logs->value && !ltk_loadbots->value) {
+	if (stat_logs->value) {
 		LogEndMatchStats(); // Generates end of match logs
 	}
 	#endif

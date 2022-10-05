@@ -850,6 +850,11 @@ void LogMatch()
 		return;
 	}
 
+	// Don't log a scoreless match, nothing happened
+	if (t1 == 0 && t2 == 0 && t3 == 0) {
+		return;
+	}
+
 	Q_strncpyz(
 		msg,
 		"{\"gamematch\":{\"mid\":\"%s\",\"sid\":\"%s\",\"t\":\"%d\",\"m\":\"%s\",\"gm\":%i,\"gmf\":%i,\"t1\":%i,\"t2\":%i,\"t3\":%i}}\n",

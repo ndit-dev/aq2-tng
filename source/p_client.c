@@ -380,7 +380,7 @@ void Add_Frag(edict_t * ent, int mod)
 						return;
 					}
 				#endif
-				if (stat_logs->value && !ltk_loadbots->value) {
+				if (stat_logs->value) {
 					char steamid[24];
 					char discordid[24];
 					Q_strncpyz(steamid, Info_ValueForKey(ent->client->pers.userinfo, "steamid"), sizeof(steamid));
@@ -403,7 +403,7 @@ void Add_Frag(edict_t * ent, int mod)
 						return;
 					}
 				#endif
-				if (stat_logs->value && !ltk_loadbots->value) {
+				if (stat_logs->value) {
 					char steamid[24];
 					char discordid[24];
 					Q_strncpyz(steamid, Info_ValueForKey(ent->client->pers.userinfo, "steamid"), sizeof(steamid));
@@ -834,7 +834,7 @@ void ClientObituary(edict_t * self, edict_t * inflictor, edict_t * attacker)
 			AddKilledPlayer(self->client->attacker, self);
 
 			#if USE_AQTION
-			if (stat_logs->value && !ltk_loadbots->value) { // Only create stats logs if stat_logs is 1 and ltk_loadbots is 0
+			if (stat_logs->value) { // Only create stats logs if stat_logs is 1
 				LogKill(self, inflictor, self->client->attacker);
 			}
 			#endif
@@ -872,7 +872,7 @@ void ClientObituary(edict_t * self, edict_t * inflictor, edict_t * attacker)
 			self->enemy = NULL;
 
 			#if USE_AQTION
-			if (stat_logs->value && !ltk_loadbots->value) { // Only create stats logs if stat_logs is 1 and ltk_loadbots is 0
+			if (stat_logs->value) { // Only create stats logs if stat_logs is 1
 				LogWorldKill(self);
 			}
 			#endif
@@ -1213,7 +1213,7 @@ void ClientObituary(edict_t * self, edict_t * inflictor, edict_t * attacker)
 			AddKilledPlayer(attacker, self);
 
 			#if USE_AQTION
-			if (stat_logs->value && !ltk_loadbots->value) { // Only create stats logs if stat_logs is 1 and ltk_loadbots is 0
+			if (stat_logs->value) {
 				LogKill(self, inflictor, attacker);
 			}
 			#endif
@@ -1243,7 +1243,7 @@ void ClientObituary(edict_t * self, edict_t * inflictor, edict_t * attacker)
 	IRC_printf(IRC_T_DEATH, death_msg);
 
 	#if USE_AQTION
-	if (stat_logs->value && !ltk_loadbots->value) { // Only create stats logs if stat_logs is 1 and ltk_loadbots is 0
+	if (stat_logs->value) { // Only create stats logs if stat_logs is 1
 		LogWorldKill(self);
 	}
 	#endif
