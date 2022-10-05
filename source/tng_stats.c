@@ -642,6 +642,23 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 		return;
 	}
 
+	// Only record stats if there's more than one opponent
+    if (gameSettings & GS_DEATHMATCH) // Only check if in DM
+    {
+        int oc = 0; // Opponent count
+        for (int i = 0; i < game.maxclients; i++)
+        {
+            // If player is connected and not spectating, add them as an opponent
+            if (game.clients[i].pers.connected && game.clients[i].pers.spectator == false)
+            {
+                if (++oc > 1) // Two or more opponents are active, so log kills
+                    break;
+            }
+        }
+        if (oc == 1) // Only one opponent active, so don't log kills
+            return;
+    }
+
 	if ((team_round_going && !in_warmup) || (gameSettings & GS_DEATHMATCH)) // If round is active OR if deathmatch
 	{
 		mod = meansOfDeath & ~MOD_FRIENDLY_FIRE;
@@ -735,6 +752,23 @@ void LogWorldKill(edict_t *self)
 	if (game.ai_ent_found) {
 		return;
 	}
+
+	// Only record stats if there's more than one opponent
+    if (gameSettings & GS_DEATHMATCH) // Only check if in DM
+    {
+        int oc = 0; // Opponent count
+        for (int i = 0; i < game.maxclients; i++)
+        {
+            // If player is connected and not spectating, add them as an opponent
+            if (game.clients[i].pers.connected && game.clients[i].pers.spectator == false)
+            {
+                if (++oc > 1) // Two or more opponents are active, so log kills
+                    break;
+            }
+        }
+        if (oc == 1) // Only one opponent active, so don't log kills
+            return;
+    }
 
 	if ((team_round_going && !in_warmup) || (gameSettings & GS_DEATHMATCH)) // If round is active OR if deathmatch
 	{
