@@ -84,6 +84,13 @@ void SendScores(void)
 		gi.bprintf(PRINT_HIGH, "\x9D\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9F\n");
 	}
 	gi.bprintf(PRINT_HIGH, "Match is over, waiting for next map, please vote a new one..\n");
+
+	#if USE_AQTION
+	if (stat_logs->value) {
+		LogMatch();  // Generates end of match logs
+		LogEndMatchStats();  // Generates end of match stats
+	}
+	#endif
 }
 
 void Cmd_Sub_f(edict_t * ent)

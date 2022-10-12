@@ -3217,7 +3217,7 @@ void TallyEndOfLevelTeamScores (void)
 
 	// Stats begin
 	#if USE_AQTION
-	if (stat_logs->value) {
+	if (stat_logs->value && !matchmode->value) {
 		LogMatch();  // Generates end of match logs
 	}
 	#endif
