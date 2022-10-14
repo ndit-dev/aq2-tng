@@ -609,28 +609,28 @@ void StatBotCheck(void)
 #endif
 
 cvar_t* logfile_name;
-void Write_Stats(const char* fmt, ...)
+void Write_Stats(const char* msg, ...)
 {
 	va_list	argptr;
 	char	stat_string[1024];
-	char	stat_tmp[1024];
+	char	stat_cpy[1024];
 	char	logpath[MAX_QPATH];
 	FILE* 	f;
 
-	va_start(argptr, fmt);
-	vsprintf(stat_tmp, fmt, argptr);
+	va_start(argptr, msg);
+	vsprintf(stat_cpy, msg, argptr);
 	va_end(argptr);
 
 	logfile_name = gi.cvar("logfile_name", "", CVAR_NOSET);
-	sprintf(logpath, "action/logs/%s.stats", logfile_name->name);
+	sprintf(logpath, "action/logs/%s.stats", logfile_name->string);
 
 	if ((f = fopen(logpath, "a")) != NULL)
 	{
-		fprintf(f, "%s", stat_string);
+		fprintf(f, "%s", stat_cpy);
 		fclose(f);
 	}
 	else
-		gi.dprintf("Error writing to %s.stats\n", logfile_name->value);
+		gi.dprintf("Error writing to %s.stats\n", logfile_name->string);
 
 }
 
@@ -744,7 +744,6 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 			vd,
 			kd
 		);
-
 		Write_Stats(msg);
 	}
 }
@@ -817,14 +816,9 @@ void LogWorldKill(edict_t *self)
 		eventtime = (int)time(NULL);
 		roundNum = game.roundNum + 1;
 
-		Q_strncpyz(
-			msg,
+		Com_sprintf(
+			msg, sizeof(msg),
 			"{\"frag\":{\"sid\":\"%s\",\"mid\":\"%s\",\"v\":\"%s\",\"vn\":\"%s\",\"vi\":\"%s\",\"vt\":%i,\"vl\":%i,\"k\":\"%s\",\"kn\":\"%s\",\"ki\":\"%s\",\"kt\":%i,\"kl\":%i,\"w\":%i,\"i\":%i,\"l\":%i,\"ks\":%i,\"gm\":%i,\"gmf\":%i,\"ttk\":%d,\"t\":%d,\"gt\":%d,\"m\":\"%s\",\"r\":%i,\"vd\":\"%s\",\"kd\":\"%s\"}}\n",
-			sizeof(msg)
-		);
-
-		Com_StatPrintf(
-			msg,
 			server_id->string,
 			game.matchid,
 			v,
@@ -851,6 +845,7 @@ void LogWorldKill(edict_t *self)
 			vd,
 			vd
 		);
+		Write_Stats(msg);
 	}
 }
 
@@ -878,14 +873,9 @@ void LogMatch()
 		return;
 	}
 
-	Q_strncpyz(
-		msg,
+	Com_sprintf(
+		msg, sizeof(msg),
 		"{\"gamematch\":{\"mid\":\"%s\",\"sid\":\"%s\",\"t\":\"%d\",\"m\":\"%s\",\"gm\":%i,\"gmf\":%i,\"t1\":%i,\"t2\":%i,\"t3\":%i}}\n",
-		sizeof(msg)
-	);
-
-	Com_StatPrintf(
-		msg,
 		game.matchid,
 		server_id->string,
 		eventtime,
@@ -896,6 +886,7 @@ void LogMatch()
 		t2,
 		t3
 	);
+	Write_Stats(msg);
 }
 
 /*
@@ -919,14 +910,9 @@ void LogAward(char* steamid, char* discordid, int award)
 		return;
 	}
 
-	Q_strncpyz(
-		msg,
+	Com_sprintf(
+		msg, sizeof(msg),
 		"{\"award\":{\"sid\":\"%s\",\"mid\":\"%s\",\"t\":\"%d\",\"gt\":\"%d\",\"a\":%i,\"k\":\"%s\",\"w\":%i,\"d\":\"%s\"}}\n",
-		sizeof(msg)
-	);
-
-	Com_StatPrintf(
-		msg,
 		server_id->string,
 		game.matchid,
 		eventtime,
@@ -936,6 +922,7 @@ void LogAward(char* steamid, char* discordid, int award)
 		mod,
 		discordid
 	);
+	Write_Stats(msg);
 }
 
 /*
@@ -975,14 +962,10 @@ void LogEndMatchStats()
 				
 		Q_strncpyz(steamid, Info_ValueForKey(cl->pers.userinfo, "steamid"), sizeof(steamid));
 		Q_strncpyz(discordid, Info_ValueForKey(cl->pers.userinfo, "cl_discord_id"), sizeof(discordid));
-		Q_strncpyz(
-			msg,
-			"{\"matchstats\":{\"sid\":\"%s\",\"mid\":\"%s\",\"s\":\"%s\",\"sc\":%i,\"sh\":%i,\"a\":%f,\"f\":%f,\"dd\":%i,\"d\":%i,\"k\":%i,\"ctfc\":%i,\"ctfcs\":%i,\"ht\":%i,\"tk\":%i,\"t\":%i,\"hks\":%i,\"hhs\":%i,\"dis\":\"%s\",\"pt\":%i}}\n",
-			sizeof(msg)
-		);
 
-		Com_StatPrintf(
-			msg,
+		Com_sprintf(
+			msg, sizeof(msg),
+			"{\"matchstats\":{\"sid\":\"%s\",\"mid\":\"%s\",\"s\":\"%s\",\"sc\":%i,\"sh\":%i,\"a\":%f,\"f\":%f,\"dd\":%i,\"d\":%i,\"k\":%i,\"ctfc\":%i,\"ctfcs\":%i,\"ht\":%i,\"tk\":%i,\"t\":%i,\"hks\":%i,\"hhs\":%i,\"dis\":\"%s\",\"pt\":%i}}\n",
 			server_id->string,
 			game.matchid,
 			steamid,
@@ -1003,6 +986,7 @@ void LogEndMatchStats()
 			discordid,
 			secs
 		);
+		Write_Stats(msg);
 	}
 }
 #endif
