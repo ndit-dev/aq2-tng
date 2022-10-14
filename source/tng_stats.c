@@ -619,18 +619,18 @@ void Write_Stats(const char* fmt, ...)
 	FILE* f;
 
 	va_start(argptr, fmt);
-	vsprintf(ar_tmp, fmt, argptr);
+	vsprintf(stat_tmp, fmt, argptr);
 	va_end(argptr);
 
-	sprintf(logpath, "%s/stats/%s.stats", gamedir->string, logfile_name->string);
+	sprintf(logpath, "%s/stats/%s.stats", gamename->value, logfile_name->value);
 
 	if ((f = fopen(logpath, "a")) != NULL)
 	{
-		fprintf(f, "%s", ar_string);
+		fprintf(f, "%s", stat_string);
 		fclose(f);
 	}
 	else
-		gi.dprintf("Error writing to %s.stats\n", logfile_name->string);
+		gi.dprintf("Error writing to %s.stats\n", logfile_name->value);
 
 }
 
