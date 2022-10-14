@@ -136,9 +136,9 @@ void BeginIntermission(edict_t *targ)
 
 	// Stats begin
 	#if USE_AQTION
-	if (stat_logs->value && !matchmode->value) {
-		LogEndMatchStats(); // Generates end of match logs
-	}
+		if (stat_logs->value && !matchmode->value) {
+			LogEndMatchStats(); // Generates end of match logs
+		}
 	#endif
 	// Stats end
 

@@ -695,7 +695,7 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 			sizeof(msg)
 		);
 
-		Com_Printf(
+		Com_StatPrintf(
 			msg,
 			server_id->string,
 			game.matchid,
@@ -800,7 +800,7 @@ void LogWorldKill(edict_t *self)
 			sizeof(msg)
 		);
 
-		Com_Printf(
+		Com_StatPrintf(
 			msg,
 			server_id->string,
 			game.matchid,
@@ -861,7 +861,7 @@ void LogMatch()
 		sizeof(msg)
 	);
 
-	Com_Printf(
+	Com_StatPrintf(
 		msg,
 		game.matchid,
 		server_id->string,
@@ -902,7 +902,7 @@ void LogAward(char* steamid, char* discordid, int award)
 		sizeof(msg)
 	);
 
-	Com_Printf(
+	Com_StatPrintf(
 		msg,
 		server_id->string,
 		game.matchid,
@@ -958,7 +958,7 @@ void LogEndMatchStats()
 			sizeof(msg)
 		);
 
-		Com_Printf(
+		Com_StatPrintf(
 			msg,
 			server_id->string,
 			game.matchid,
