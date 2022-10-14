@@ -622,6 +622,7 @@ void Write_Stats(const char* fmt, ...)
 	vsprintf(stat_tmp, fmt, argptr);
 	va_end(argptr);
 
+	gi.dprintf(stat_string);
 	sprintf(logpath, "action/logs/%s.stats", logfile_name->value);
 
 	if ((f = fopen(logpath, "a")) != NULL)
@@ -715,14 +716,9 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 		eventtime = (int)time(NULL);
 		roundNum = game.roundNum + 1;
 
-		Q_strncpyz(
-			msg,
+		Com_sprintf(
+			msg, sizeof(msg),
 			"{\"frag\":{\"sid\":\"%s\",\"mid\":\"%s\",\"v\":\"%s\",\"vn\":\"%s\",\"vi\":\"%s\",\"vt\":%i,\"vl\":%i,\"k\":\"%s\",\"kn\":\"%s\",\"ki\":\"%s\",\"kt\":%i,\"kl\":%i,\"w\":%i,\"i\":%i,\"l\":%i,\"ks\":%i,\"gm\":%i,\"gmf\":%i,\"ttk\":%d,\"t\":%d,\"gt\":%d,\"m\":\"%s\",\"r\":%i,\"vd\":\"%s\",\"kd\":\"%s\"}}\n",
-			sizeof(msg)
-		);
-
-		Write_Stats(
-			msg,
 			server_id->string,
 			game.matchid,
 			v,
@@ -749,6 +745,8 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 			vd,
 			kd
 		);
+
+		Write_Stats(msg);
 	}
 }
 
