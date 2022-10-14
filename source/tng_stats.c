@@ -608,6 +608,32 @@ void StatBotCheck(void)
 }
 #endif
 
+void Write_Stats(const char* fmt, ...)
+{
+	va_list	argptr;
+	char	stat_string[1024];
+	char	stat_tmp[1024];
+	time_t	long_time;
+	struct	tm* stat_st;
+	char	logpath[MAX_QPATH];
+	FILE* f;
+
+	va_start(argptr, fmt);
+	vsprintf(ar_tmp, fmt, argptr);
+	va_end(argptr);
+
+	sprintf(logpath, "%s/stats/%s.stats", gamedir->string, logfile_name->string);
+
+	if ((f = fopen(logpath, "a")) != NULL)
+	{
+		fprintf(f, "%s", ar_string);
+		fclose(f);
+	}
+	else
+		gi.dprintf("Error writing to %s.stats\n", logfile_name->string);
+
+}
+
 /*
 ==================
 LogKill
@@ -695,7 +721,7 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 			sizeof(msg)
 		);
 
-		Com_StatPrintf(
+		Write_Stats(
 			msg,
 			server_id->string,
 			game.matchid,
