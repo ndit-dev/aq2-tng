@@ -609,7 +609,6 @@ void StatBotCheck(void)
 #endif
 
 cvar_t* logfile_name;
-logfile_name = gi.cvar("logfile_name", "", CVAR_NOSET);
 void Write_Stats(const char* fmt, ...)
 {
 	va_list	argptr;
@@ -622,7 +621,8 @@ void Write_Stats(const char* fmt, ...)
 	vsprintf(stat_tmp, fmt, argptr);
 	va_end(argptr);
 
-	sprintf(logpath, "action/logs/%s.stats", logfile_name->value);
+	logfile_name = gi.cvar("logfile_name", "", CVAR_NOSET);
+	sprintf(logpath, "action/logs/%s.stats", logfile_name->name);
 
 	if ((f = fopen(logpath, "a")) != NULL)
 	{
