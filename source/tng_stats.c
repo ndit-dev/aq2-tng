@@ -70,6 +70,158 @@
 #include "g_local.h"
 #include <time.h>
 
+// Writing to independent log file
+
+/// Stole all of these from Q2Pro common.c
+typedef int qhandle_t;
+static qhandle_t    com_statlogFile;
+static qboolean     com_logNewline;
+static int      	com_printEntered;
+
+
+#define FS_MODE_APPEND          0x00000000
+#define FS_MODE_READ            0x00000001
+#define FS_MODE_WRITE           0x00000002
+#define FS_BUF_NONE             0x0000000c
+#define FS_FLAG_TEXT            0x00000400
+#define MAXPRINTMSG     		4096
+
+
+static void statlogfile_close(void)
+{
+    if (!com_statlogFile) {
+        return;
+    }
+
+    Com_Printf("Closing stat log.\n");
+
+    FS_FCloseFile(com_statlogFile);
+    com_statlogFile = 0;
+}
+
+static void statlogfile_open(void)
+{
+    char buffer[MAX_OSPATH];
+    unsigned mode;
+    qhandle_t f;
+
+    mode = statlogfile->value > 1 ? FS_MODE_APPEND : FS_MODE_WRITE;
+    // Always write the full stat line, don't buffer
+    mode |= FS_BUF_NONE;
+
+    f = FS_EasyOpenFile(buffer, sizeof(buffer), mode | FS_FLAG_TEXT,
+                        "stats/", logfile_name->string, ".stats");
+    if (!f) {
+        Cvar_Set("statlogfile", "0");
+        return;
+    }
+
+    com_statlogFile = f;
+    com_logNewline = true;
+    Com_Printf("Logging stats to %s\n", buffer);
+}
+
+static void statlogfile_changed(cvar_t *self)
+{
+    statlogfile_close();
+    if (self->value) {
+        statlogfile_open();
+    }
+}
+
+static void statlogfile_write(const char *s)
+{
+    char text[MAXPRINTMSG];
+    char buf[MAX_QPATH];
+    char *p, *maxp;
+    size_t len;
+    int ret;
+    int c;
+
+    len = 0;
+    p = text;
+    maxp = text + sizeof(text) - 1;
+    while (*s) {
+        if (com_logNewline) {
+            if (len > 0 && len < maxp - p) {
+                memcpy(p, buf, len);
+                p += len;
+            }
+            com_logNewline = false;
+        }
+
+        if (p == maxp) {
+            break;
+        }
+
+        c = *s++;
+        if (c == '\n') {
+            com_logNewline = true;
+        } else {
+            c = Q_charascii(c);
+        }
+
+        *p++ = c;
+    }
+    *p = 0;
+
+    len = p - text;
+    ret = FS_Write(text, len, com_statlogFile);
+    if (ret != len) {
+        // zero handle BEFORE doing anything else to avoid recursion
+        qhandle_t tmp = com_statlogFile;
+        com_statlogFile = 0;
+        FS_FCloseFile(tmp);
+        Com_EPrintf("Couldn't write stat log: %s\n", Q_ErrorString(ret));
+        Cvar_Set("statlogfile", "0");
+    }
+}
+
+#ifndef _WIN32
+/*
+=============
+Com_FlushLogs
+
+When called from SIGHUP handler on UNIX-like systems,
+will close and reopen logfile handle for rotation.
+=============
+*/
+
+void Com_StatFlushLogs(void)
+{
+    if (statlogfile) {
+        statlogfile_changed(statlogfile_enable);
+    }
+}
+
+#endif
+
+void Com_StatPrintf(const char *fmt, ...)
+{
+    va_list     argptr;
+    char        msg[MAXPRINTMSG];
+    size_t      len;
+
+    // may be entered recursively only once
+    if (com_printEntered >= 2) {
+        return;
+    }
+
+    com_printEntered++;
+
+    va_start(argptr, fmt);
+    len = Q_vscnprintf(msg, sizeof(msg), fmt, argptr);
+    va_end(argptr);
+
+        // logfile
+        if (com_statlogFile) {
+            statlogfile_write(msg);
+		}
+    com_printEntered--;
+}
+
+// End log file write
+
 /* Stats Command */
 
 void ResetStats(edict_t *ent)

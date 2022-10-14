@@ -492,6 +492,8 @@ cvar_t *gm;
 cvar_t *gmf;
 cvar_t *sv_idleremove;
 cvar_t *g_spawn_items;
+cvar_t *statlogfile;
+cvar_t *logfile_name;
 
 // Discord SDK integration with Q2Pro
 cvar_t *cl_discord;
@@ -535,6 +537,9 @@ void ShutdownGame (void)
 	IRC_exit ();
 #ifndef NO_BOTS
 	ACECM_Store();
+#endif
+#ifndef _WIN32
+	Com_StatFlushLogs();
 #endif
 	//PG BUND
 	vExitGame ();
@@ -625,18 +630,6 @@ void Sys_Error (const char *error, ...)
 }
 
 void Com_Printf (const char *msg, ...)
-{
-  va_list argptr;
-  char text[1024];
-
-  va_start (argptr, msg);
-  vsnprintf (text, sizeof(text), msg, argptr);
-  va_end (argptr);
-
-  gi.dprintf("%s", text);
-}
-
-void Com_StatPrintf (const char *msg, ...)
 {
   va_list argptr;
   char text[1024];
