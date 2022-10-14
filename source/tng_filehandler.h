@@ -1,6 +1,7 @@
 // An amalgam of error.h and common.h from Q2Pro
 
 #include <errno.h>
+#include <limits.h>
 
 typedef int                     qhandle_t;
 typedef long                    int64_t;
@@ -71,6 +72,7 @@ const char                      *Q_ErrorString(int error);
 
 #define MAXPRINTMSG     		4096
 // These values directly map to system errno.
+#define _Q_ERR(e)               (-ERRNO_MAX - e)
 #define Q_ERR_NOENT             Q_ERR(ENOENT)
 #define Q_ERR_NAMETOOLONG       Q_ERR(ENAMETOOLONG)
 #define Q_ERR_INVAL             Q_ERR(EINVAL)

@@ -61,7 +61,7 @@ typedef struct {
 size_t Q_vscnprintf(char *dest, size_t size, const char *fmt, va_list argptr)
 {
     if (size) {
-        size_t ret = Q_vsnprintf(dest, size, fmt, argptr);
+        size_t ret = Q_vscnprintf(dest, sizeof(size), fmt, argptr);
         return min(ret, size - 1);
     }
 
@@ -87,7 +87,8 @@ static file_t *file_for_handle(qhandle_t f)
         return NULL;
 
     if (file->type < FS_FREE || file->type >= FS_BAD)
-        Com_Error(ERR_FATAL, "%s: bad file type", __func__);
+        Com_Printf("%s: bad file type", __func__);
+		vExitGame ();
 
     return file;
 }
@@ -120,7 +121,8 @@ int FS_Write(const void *buf, size_t len, qhandle_t f)
         }
         break;
     default:
-        Com_Error(ERR_FATAL, "%s: bad file type", __func__);
+        Com_Printf("%s: bad file type", __func__);
+		vExitGame ();
     }
 
     return len;
