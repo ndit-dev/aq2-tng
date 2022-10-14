@@ -140,7 +140,7 @@ static void statlogfile_open(void)
     f = FS_EasyOpenFile(buffer, sizeof(buffer), mode | FS_FLAG_TEXT,
                         "stats/", logfile_name->string, ".stats");
     if (!f) {
-        Cvar_Set("statlogfile", "0");
+        gi.cvar_forceset("statlogfile", "0");
         return;
     }
 
@@ -200,8 +200,8 @@ static void statlogfile_write(const char *s)
         qhandle_t tmp = com_statlogFile;
         com_statlogFile = 0;
         FS_FCloseFile(tmp);
-        Com_EPrintf("Couldn't write stat log: %s\n", Q_ErrorString(ret));
-        Cvar_Set("statlogfile", "0");
+        Com_Printf("Couldn't write stat log: %s\n", Q_ErrorString(ret));
+        gi.cvar_forceset("statlogfile", "0");
     }
 }
 
@@ -218,7 +218,7 @@ will close and reopen logfile handle for rotation.
 void Com_StatFlushLogs(void)
 {
     if (statlogfile) {
-        statlogfile_changed(statlogfile_enable);
+        statlogfile_changed(statlogfile);
     }
 }
 

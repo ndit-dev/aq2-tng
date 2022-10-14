@@ -1,11 +1,12 @@
 #include <errno.h>
 
 typedef int                     qhandle_t;
-typedef long long               int64_t;
+typedef long                    int64_t;
 
 static qhandle_t                com_statlogFile;
 static int      	            com_printEntered;
 int     			            FS_FCloseFile(qhandle_t f);
+const char                      *Q_ErrorString(int error);
 
 #define ERRNO_MAX               0x5000
 
@@ -15,8 +16,6 @@ int     			            FS_FCloseFile(qhandle_t f);
 #define Q_ERR(e)        (e > -1 || e < -ERRNO_MAX ? -ERRNO_MAX : e)
 #endif
 
-#define EBADF                   9
-#define ENOSYS                  40
 #define FS_MODE_APPEND          0x00000000
 #define FS_MODE_READ            0x00000001
 #define FS_MODE_WRITE           0x00000002
@@ -26,5 +25,11 @@ int     			            FS_FCloseFile(qhandle_t f);
 #define Q_ERR_NOSYS             Q_ERR(ENOSYS)
 #define Q_ERR_BADF              Q_ERR(EBADF)
 #define Q_ERRNO                 Q_ErrorNumber()
+static inline int Q_ErrorNumber(void)
+{
+    int e = errno;
+    return Q_ERR(e);
+}
+
 
 void Com_StatPrintf(const char *fmt, ...);
