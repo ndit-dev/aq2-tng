@@ -608,21 +608,20 @@ void StatBotCheck(void)
 }
 #endif
 
+cvar_t* logfile_name;
+logfile_name = gi.cvar("logfile_name", "", CVAR_NOSET);
 void Write_Stats(const char* fmt, ...)
 {
 	va_list	argptr;
 	char	stat_string[1024];
 	char	stat_tmp[1024];
-	time_t	long_time;
-	struct	tm* stat_st;
 	char	logpath[MAX_QPATH];
-	FILE* f;
+	FILE* 	f;
 
 	va_start(argptr, fmt);
 	vsprintf(stat_tmp, fmt, argptr);
 	va_end(argptr);
 
-	gi.dprintf(stat_string);
 	sprintf(logpath, "action/logs/%s.stats", logfile_name->value);
 
 	if ((f = fopen(logpath, "a")) != NULL)
