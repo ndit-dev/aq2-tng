@@ -622,7 +622,7 @@ void Write_Stats(const char* fmt, ...)
 	vsprintf(stat_tmp, fmt, argptr);
 	va_end(argptr);
 
-	sprintf(logpath, "%s/stats/%s.stats", gamename->value, logfile_name->value);
+	sprintf(logpath, "action/logs/%s.stats", logfile_name->value);
 
 	if ((f = fopen(logpath, "a")) != NULL)
 	{
