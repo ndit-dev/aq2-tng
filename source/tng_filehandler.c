@@ -73,6 +73,58 @@ size_t Q_vscnprintf(char *dest, size_t size, const char *fmt, va_list argptr)
 /// Stole all of these from Q2Pro
 
 static qboolean     com_logNewline;
+static file_t       fs_files[MAX_FILE_HANDLES];
+
+static file_t *file_for_handle(qhandle_t f)
+{
+    file_t *file;
+
+    if (f < 1 || f > MAX_FILE_HANDLES)
+        return NULL;
+
+    file = &fs_files[f - 1];
+    if (file->type == FS_FREE)
+        return NULL;
+
+    if (file->type < FS_FREE || file->type >= FS_BAD)
+        Com_Error(ERR_FATAL, "%s: bad file type", __func__);
+
+    return file;
+}
+
+int FS_Write(const void *buf, size_t len, qhandle_t f)
+{
+    file_t  *file = file_for_handle(f);
+
+    if (!file)
+        return Q_ERR_BADF;
+
+    if ((file->mode & FS_MODE_MASK) == FS_MODE_READ)
+        return Q_ERR_INVAL;
+
+    // can't continue after error
+    if (file->error)
+        return file->error;
+
+    if (len > INT_MAX)
+        return Q_ERR_INVAL;
+
+    if (len == 0)
+        return 0;
+
+    switch (file->type) {
+    case FS_REAL:
+        if (fwrite(buf, 1, len, file->fp) != len) {
+            file->error = Q_ERR_FAILURE;
+            return file->error;
+        }
+        break;
+    default:
+        Com_Error(ERR_FATAL, "%s: bad file type", __func__);
+    }
+
+    return len;
+}
 
 int FS_FCloseFile(qhandle_t f)
 {
@@ -88,24 +140,6 @@ int FS_FCloseFile(qhandle_t f)
         if (fclose(file->fp))
             ret = Q_ERRNO;
         break;
-    case FS_PAK:
-        if (file->unique) {
-            fclose(file->fp);
-            pack_put(file->pack);
-        }
-        break;
-#if USE_ZLIB
-    case FS_GZ:
-        if (gzclose(file->zfp))
-            ret = Q_ERR_LIBRARY_ERROR;
-        break;
-    case FS_ZIP:
-        if (file->unique) {
-            close_zip_file(file);
-            pack_put(file->pack);
-        }
-        break;
-#endif
     default:
         ret = Q_ERR_NOSYS;
         break;
