@@ -1,69 +1,5 @@
 //-----------------------------------------------------------------------------
-// Statistics Related Code
-//
-// $Id: tng_stats.c,v 1.33 2004/05/18 20:35:45 slicerdw Exp $
-//
-//-----------------------------------------------------------------------------
-// $Log: tng_stats.c,v $
-// Revision 1.33  2004/05/18 20:35:45  slicerdw
-// Fixed a bug on stats command
-//
-// Revision 1.32  2002/04/03 15:05:03  freud
-// My indenting broke something, rolled the source back.
-//
-// Revision 1.30  2002/04/01 16:08:59  freud
-// Fix in hits/shots counter for each weapon
-//
-// Revision 1.29  2002/04/01 15:30:38  freud
-// Small stat fix
-//
-// Revision 1.28  2002/04/01 15:16:06  freud
-// Stats code redone, tng_stats now much more smarter. Removed a few global
-// variables regarding stats code and added kevlar hits to stats.
-//
-// Revision 1.27  2002/03/28 12:10:12  freud
-// Removed unused variables (compiler warnings).
-// Added cvar mm_allowlock.
-//
-// Revision 1.26  2002/03/15 19:28:36  deathwatch
-// Updated with stats rifle name fix
-//
-// Revision 1.25  2002/02/26 23:09:20  freud
-// Stats <playerid> not working, fixed.
-//
-// Revision 1.24  2002/02/21 23:38:39  freud
-// Fix to a BAD stats bug. CRASH
-//
-// Revision 1.23  2002/02/18 23:47:33  freud
-// Fixed FPM if time was 0
-//
-// Revision 1.22  2002/02/18 19:31:40  freud
-// FPM fix.
-//
-// Revision 1.21  2002/02/18 17:21:14  freud
-// Changed Knife in stats to Slashing Knife
-//
-// Revision 1.20  2002/02/17 21:48:56  freud
-// Changed/Fixed allignment of Scoreboard
-//
-// Revision 1.19  2002/02/05 09:27:17  freud
-// Weapon name changes and better alignment in "stats list"
-//
-// Revision 1.18  2002/02/03 01:07:28  freud
-// more fixes with stats
-//
-// Revision 1.14  2002/01/24 11:29:34  ra
-// Cleanup's in stats code
-//
-// Revision 1.13  2002/01/24 02:24:56  deathwatch
-// Major update to Stats code (thanks to Freud)
-// new cvars:
-// stats_afterround - will display the stats after a round ends or map ends
-// stats_endmap - if on (1) will display the stats scoreboard when the map ends
-//
-// Revision 1.12  2001/12/31 13:29:06  deathwatch
-// Added revision header
-//
+// TNG File Handling Related Code
 //
 //-----------------------------------------------------------------------------
 
@@ -121,6 +57,16 @@ typedef struct {
     unsigned    rest_out;   // remaining unread length for FS_PAK/FS_ZIP
     int64_t     length;     // total cached file length
 } file_t;
+
+size_t Q_vscnprintf(char *dest, size_t size, const char *fmt, va_list argptr)
+{
+    if (size) {
+        size_t ret = Q_vsnprintf(dest, size, fmt, argptr);
+        return min(ret, size - 1);
+    }
+
+    return 0;
+}
 
 // Writing to independent log file
 
