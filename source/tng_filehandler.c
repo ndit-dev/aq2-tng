@@ -11,10 +11,6 @@ typedef enum {
     FS_FREE,
     FS_REAL,
     FS_PAK,
-#if USE_ZLIB
-    FS_ZIP,
-    FS_GZ,
-#endif
     FS_BAD
 } filetype_t;
 
@@ -149,6 +145,102 @@ int FS_FCloseFile(qhandle_t f)
 
     memset(file, 0, sizeof(*file));
     return ret;
+}
+
+static qhandle_t easy_open_read(char *buf, size_t size, unsigned mode,
+                                const char *dir, const char *name, const char *ext)
+{
+    int64_t ret = Q_ERR_NAMETOOLONG;
+    qhandle_t f;
+
+    if (*name == '/') {
+        // full path is given, ignore directory and extension
+        if (Q_strlcpy(buf, name + 1, size) >= size) {
+            goto fail;
+        }
+    } else {
+        // first try without extension
+        if (Q_concat(buf, size, dir, name) >= size) {
+            goto fail;
+        }
+
+        // print normalized path in case of error
+        FS_NormalizePath(buf);
+
+        ret = FS_FOpenFile(buf, &f, mode);
+        if (f) {
+            return f; // succeeded
+        }
+        if (ret != Q_ERR_NOENT) {
+            goto fail; // fatal error
+        }
+        if (!COM_CompareExtension(buf, ext)) {
+            goto fail; // name already has the extension
+        }
+
+        // now try to append extension
+        if (Q_strlcat(buf, ext, size) >= size) {
+            ret = Q_ERR_NAMETOOLONG;
+            goto fail;
+        }
+    }
+
+    ret = FS_FOpenFile(buf, &f, mode);
+    if (f) {
+        return f;
+    }
+
+fail:
+    Com_Printf("Couldn't open %s: %s\n", buf, Q_ErrorString(ret));
+    return 0;
+}
+
+// writing to outside of destination directory is disallowed, extension is forced
+static qhandle_t easy_open_write(char *buf, size_t size, unsigned mode,
+                                 const char *dir, const char *name, const char *ext)
+{
+    char normalized[MAX_OSPATH];
+    int64_t ret = Q_ERR_NAMETOOLONG;
+    qhandle_t f;
+
+    // make it impossible to escape the destination directory when writing files
+    if (FS_NormalizePathBuffer(normalized, name, sizeof(normalized)) >= sizeof(normalized)) {
+        goto fail;
+    }
+
+    // reject empty filenames
+    if (normalized[0] == 0) {
+        ret = Q_ERR_NAMETOOSHORT;
+        goto fail;
+    }
+
+    // in case of error, print full path from this point
+    name = buf;
+
+    // replace any bad characters with underscores to make automatic commands happy
+    FS_CleanupPath(normalized);
+
+    if (Q_concat(buf, size, dir, normalized) >= size) {
+        goto fail;
+    }
+
+    ret = FS_FOpenFile(buf, &f, mode);
+    if (f) {
+        return f;
+    }
+
+fail:
+    Com_EPrintf("Couldn't open %s: %s\n", name, Q_ErrorString(ret));
+    return 0;
+}
+qhandle_t FS_EasyOpenFile(char *buf, size_t size, unsigned mode,
+                          const char *dir, const char *name, const char *ext)
+{
+    if ((mode & FS_MODE_MASK) == FS_MODE_READ) {
+        return easy_open_read(buf, size, mode, dir, name, ext);
+    }
+
+    return easy_open_write(buf, size, mode, dir, name, ext);
 }
 
 static void statlogfile_close(void)

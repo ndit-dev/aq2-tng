@@ -641,6 +641,18 @@ void Com_Printf (const char *msg, ...)
   gi.dprintf("%s", text);
 }
 
+void Com_StatPrintf (const char *msg, ...)
+{
+  va_list argptr;
+  char text[1024];
+
+  va_start (argptr, msg);
+  vsnprintf (text, sizeof(text), msg, argptr);
+  va_end (argptr);
+
+  gi.dprintf("%s", text);
+}
+
 #endif
 
 

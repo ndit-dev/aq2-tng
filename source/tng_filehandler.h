@@ -87,6 +87,7 @@ const char                      *Q_ErrorString(int error);
 #define Q_ERR_PERM              Q_ERR(EPERM)
 #define Q_ERR_NOMEM             Q_ERR(ENOMEM)
 #define Q_ERR_FAILURE           _Q_ERR(0)   // Unspecified error
+#define Q_ERR_NAMETOOSHORT      _Q_ERR(9)   // File name too short
 #define Q_ERRNO                 Q_ErrorNumber()
 static inline int Q_ErrorNumber(void)
 {
@@ -94,5 +95,7 @@ static inline int Q_ErrorNumber(void)
     return Q_ERR(e);
 }
 
+qhandle_t FS_EasyOpenFile(char *buf, size_t size, unsigned mode,
+                          const char *dir, const char *name, const char *ext);
 
 void Com_StatPrintf(const char *fmt, ...);
