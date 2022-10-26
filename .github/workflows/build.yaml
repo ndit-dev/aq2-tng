@@ -155,7 +155,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          brew install curl
+          brew install curl ossp-uuid
 
       - name: Build TNG (Darwin x86_64)
         working-directory: build/source
