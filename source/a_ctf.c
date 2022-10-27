@@ -932,7 +932,7 @@ void CTFCalcScores(void)
 	}
 
 	#if USE_AQTION
-	// Needed to add this here because Matchmode does not call BeginIntermission, but other teamplay modes do call it
+	// Needed to add this here because this is called separately from TallyEndOfLevelTeamScores (teamplay)
 		if (stat_logs->value) {
 			LogMatch();  // Generates end of match logs
 			LogEndMatchStats();  // Generates end of match stats
