@@ -930,6 +930,17 @@ void CTFCalcScores(void)
 		else if (game.clients[i].resp.team == TEAM2)
 			ctfgame.total2 += game.clients[i].resp.score;
 	}
+
+	#if USE_AQTION
+	// Needed to add this here because this is called separately from TallyEndOfLevelTeamScores (teamplay)
+		if (stat_logs->value) {
+			LogMatch();  // Generates end of match logs
+			LogEndMatchStats();  // Generates end of match stats
+		}
+	#endif
+	// Stats: Reset roundNum
+	game.roundNum = 0;
+	// Stats end
 }
 
 void GetCTFScores(int *t1score, int *t2score)

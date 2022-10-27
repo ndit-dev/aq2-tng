@@ -92,6 +92,9 @@ void SendScores(void)
 			LogEndMatchStats();  // Generates end of match stats
 		}
 	#endif
+	// Stats: Reset roundNum
+	game.roundNum = 0;
+	// Stats end
 }
 
 void Cmd_Sub_f(edict_t * ent)
