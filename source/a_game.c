@@ -327,7 +327,7 @@ void PrintMOTD(edict_t * ent)
 					(use_grapple->value ? "IS" : "IS NOT"));
 			lines++;
 
-			if(ctfgame.author) {
+			if(strlen(ctfgame.author) > 0) {
 				strcat(msg_buf, "\n");
 				lines++;
 
@@ -336,7 +336,7 @@ void PrintMOTD(edict_t * ent)
 				lines++;
 
 				/* no comment without author, grr */
-				if(ctfgame.comment) {
+				if(strlen(ctfgame.comment) > 0) {
 					/* max line length is 39 chars + new line */
 					Q_strncatz(msg_buf + strlen(msg_buf), ctfgame.comment, 39);
 					strcat(msg_buf, "\n");
