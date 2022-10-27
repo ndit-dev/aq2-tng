@@ -598,13 +598,13 @@ int newrand (int top)
 void SelectRandomWeapon(edict_t *ent, pmenu_t *p)
 {
 	menu_list_weapon weapon_list[7] = {
-		{ num: MP5_NUM, sound: "weapons/mp5slide.wav", name: MP5_NAME },
-		{ num: M3_NUM, sound: "weapons/m3in.wav", name: M3_NAME },
-		{ num: HC_NUM, sound: "weapons/cclose.wav", name: HC_NAME },
-		{ num: SNIPER_NUM, sound: "weapons/ssgbolt.wav", name: SNIPER_NAME },
-		{ num: M4_NUM, sound: "weapons/m4a1slide.wav", name: M4_NAME },
-		{ num: KNIFE_NUM, sound: "weapons/swish.wav", name: KNIFE_NAME },
-		{ num: DUAL_NUM, sound: "weapons/mk23slide.wav", name: DUAL_NAME }
+		{ .num = MP5_NUM, .sound = "weapons/mp5slide.wav", .name = MP5_NAME },
+		{ .num = M3_NUM, .sound = "weapons/m3in.wav", .name = M3_NAME },
+		{ .num = HC_NUM, .sound = "weapons/cclose.wav", .name = HC_NAME },
+		{ .num = SNIPER_NUM, .sound = "weapons/ssgbolt.wav", .name = SNIPER_NAME },
+		{ .num = M4_NUM, .sound = "weapons/m4a1slide.wav", .name = M4_NAME },
+		{ .num = KNIFE_NUM, .sound = "weapons/swish.wav", .name = KNIFE_NAME },
+		{ .num = DUAL_NUM, .sound = "weapons/mk23slide.wav", .name = DUAL_NAME }
 	};
 
 	int rand = newrand(7);
@@ -638,8 +638,8 @@ void SelectRandomItem(edict_t *ent, pmenu_t *p)
     };
 	int listCount = 4;
 
-	menu_list_item item_sil = { num: SIL_NUM, sound: "misc/screw.wav", name: SIL_NAME };
-	menu_list_item item_las = { num: LASER_NUM, sound: "misc/lasersight.wav", name: LASER_NAME };
+	menu_list_item item_sil = { .num = SIL_NUM, .sound = "misc/screw.wav", .name = SIL_NAME };
+	menu_list_item item_las = { .num = LASER_NUM, .sound = "misc/lasersight.wav", .name = LASER_NAME };
 
 	if (selected_weapon == SNIPER_NUM)
 	{
@@ -685,13 +685,13 @@ void SelectRandomWeaponAndItem(edict_t *ent, pmenu_t *p)
 {
 	// WEAPON
 	menu_list_weapon weapon_list[7] = {
-		{ num: MP5_NUM, sound: "weapons/mp5slide.wav", name: MP5_NAME },
-		{ num: M3_NUM, sound: "weapons/m3in.wav", name: M3_NAME },
-		{ num: HC_NUM, sound: "weapons/cclose.wav", name: HC_NAME },
-		{ num: SNIPER_NUM, sound: "weapons/ssgbolt.wav", name: SNIPER_NAME },
-		{ num: M4_NUM, sound: "weapons/m4a1slide.wav", name: M4_NAME },
-		{ num: KNIFE_NUM, sound: "weapons/swish.wav", name: KNIFE_NAME },
-		{ num: DUAL_NUM, sound: "weapons/mk23slide.wav", name: DUAL_NAME }
+		{ .num = MP5_NUM, .sound = "weapons/mp5slide.wav", .name = MP5_NAME },
+		{ .num = M3_NUM, .sound = "weapons/m3in.wav", .name = M3_NAME },
+		{ .num = HC_NUM, .sound = "weapons/cclose.wav", .name = HC_NAME },
+		{ .num = SNIPER_NUM, .sound = "weapons/ssgbolt.wav", .name = SNIPER_NAME },
+		{ .num = M4_NUM, .sound = "weapons/m4a1slide.wav", .name = M4_NAME },
+		{ .num = KNIFE_NUM, .sound = "weapons/swish.wav", .name = KNIFE_NAME },
+		{ .num = DUAL_NUM, .sound = "weapons/mk23slide.wav", .name = DUAL_NAME }
 	};
 
 	int rand = newrand(7);
@@ -711,15 +711,15 @@ void SelectRandomWeaponAndItem(edict_t *ent, pmenu_t *p)
 	// ITEM
 	// Create array with limited items on certain weapons to not have silly kombos
 	menu_list_item item_list[6] = {
-		{ num: KEV_NUM, sound: "misc/veston.wav", name: KEV_NAME },
-		{ num: SLIP_NUM, sound: "misc/veston.wav", name: SLIP_NAME },
-		{ num: BAND_NUM, sound: "misc/veston.wav", name: BAND_NAME },
-		{ num: HELM_NUM, sound: "misc/veston.wav", name: HELM_NAME },
+		{ .num = KEV_NUM, .sound = "misc/veston.wav", .name = KEV_NAME },
+		{ .num = SLIP_NUM, .sound = "misc/veston.wav", .name = SLIP_NAME },
+		{ .num = BAND_NUM, .sound = "misc/veston.wav", .name = BAND_NAME },
+		{ .num = HELM_NUM, .sound = "misc/veston.wav", .name = HELM_NAME },
 	};
 	int listCount = 4;
 
-	menu_list_item item_sil = { num: SIL_NUM, sound: "misc/screw.wav", name: SIL_NAME };
-	menu_list_item item_las = { num: LASER_NUM, sound: "misc/lasersight.wav", name: LASER_NAME };
+	menu_list_item item_sil = { .num = SIL_NUM, .sound = "misc/screw.wav", .name = SIL_NAME };
+	menu_list_item item_las = { .num = LASER_NUM, .sound = "misc/lasersight.wav", .name = LASER_NAME };
 
 	if (selected_weapon.num == SNIPER_NUM)
 	{

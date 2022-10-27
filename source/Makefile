@@ -37,7 +37,10 @@ ifdef WEXTRA
 BASE_CFLAGS += -Wextra
 else
 # Temporary fix to hide a few warnings that haven't been fixed yet.
-BASE_CFLAGS += -Wno-format-truncation -Wno-unused-result
+BASE_CFLAGS += -Wno-unused-result
+ifneq ($(TNG_BUILD_FOR),DARWIN)
+BASE_CFLAGS += -Wno-format-truncation
+endif
 endif
 
 #use these cflags to optimize it
