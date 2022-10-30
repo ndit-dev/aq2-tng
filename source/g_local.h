@@ -1476,8 +1476,9 @@ void ED_CallSpawn( edict_t *ent );
 char* ED_NewString(char* string);
 void G_UpdateSpectatorStatusbar( void );
 void G_UpdatePlayerStatusbar( edict_t *ent, int force );
+#if USE_AQTION
 void generate_uuid();
-
+#endif
 //
 // p_client.c
 //
@@ -1505,11 +1506,13 @@ void ProduceShotgunDamageReport(edict_t*);
 
 //tng_stats.c
 void StatBotCheck(void);
+#ifdef USE_AQTION
 void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker);
 void LogWorldKill(edict_t *self);
 void LogMatch();
 void LogAward(char* steamid, char* discordid, int award);
 void LogEndMatchStats();
+#endif
 
 //============================================================================
 

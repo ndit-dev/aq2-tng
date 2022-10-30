@@ -133,6 +133,7 @@
 
 #include "g_local.h"
 #include <time.h>
+#if USE_AQTION
 #ifdef WIN32
 #if _MSC_VER >= 1920 && !__INTEL_COMPILER
 #pragma comment(lib, "rpcrt4.lib")
@@ -140,6 +141,7 @@
 #endif
 #else
 #include <uuid/uuid.h>
+#endif
 #endif
 
 /*----------------------------------------
@@ -1226,6 +1228,8 @@ void Cmd_Ghost_f(edict_t * ent)
 	num_ghost_players--;
 }
 
+
+#if USE_AQTION
 void generate_uuid()
 {
 #ifdef WIN32
@@ -1262,6 +1266,7 @@ void generate_uuid()
     //gi.dprintf("%s UUID: %s\n", __func__, game.matchid);
 #endif
 }
+#endif
 
 #ifndef NO_BOTS
 void Cmd_Placenode_f (edict_t *ent)
