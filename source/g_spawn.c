@@ -1031,6 +1031,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	}
 	else if (use_3teams->value)
 	{
+		gi.cvar_forceset(gm->name, "tp");
 		gameSettings |= (GS_ROUNDBASED | GS_WEAPONCHOOSE);
 
 		if (!teamplay->value)
@@ -1105,6 +1106,9 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	gi.cvar_forceset(maptime->name, "0:00");
 
 	gi.FreeTags(TAG_LEVEL);
+
+	// Set serverinfo correctly for gamemodeflags
+	Gamemodeflag();
 
 	#if USE_AQTION
 	generate_uuid();  // Run this once every time a map loads to generate a unique id for stats (game.matchid)
