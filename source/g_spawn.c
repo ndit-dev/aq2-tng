@@ -850,6 +850,48 @@ void G_LoadLocations( void )
 	gi.dprintf( "Found %d locations.\n", ml_count );
 }
 
+
+
+int Gamemode(void) // These are distinct game modes; you cannot have a teamdm tourney mode, for example
+{
+	int gamemode = 0;
+	if (teamdm->value) {
+		gamemode = GM_TEAMDM;
+	} else if (ctf->value) {
+		gamemode = GM_CTF;
+	} else if (use_tourney->value) {
+		gamemode = GM_TOURNEY;
+	} else if (teamplay->value) {
+		gamemode = GM_TEAMPLAY;
+	} else if (dom->value) {
+		gamemode = GM_DOMINATION;
+	} else if (deathmatch->value) {
+		gamemode = GM_DEATHMATCH;
+	}
+	return gamemode;
+}
+
+int Gamemodeflag(void)
+// These are gamemode flags that change the rules of gamemodes.
+// For example, you can have a darkmatch matchmode 3team teamplay server
+{
+	int gamemodeflag = 0;
+	char gmfstr[16];
+
+	if (use_3teams->value) {
+		gamemodeflag += GMF_3TEAMS;
+	}
+	if (darkmatch->value) {
+		gamemodeflag += GMF_DARKMATCH;
+	}
+	if (matchmode->value) {
+		gamemodeflag += GMF_MATCHMODE;
+	}
+	sprintf(gmfstr, "%d", gamemodeflag);
+	gi.cvar_forceset("gmf", gmfstr);
+	return gamemodeflag;
+}
+
 /*
 ==============
 SpawnEntities
