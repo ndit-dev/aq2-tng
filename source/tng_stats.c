@@ -931,10 +931,9 @@ LogEndMatchStats
 */
 void LogEndMatchStats()
 {
-	int i, j, k;
+	int i;
 	char msg[1024];
 	gclient_t *sortedClients[MAX_CLIENTS], *cl;
-	gunStats_t	*gun;
 	int totalClients, secs, shots, total, hits, locHits, locs;
 	double accuracy, fpm;
 	char steamid[24];
