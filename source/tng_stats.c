@@ -1000,6 +1000,7 @@ void LogEndMatchStats()
 			cl->resp.gunstats[MOD_DUAL].shots,
 			cl->resp.gunstats[MOD_KNIFE].shots,
 			cl->resp.gunstats[MOD_KNIFE_THROWN].shots,
+			cl->resp.gunstats[MOD_GRENADE].shots,
 			cl->resp.gunstats[MOD_MK23].hits,
 			cl->resp.gunstats[MOD_MP5].hits,
 			cl->resp.gunstats[MOD_M4].hits,
@@ -1009,6 +1010,7 @@ void LogEndMatchStats()
 			cl->resp.gunstats[MOD_DUAL].hits,
 			cl->resp.gunstats[MOD_KNIFE].hits,
 			cl->resp.gunstats[MOD_KNIFE_THROWN].hits,
+			cl->resp.gunstats[MOD_GRENADE].hits,
 			cl->resp.gunstats[MOD_MK23].headshots,
 			cl->resp.gunstats[MOD_MP5].headshots,
 			cl->resp.gunstats[MOD_M4].headshots,
@@ -1018,6 +1020,7 @@ void LogEndMatchStats()
 			cl->resp.gunstats[MOD_DUAL].headshots,
 			cl->resp.gunstats[MOD_KNIFE].headshots,
 			cl->resp.gunstats[MOD_KNIFE_THROWN].headshots,
+			cl->resp.gunstats[MOD_GRENADE].headshots,
 			cl->resp.gunstats[MOD_MK23].kills,
 			cl->resp.gunstats[MOD_MP5].kills,
 			cl->resp.gunstats[MOD_M4].kills,
@@ -1027,6 +1030,7 @@ void LogEndMatchStats()
 			cl->resp.gunstats[MOD_DUAL].kills,
 			cl->resp.gunstats[MOD_KNIFE].kills,
 			cl->resp.gunstats[MOD_KNIFE_THROWN].kills,
+			cl->resp.gunstats[MOD_GRENADE].kills,
 			cl->resp.gunstats[MOD_MK23].damage,
 			cl->resp.gunstats[MOD_MP5].damage,
 			cl->resp.gunstats[MOD_M4].damage,
@@ -1035,7 +1039,8 @@ void LogEndMatchStats()
 			cl->resp.gunstats[MOD_SNIPER].damage,
 			cl->resp.gunstats[MOD_DUAL].damage,
 			cl->resp.gunstats[MOD_KNIFE].damage,
-			cl->resp.gunstats[MOD_KNIFE_THROWN].damage
+			cl->resp.gunstats[MOD_KNIFE_THROWN].damage,
+			cl->resp.gunstats[MOD_GRENADE].damage
 		);
 		Write_Stats(msg);
 	}
