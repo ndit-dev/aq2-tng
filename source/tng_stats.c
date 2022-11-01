@@ -934,7 +934,7 @@ void LogEndMatchStats()
 	int i;
 	char msg[1024];
 	gclient_t *sortedClients[MAX_CLIENTS], *cl;
-	int totalClients, secs, shots, total, hits, locHits, locs;
+	int totalClients, secs, shots;
 	double accuracy, fpm;
 	char steamid[24];
 	char discordid[24];
