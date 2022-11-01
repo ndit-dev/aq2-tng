@@ -964,7 +964,7 @@ void LogEndMatchStats()
 
 		Com_sprintf(
 			msg, sizeof(msg),
-			"{\"matchstats\":{\"sid\":\"%s\",\"mid\":\"%s\",\"s\":\"%s\",\"sc\":%i,\"sh\":%i,\"a\":%f,\"f\":%f,\"dd\":%i,\"d\":%i,\"k\":%i,\"ctfc\":%i,\"ctfcs\":%i,\"ht\":%i,\"tk\":%i,\"t\":%i,\"hks\":%i,\"hhs\":%i,\"dis\":\"%s\",\"pt\":%i,\"hlh\":%i,\"hlc\":%i,\"hls\":%i,\"hll\":%i,\"hlkh\":%i,\"hlkv\":%i,\"hln\":%i,\"gss1\":%i,\"gss2\":%i,\"gss3\":%i,\"gss4\":%i,\"gss5\":%i,\"gss6\":%i,\"gss7\":%i,\"gss8\":%i,\"gss9\":%i,\"gss10\":%i,\"gsh1\":%i,\"gsh2\":%i,\"gsh3\":%i,\"gsh4\":%i,\"gsh5\":%i,\"gsh6\":%i,\"gsh7\":%i,\"gsh8\":%i,\"gsh9\":%i,\"gsh10\":%i,\"gshs1\":%i,\"gshs2\":%i,\"gshs3\":%i,\"gshs4\":%i,\"gshs5\":%i,\"gshs6\":%i,\"gshs7\":%i,\"gshs8\":%i,\"gshs9\":%i,\"gshs10\":%i,\"gsk1\":%i,\"gsk2\":%i,\"gsk3\":%i,\"gsk4\":%i,\"gsk5\":%i,\"gsk6\":%i,\"gsk7\":%i,\"gsk8\":%i,\"gsk9\":%i,\"gsk10\":%i,\"gsd1\":%i,\"gsd2\":%i,\"gsd3\":%i,\"gsd4\":%i,\"gsd5\":%i,\"gsd6\":%i,\"gsd7\":%i,\"gsd8\":%i,\"gsd9\":%i,\"gsd10\":%i}}\n",
+			"{\"matchstats\":{\"sid\":\"%s\",\"mid\":\"%s\",\"s\":\"%s\",\"sc\":%i,\"sh\":%i,\"a\":%f,\"f\":%f,\"dd\":%i,\"d\":%i,\"k\":%i,\"ctfc\":%i,\"ctfcs\":%i,\"ht\":%i,\"tk\":%i,\"t\":%i,\"hks\":%i,\"hhs\":%i,\"dis\":\"%s\",\"pt\":%i,\"hlh\":%i,\"hlc\":%i,\"hls\":%i,\"hll\":%i,\"hlkh\":%i,\"hlkv\":%i,\"hln\":%i,\"gss1\":%i,\"gss2\":%i,\"gss3\":%i,\"gss4\":%i,\"gss5\":%i,\"gss6\":%i,\"gss7\":%i,\"gss8\":%i,\"gss9\":%i,\"gss13\":%i,\"gss14\":%i,\"gss35\":%i,\"gsh1\":%i,\"gsh2\":%i,\"gsh3\":%i,\"gsh4\":%i,\"gsh5\":%i,\"gsh6\":%i,\"gsh7\":%i,\"gsh8\":%i,\"gsh9\":%i,\"gsh13\":%i,\"gsh14\":%i,\"gsh35\":%i,\"gshs1\":%i,\"gshs2\":%i,\"gshs3\":%i,\"gshs4\":%i,\"gshs5\":%i,\"gshs6\":%i,\"gshs7\":%i,\"gshs8\":%i,\"gshs9\":%i,\"gshs13\":%i,\"gshs14\":%i,\"gshs35\":%i,\"gsk1\":%i,\"gsk2\":%i,\"gsk3\":%i,\"gsk4\":%i,\"gsk5\":%i,\"gsk6\":%i,\"gsk7\":%i,\"gsk8\":%i,\"gsk9\":%i,\"gsk13\":%i,\"gsk14\":%i,\"gsk35\":%i,\"gsd1\":%i,\"gsd2\":%i,\"gsd3\":%i,\"gsd4\":%i,\"gsd5\":%i,\"gsd6\":%i,\"gsd7\":%i,\"gsd8\":%i,\"gsd9\":%i,\"gsd13\":%i,\"gsd14\":%i,\"gsd35\":%i}}\n",
 			server_id->string,
 			game.matchid,
 			steamid,
@@ -1001,8 +1001,8 @@ void LogEndMatchStats()
 			cl->resp.gunstats[MOD_KNIFE].shots,
 			cl->resp.gunstats[MOD_KNIFE_THROWN].shots,
 			cl->resp.gunstats[MOD_HG_SPLASH].shots,
-			cl->resp.gunstats[MOD_KICK].shots,
 			cl->resp.gunstats[MOD_PUNCH].shots,
+			cl->resp.gunstats[MOD_KICK].shots,
 			cl->resp.gunstats[MOD_MK23].hits,
 			cl->resp.gunstats[MOD_MP5].hits,
 			cl->resp.gunstats[MOD_M4].hits,
@@ -1013,8 +1013,8 @@ void LogEndMatchStats()
 			cl->resp.gunstats[MOD_KNIFE].hits,
 			cl->resp.gunstats[MOD_KNIFE_THROWN].hits,
 			cl->resp.gunstats[MOD_HG_SPLASH].hits,
-			cl->resp.gunstats[MOD_KICK].hits,
 			cl->resp.gunstats[MOD_PUNCH].hits,
+			cl->resp.gunstats[MOD_KICK].hits,
 			cl->resp.gunstats[MOD_MK23].headshots,
 			cl->resp.gunstats[MOD_MP5].headshots,
 			cl->resp.gunstats[MOD_M4].headshots,
@@ -1025,8 +1025,8 @@ void LogEndMatchStats()
 			cl->resp.gunstats[MOD_KNIFE].headshots,
 			cl->resp.gunstats[MOD_KNIFE_THROWN].headshots,
 			cl->resp.gunstats[MOD_HG_SPLASH].headshots,
-			cl->resp.gunstats[MOD_KICK].headshots,
 			cl->resp.gunstats[MOD_PUNCH].headshots,
+			cl->resp.gunstats[MOD_KICK].headshots,
 			cl->resp.gunstats[MOD_MK23].kills,
 			cl->resp.gunstats[MOD_MP5].kills,
 			cl->resp.gunstats[MOD_M4].kills,
@@ -1037,8 +1037,8 @@ void LogEndMatchStats()
 			cl->resp.gunstats[MOD_KNIFE].kills,
 			cl->resp.gunstats[MOD_KNIFE_THROWN].kills,
 			cl->resp.gunstats[MOD_HG_SPLASH].kills,
-			cl->resp.gunstats[MOD_KICK].kills,
 			cl->resp.gunstats[MOD_PUNCH].kills,
+			cl->resp.gunstats[MOD_KICK].kills,
 			cl->resp.gunstats[MOD_MK23].damage,
 			cl->resp.gunstats[MOD_MP5].damage,
 			cl->resp.gunstats[MOD_M4].damage,
@@ -1049,8 +1049,8 @@ void LogEndMatchStats()
 			cl->resp.gunstats[MOD_KNIFE].damage,
 			cl->resp.gunstats[MOD_KNIFE_THROWN].damage,
 			cl->resp.gunstats[MOD_HG_SPLASH].damage,
-			cl->resp.gunstats[MOD_KICK].damage,
-			cl->resp.gunstats[MOD_PUNCH].damage
+			cl->resp.gunstats[MOD_PUNCH].damage,
+			cl->resp.gunstats[MOD_KICK].damage
 		);
 		Write_Stats(msg);
 	}
