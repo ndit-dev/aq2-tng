@@ -356,7 +356,7 @@ void Add_Frag(edict_t * ent, int mod)
 		ent->client->resp.gunstats[mod].kills++;
 	}
 	// Grenade splash, kicks and punch damage
-	if (mod > 0 && (mod == MOD_HG_SPLASH) || (mod == MOD_KICK) || (mod == MOD_PUNCH)) {
+	if (mod > 0 && ((mod == MOD_HG_SPLASH) || (mod == MOD_KICK) || (mod == MOD_PUNCH))) {
 		ent->client->resp.gunstats[mod].kills++;
 	}
 

@@ -911,7 +911,7 @@ T_Damage (edict_t * targ, edict_t * inflictor, edict_t * attacker, vec3_t dir,
 					attacker->client->resp.gunstats[mod].damage += damage;
 				}
 				// Grenade splash, kicks and punch damage
-				if (mod > 0 && (mod == MOD_HG_SPLASH) || (mod == MOD_KICK) || (mod == MOD_PUNCH)) {
+				if (mod > 0 && ((mod == MOD_HG_SPLASH) || (mod == MOD_KICK) || (mod == MOD_PUNCH))) {
 					attacker->client->resp.gunstats[mod].damage += damage;
 				}
 			}
