@@ -931,10 +931,11 @@ LogEndMatchStats
 */
 void LogEndMatchStats()
 {
-	int i;
+	int i, j, k;
 	char msg[1024];
 	gclient_t *sortedClients[MAX_CLIENTS], *cl;
-	int totalClients, secs, shots;
+	gunStats_t	*gun;
+	int totalClients, secs, shots, total, hits, locHits, locs;
 	double accuracy, fpm;
 	char steamid[24];
 	char discordid[24];
@@ -964,7 +965,7 @@ void LogEndMatchStats()
 
 		Com_sprintf(
 			msg, sizeof(msg),
-			"{\"matchstats\":{\"sid\":\"%s\",\"mid\":\"%s\",\"s\":\"%s\",\"sc\":%i,\"sh\":%i,\"a\":%f,\"f\":%f,\"dd\":%i,\"d\":%i,\"k\":%i,\"ctfc\":%i,\"ctfcs\":%i,\"ht\":%i,\"tk\":%i,\"t\":%i,\"hks\":%i,\"hhs\":%i,\"dis\":\"%s\",\"pt\":%i}}\n",
+			"{\"matchstats\":{\"sid\":\"%s\",\"mid\":\"%s\",\"s\":\"%s\",\"sc\":%i,\"sh\":%i,\"a\":%f,\"f\":%f,\"dd\":%i,\"d\":%i,\"k\":%i,\"ctfc\":%i,\"ctfcs\":%i,\"ht\":%i,\"tk\":%i,\"t\":%i,\"hks\":%i,\"hhs\":%i,\"dis\":\"%s\",\"pt\":%i,\"gs1\":%i,\"gs2\":%i,\"gs3\":%i,\"gs4\":%i,\"gs5\":%i,\"gs6\":%i,\"gs7\":%i,\"gs8\":%i,\"gs9\":%i,\"hl1\":%i,\"hl2\":%i,\"hl3\":%i,\"hl4\":%i,\"hl5\":%i,\"hl6\":%i,\"hl7\":%i,\"hl8\":%i}}\n",
 			server_id->string,
 			game.matchid,
 			steamid,
@@ -983,7 +984,24 @@ void LogEndMatchStats()
 			cl->resp.streakKillsHighest,
 			cl->resp.streakHSHighest,
 			discordid,
-			secs
+			secs,
+			cl->resp.gunstats[MOD_MK23],
+			cl->resp.gunstats[MOD_MP5],
+			cl->resp.gunstats[MOD_M4],
+			cl->resp.gunstats[MOD_M3],
+			cl->resp.gunstats[MOD_HC],
+			cl->resp.gunstats[MOD_SNIPER],
+			cl->resp.gunstats[MOD_DUAL],
+			cl->resp.gunstats[MOD_KNIFE],
+			cl->resp.gunstats[MOD_KNIFE_THROWN],
+			cl->resp.hitsLocations[LOC_HDAM],
+			cl->resp.hitsLocations[LOC_CDAM],
+			cl->resp.hitsLocations[LOC_SDAM],
+			cl->resp.hitsLocations[LOC_LDAM],
+			cl->resp.hitsLocations[LOC_KVLR_HELMET],
+			cl->resp.hitsLocations[LOC_KVLR_VEST],
+			cl->resp.hitsLocations[LOC_NO],
+			cl->resp.hitsLocations[LOC_MAX]
 		);
 		Write_Stats(msg);
 	}
