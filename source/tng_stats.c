@@ -113,21 +113,24 @@ void Stats_AddHit( edict_t *ent, int gun, int hitPart )
 	if( in_warmup )
 		return;
 
-	if (((unsigned)gun != MOD_KICK) || ((unsigned)gun != MOD_PUNCH) || ((unsigned)gun >= MAX_GUNSTAT)) {
+	// Adjusted logic to be inclusive rather than exclusive
+	if (((unsigned)gun <= MAX_GUNSTAT) || ((unsigned)gun == MOD_KICK) || ((unsigned)gun == MOD_PUNCH)) {
+
+		if (!teamplay->value || team_round_going || stats_afterround->value) {
+			ent->client->resp.hitsTotal++;
+			ent->client->resp.gunstats[gun].hits++;
+			ent->client->resp.hitsLocations[hitPart]++;
+
+			if (headShot)
+				ent->client->resp.gunstats[gun].headshots++;
+		}
+		if (!headShot) {
+			ent->client->resp.streakHS = 0;
+		}
+	}
+	else {
 		gi.dprintf( "Stats_AddHit: Bad gun number!\n" );
 		return;
-	}
-
-	if (!teamplay->value || team_round_going || stats_afterround->value) {
-		ent->client->resp.hitsTotal++;
-		ent->client->resp.gunstats[gun].hits++;
-		ent->client->resp.hitsLocations[hitPart]++;
-
-		if (headShot)
-			ent->client->resp.gunstats[gun].headshots++;
-	}
-	if (!headShot) {
-		ent->client->resp.streakHS = 0;
 	}
 }
 
