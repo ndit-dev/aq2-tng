@@ -964,7 +964,7 @@ void LogEndMatchStats()
 
 		Com_sprintf(
 			msg, sizeof(msg),
-			"{\"matchstats\":{\"sid\":\"%s\",\"mid\":\"%s\",\"s\":\"%s\",\"sc\":%i,\"sh\":%i,\"a\":%f,\"f\":%f,\"dd\":%i,\"d\":%i,\"k\":%i,\"ctfc\":%i,\"ctfcs\":%i,\"ht\":%i,\"tk\":%i,\"t\":%i,\"hks\":%i,\"hhs\":%i,\"dis\":\"%s\",\"pt\":%i,\"hlh\":%i,\"hlc\":%i,\"hls\":%i,\"hll\":%i,\"hlkh\":%i,\"hlkv\":%i,\"hln\":%i,\"hlunk\":%i,\"gsh1\":%i,\"gsh2\":%i,\"gsh3\":%i,\"gsh4\":%i,\"gsh5\":%i,\"gsh6\":%i,\"gsh7\":%i,\"gsh8\":%i,\"gsh9\":%i,\"gshs1\":%i,\"gshs2\":%i,\"gshs3\":%i,\"gshs4\":%i,\"gshs5\":%i,\"gshs6\":%i,\"gshs7\":%i,\"gshs8\":%i,\"gshs9\":%i,\"gsk1\":%i,\"gsk2\":%i,\"gsk3\":%i,\"gsk4\":%i,\"gsk5\":%i,\"gsk6\":%i,\"gsk7\":%i,\"gsk8\":%i,\"gsk9\":%i,\"gsd1\":%i,\"gsd2\":%i,\"gsd3\":%i,\"gsd4\":%i,\"gsd5\":%i,\"gsd6\":%i,\"gsd7\":%i,\"gsd8\":%i,\"gsd9\":%i,}}\n",
+			"{\"matchstats\":{\"sid\":\"%s\",\"mid\":\"%s\",\"s\":\"%s\",\"sc\":%i,\"sh\":%i,\"a\":%f,\"f\":%f,\"dd\":%i,\"d\":%i,\"k\":%i,\"ctfc\":%i,\"ctfcs\":%i,\"ht\":%i,\"tk\":%i,\"t\":%i,\"hks\":%i,\"hhs\":%i,\"dis\":\"%s\",\"pt\":%i,\"hlh\":%i,\"hlc\":%i,\"hls\":%i,\"hll\":%i,\"hlkh\":%i,\"hlkv\":%i,\"hln\":%i,\"gsh1\":%i,\"gsh2\":%i,\"gsh3\":%i,\"gsh4\":%i,\"gsh5\":%i,\"gsh6\":%i,\"gsh7\":%i,\"gsh8\":%i,\"gsh9\":%i,\"gshs1\":%i,\"gshs2\":%i,\"gshs3\":%i,\"gshs4\":%i,\"gshs5\":%i,\"gshs6\":%i,\"gshs7\":%i,\"gshs8\":%i,\"gshs9\":%i,\"gsk1\":%i,\"gsk2\":%i,\"gsk3\":%i,\"gsk4\":%i,\"gsk5\":%i,\"gsk6\":%i,\"gsk7\":%i,\"gsk8\":%i,\"gsk9\":%i,\"gsd1\":%i,\"gsd2\":%i,\"gsd3\":%i,\"gsd4\":%i,\"gsd5\":%i,\"gsd6\":%i,\"gsd7\":%i,\"gsd8\":%i,\"gsd9\":%i}}\n",
 			server_id->string,
 			game.matchid,
 			steamid,
@@ -991,7 +991,6 @@ void LogEndMatchStats()
 			cl->resp.hitsLocations[LOC_KVLR_HELMET],
 			cl->resp.hitsLocations[LOC_KVLR_VEST],
 			cl->resp.hitsLocations[LOC_NO],
-			cl->resp.hitsLocations[LOC_MAX],
 			cl->resp.gunstats[MOD_MK23].shots,
 			cl->resp.gunstats[MOD_MP5].shots,
 			cl->resp.gunstats[MOD_M4].shots,
