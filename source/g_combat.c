@@ -906,7 +906,12 @@ T_Damage (edict_t * targ, edict_t * inflictor, edict_t * attacker, vec3_t dir,
 		{
 			if (!friendlyFire && !in_warmup) {
 				attacker->client->resp.damage_dealt += damage;
+				// All normal weapon damage
 				if (mod > 0 && mod < MAX_GUNSTAT) {
+					attacker->client->resp.gunstats[mod].damage += damage;
+				}
+				// Grenade splash, kicks and punch damage
+				if (mod > 0 && (mod == MOD_HG_SPLASH) || (mod == MOD_KICK) || (mod == MOD_PUNCH)) {
 					attacker->client->resp.gunstats[mod].damage += damage;
 				}
 			}

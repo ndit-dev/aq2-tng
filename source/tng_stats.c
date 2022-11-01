@@ -113,7 +113,7 @@ void Stats_AddHit( edict_t *ent, int gun, int hitPart )
 	if( in_warmup )
 		return;
 
-	if ((unsigned)gun >= MAX_GUNSTAT) {
+	if (((unsigned)gun != MOD_KICK) || ((unsigned)gun != MOD_PUNCH) || ((unsigned)gun >= MAX_GUNSTAT)) {
 		gi.dprintf( "Stats_AddHit: Bad gun number!\n" );
 		return;
 	}

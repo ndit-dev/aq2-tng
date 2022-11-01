@@ -854,6 +854,9 @@ void kick_attack (edict_t *ent)
 		else
 			T_Damage(tr.ent, ent, ent, forward, tr.endpos, tr.plane.normal, damage, kick, 0, MOD_KICK);
 
+		// Stat add
+		Stats_AddHit(ent, MOD_KICK, LOC_NO);
+		// Stat end
 		gi.sound(ent, CHAN_WEAPON, level.snd_kick, 1, ATTN_NORM, 0);
 		PlayerNoise (ent, ent->s.origin, PNOISE_SELF);
 		if (tr.ent->client && (tr.ent->client->curr_weap == M4_NUM
@@ -934,6 +937,9 @@ void punch_attack(edict_t * ent)
 
 			T_Damage(tr.ent, ent, ent, forward, tr.endpos, tr.plane.normal,
 				damage, kick, 0, MOD_PUNCH);
+			// Stat add
+			Stats_AddHit(ent, MOD_PUNCH, LOC_NO);
+			// Stat end
 			gi.sound(ent, CHAN_WEAPON, level.snd_kick, 1, ATTN_NORM, 0);
 			PlayerNoise(ent, ent->s.origin, PNOISE_SELF);
 

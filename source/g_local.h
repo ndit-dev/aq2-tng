@@ -1529,7 +1529,7 @@ void LogEndMatchStats();
 
 #define MAX_SKINLEN				32
 
-#define MAX_GUNSTAT MOD_G_SPLASH //Max MOD to track, changed to account for grenades (10)
+#define MAX_GUNSTAT MOD_GRENADE //Max MOD to track
 
 typedef enum {
 	GENDER_MALE,
@@ -1666,7 +1666,7 @@ typedef struct
   int streakHSHighest;				//Highest headshots in a Row
 
   int hitsLocations[LOC_MAX];		//Number of hits for different locations
-  gunStats_t gunstats[MAX_GUNSTAT]; //Number of shots/hits for different guns + grenade (damage, kills, etc)
+  gunStats_t gunstats[MAX_GUNSTAT]; //Number of shots/hits for different guns
 
   //AQ2:TNG - Slicer: Video Checking and further Cheat cheking vars
   char vidref[16];
