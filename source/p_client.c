@@ -351,7 +351,12 @@ void Add_Frag(edict_t * ent, int mod)
 		return;
 
 	ent->client->resp.kills++;
+	// All normal weapon damage
 	if (mod > 0 && mod < MAX_GUNSTAT) {
+		ent->client->resp.gunstats[mod].kills++;
+	}
+	// Grenade splash, kicks and punch damage
+	if (mod > 0 && ((mod == MOD_HG_SPLASH) || (mod == MOD_KICK) || (mod == MOD_PUNCH))) {
 		ent->client->resp.gunstats[mod].kills++;
 	}
 

@@ -1668,7 +1668,7 @@ typedef struct
   int streakHSHighest;				//Highest headshots in a Row
 
   int hitsLocations[LOC_MAX];		//Number of hits for different locations
-  gunStats_t gunstats[MAX_GUNSTAT]; //Number of shots/hits for different guns
+  gunStats_t gunstats[MOD_TOTAL]; //Number of shots/hits for different guns, adjusted to MOD_TOTAL to allow grenade, kick and punch stats
 
   //AQ2:TNG - Slicer: Video Checking and further Cheat cheking vars
   char vidref[16];
