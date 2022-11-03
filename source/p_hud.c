@@ -134,15 +134,17 @@ void BeginIntermission(edict_t *targ)
 
 	level.intermission_framenum = level.realFramenum;
 
-	if (ctf->value)
+	if (ctf->value) {
 		CTFCalcScores();
-	else if (teamplay->value)
+	} else if (teamplay->value) {
 		TallyEndOfLevelTeamScores();
+	}
 	#if USE_AQTION
 	// Generates stats for non-CTF, Teamplay or Matchmode
-	else if (stat_logs->value && !matchmode->value)
+	else if (stat_logs->value && !matchmode->value) {
 		LogMatch();
 		LogEndMatchStats(); // Generates end of match logs
+	}
 	#endif
 
 	// respawn any dead clients
