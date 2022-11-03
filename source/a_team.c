@@ -2170,6 +2170,7 @@ int WonGame (int winner)
 				player->client->pers.netname);
 				TourneyWinner (player);
 			}
+			game.roundNum++;
 		}
 		else
 		{
@@ -3218,7 +3219,8 @@ void TallyEndOfLevelTeamScores (void)
 	// Stats begin
 	#if USE_AQTION
 		if (stat_logs->value && !matchmode->value) {
-			LogMatch();  // Generates end of match logs
+			LogMatch(); // Generates end of game stats
+			LogEndMatchStats(); // Generates end of match logs
 		}
 	#endif
 	// Stats: Reset roundNum

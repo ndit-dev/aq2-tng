@@ -832,8 +832,8 @@ void LogMatch()
 		return;
 	}
 
-	// Don't log a scoreless match, nothing happened
-	if (t1 == 0 && t2 == 0 && t3 == 0) {
+	// Check for scoreless teamplay, don't log if so
+	if ((t1 == 0 && t2 == 0 && t3 == 0) && (teamplay->value)) {
 		return;
 	}
 
