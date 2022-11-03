@@ -832,8 +832,8 @@ void LogMatch()
 		return;
 	}
 
-	// Check for scoreless teamplay, don't log if so
-	if ((t1 == 0 && t2 == 0 && t3 == 0) && (teamplay->value)) {
+	// Check for scoreless teamplay, don't log, unless it's tourney mode
+	if ((t1 == 0 && t2 == 0 && t3 == 0) && (teamplay->value) && (!use_tourney->value)) {
 		return;
 	}
 
