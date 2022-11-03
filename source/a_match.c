@@ -88,7 +88,7 @@ void SendScores(void)
 	#if USE_AQTION
 	// Needed to add this here because Matchmode does not call BeginIntermission, but other teamplay modes do call it
 		if (stat_logs->value) {
-			LogMatch();  // Generates end of match logs
+			LogMatch();  // Generates end of game stats
 			LogEndMatchStats();  // Generates end of match stats
 		}
 	#endif
