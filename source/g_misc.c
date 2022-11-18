@@ -254,16 +254,8 @@ ThrowClientHead (edict_t * self, int damage)
   vec3_t vd;
   char *gibname;
 
-  if (rand () & 1)
-    {
-      gibname = "models/objects/gibs/head2/tris.md2";
-      self->s.skinnum = 1;	// second skin is player
-    }
-  else
-    {
-      gibname = "models/objects/gibs/skull/tris.md2";
-      self->s.skinnum = 0;
-    }
+  gibname = "models/objects/gibs/skull/tris.md2";
+  self->s.skinnum = 0;
 
   self->s.origin[2] += 32;
   self->s.frame = 0;
@@ -1276,73 +1268,6 @@ SP_light_mine2 (edict_t * ent)
   ent->solid = SOLID_BBOX;
   ent->s.modelindex =
     gi.modelindex ("models/objects/minelite/light2/tris.md2");
-  gi.linkentity (ent);
-}
-
-
-/*QUAKED misc_gib_arm (1 0 0) (-8 -8 -8) (8 8 8)
-Intended for use with the target_spawner
-*/
-void
-SP_misc_gib_arm (edict_t * ent)
-{
-  gi.setmodel (ent, "models/objects/gibs/arm/tris.md2");
-  ent->solid = SOLID_NOT;
-  ent->s.effects |= EF_GIB;
-  ent->takedamage = DAMAGE_YES;
-  ent->die = gib_die;
-  ent->movetype = MOVETYPE_TOSS;
-  ent->svflags |= SVF_MONSTER;
-  ent->deadflag = DEAD_DEAD;
-  ent->avelocity[0] = random () * 200;
-  ent->avelocity[1] = random () * 200;
-  ent->avelocity[2] = random () * 200;
-  ent->think = G_FreeEdict;
-  ent->nextthink = level.framenum + 30 * HZ;
-  gi.linkentity (ent);
-}
-
-/*QUAKED misc_gib_leg (1 0 0) (-8 -8 -8) (8 8 8)
-Intended for use with the target_spawner
-*/
-void
-SP_misc_gib_leg (edict_t * ent)
-{
-  gi.setmodel (ent, "models/objects/gibs/leg/tris.md2");
-  ent->solid = SOLID_NOT;
-  ent->s.effects |= EF_GIB;
-  ent->takedamage = DAMAGE_YES;
-  ent->die = gib_die;
-  ent->movetype = MOVETYPE_TOSS;
-  ent->svflags |= SVF_MONSTER;
-  ent->deadflag = DEAD_DEAD;
-  ent->avelocity[0] = random () * 200;
-  ent->avelocity[1] = random () * 200;
-  ent->avelocity[2] = random () * 200;
-  ent->think = G_FreeEdict;
-  ent->nextthink = level.framenum + 30 * HZ;
-  gi.linkentity (ent);
-}
-
-/*QUAKED misc_gib_head (1 0 0) (-8 -8 -8) (8 8 8)
-Intended for use with the target_spawner
-*/
-void
-SP_misc_gib_head (edict_t * ent)
-{
-  gi.setmodel (ent, "models/objects/gibs/head/tris.md2");
-  ent->solid = SOLID_NOT;
-  ent->s.effects |= EF_GIB;
-  ent->takedamage = DAMAGE_YES;
-  ent->die = gib_die;
-  ent->movetype = MOVETYPE_TOSS;
-  ent->svflags |= SVF_MONSTER;
-  ent->deadflag = DEAD_DEAD;
-  ent->avelocity[0] = random () * 200;
-  ent->avelocity[1] = random () * 200;
-  ent->avelocity[2] = random () * 200;
-  ent->think = G_FreeEdict;
-  ent->nextthink = level.framenum + 30 * HZ;
   gi.linkentity (ent);
 }
 
