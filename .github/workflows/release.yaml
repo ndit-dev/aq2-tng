@@ -11,16 +11,13 @@ on:
 jobs:
   generate_release:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        builds: ["tng-lin-x86_64", "tng-lin-arm64", "tng-win-32", "tng-win-64", "tng-darwin-x86_64"]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           repository: actionquake/aq2-tng
           ref: ${{ github.ref }}
-
+          
       - name: version
         run: echo "::set-output name=version::$(git rev-parse --short HEAD)"
         id: version
@@ -35,7 +32,19 @@ jobs:
           tag_name: ${{ steps.version.outputs.version }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
-
+          
+  download_artifacts:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        builds: ["tng-lin-x86_64", "tng-lin-arm64", "tng-win-32", "tng-win-64", "tng-darwin-x86_64"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          repository: actionquake/aq2-tng
+          ref: ${{ github.ref }}
+          
       - name: Download ${{ matrix.builds }} build artifacts
         uses: dawidd6/action-download-artifact@v2
         with:
