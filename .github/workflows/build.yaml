@@ -175,7 +175,7 @@ jobs:
 
       - name: Build TNG (Darwin ARM64)
         working-directory: build/source
-        run: make clean && make -j4 V=1 && mv gamearm64.dylib ../gamearm64.dylib
+        run: make clean && make -j4 V=1 && mv gamearm.dylib ../gamearm.dylib
         env:
           USE_AQTION: "TRUE"
           TNG_BUILD_FOR: "M1"
@@ -185,5 +185,5 @@ jobs:
         with:
           name: tng-darwin-arm64
           path: |
-            build/gamearm64.dylib
+            build/gamearm.dylib
             build/versions
