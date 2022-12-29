@@ -101,7 +101,8 @@ SHLIBEXT=dylib
 # Fixes by bAron to get it compiling on max m1
 ifeq ($(TNG_BUILD_FOR),M1)
 CC=clang
-MACHINE=arm64e
+MACHINE=arm64
+CFLAGS+=-target aarch64-apple-darwin
 endif
 endif
 
