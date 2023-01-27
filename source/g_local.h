@@ -1677,6 +1677,7 @@ typedef struct
   float glmodulate;
   float glclear;
   float gldynamic;
+  float glbrightness;
   qboolean checked;
   int checkframe[3];
 
