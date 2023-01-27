@@ -482,6 +482,7 @@ cvar_t *e_enhancedSlippers;
 // END AQ2 ETE
 
 // 2022
+
 cvar_t *sv_limp_highping;
 cvar_t *server_id;
 cvar_t *stat_logs;
@@ -492,6 +493,10 @@ cvar_t *gm;
 cvar_t *gmf;
 cvar_t *sv_idleremove;
 cvar_t *g_spawn_items;
+
+// 2023
+
+cvar_t *use_killcounts;  // Display kill counts in console to clients on frag
 
 // Discord SDK integration with Q2Pro
 cvar_t *cl_discord;
