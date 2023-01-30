@@ -342,61 +342,33 @@ static void FreeClientEdicts(gclient_t *client)
 	}
 }
 
-void Add_Frag(edict_t * ent, int mod)
-{
+void Announce_Reward(edict_t *ent, int rewardType){
 	char buf[256];
-	int frags = 0;
 
-	if (in_warmup)
-		return;
+	if (rewardType == IMPRESSIVE) {
+		sprintf(buf, "IMPRESSIVE %s!", ent->client->pers.netname);
+			CenterPrintAll(buf);
+			gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD,
+					gi.soundindex("tng/impressive.wav"), 1.0, ATTN_NONE, 0.0);
 
-	ent->client->resp.kills++;
-	// All normal weapon damage
-	if (mod > 0 && mod < MAX_GUNSTAT) {
-		ent->client->resp.gunstats[mod].kills++;
-	}
-	// Grenade splash, kicks and punch damage
-	if (mod > 0 && ((mod == MOD_HG_SPLASH) || (mod == MOD_KICK) || (mod == MOD_PUNCH))) {
-		ent->client->resp.gunstats[mod].kills++;
-	}
+			#if USE_AQTION
 
-	if (teamplay->value && teamdm->value != 2)
-	{
-		ent->client->resp.score++;	// just 1 normal kill
-
-		if (IS_ALIVE(ent))
-		{
-			ent->client->resp.streakKills++;
-			if (ent->client->resp.streakKills > ent->client->resp.streakKillsHighest)
-				ent->client->resp.streakKillsHighest = ent->client->resp.streakKills;
-
-			if (ent->client->resp.streakKills % 5 == 0 && use_rewards->value)
-			{
-				sprintf(buf, "IMPRESSIVE %s!", ent->client->pers.netname);
-				CenterPrintAll(buf);
-				gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD,
-					 gi.soundindex("tng/impressive.wav"), 1.0, ATTN_NONE, 0.0);
-
-				#if USE_AQTION
-
-				#ifndef NO_BOTS
-					// Check if there's an AI bot in the game, if so, do nothing
-					if (game.ai_ent_found) {
-						return;
-					}
-				#endif
-				if (stat_logs->value) {
-					char steamid[24];
-					char discordid[24];
-					Q_strncpyz(steamid, Info_ValueForKey(ent->client->pers.userinfo, "steamid"), sizeof(steamid));
-					Q_strncpyz(discordid, Info_ValueForKey(ent->client->pers.userinfo, "cl_discord_id"), sizeof(discordid));
-					LogAward(steamid, discordid, IMPRESSIVE);
+			#ifndef NO_BOTS
+				// Check if there's an AI bot in the game, if so, do nothing
+				if (game.ai_ent_found) {
+					return;
 				}
-				#endif
+			#endif
+			if (stat_logs->value) {
+				char steamid[24];
+				char discordid[24];
+				Q_strncpyz(steamid, Info_ValueForKey(ent->client->pers.userinfo, "steamid"), sizeof(steamid));
+				Q_strncpyz(discordid, Info_ValueForKey(ent->client->pers.userinfo, "cl_discord_id"), sizeof(discordid));
+				LogAward(steamid, discordid, IMPRESSIVE);
 			}
-			else if (ent->client->resp.streakKills % 12 == 0 && use_rewards->value)
-			{
-				sprintf(buf, "EXCELLENT %s (%dx)!", ent->client->pers.netname,ent->client->resp.streakKills/12);
+			#endif
+	} else if (rewardType == EXCELLENT) {
+		sprintf(buf, "EXCELLENT %s (%dx)!", ent->client->pers.netname,ent->client->resp.streakKills/12);
 				CenterPrintAll(buf);
 				gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD,
 					 gi.soundindex("tng/excellent.wav"), 1.0, ATTN_NONE, 0.0);
@@ -416,20 +388,51 @@ void Add_Frag(edict_t * ent, int mod)
 					LogAward(steamid, discordid, EXCELLENT);
 				}
 				#endif
-			}
+	}
+}
+
+void Add_Frag(edict_t * ent, int mod)
+{
+	char buf[256];
+	int frags = 0;
+
+	if (in_warmup)
+		return;
+
+	ent->client->resp.kills++;
+	// All normal weapon damage
+	if (mod > 0 && mod < MAX_GUNSTAT) {
+		ent->client->resp.gunstats[mod].kills++;
+	}
+	// Grenade splash, kicks and punch damage
+	if (mod > 0 && ((mod == MOD_HG_SPLASH) || (mod == MOD_KICK) || (mod == MOD_PUNCH))) {
+		ent->client->resp.gunstats[mod].kills++;
+	}
+
+	ent->client->resp.score++;	// just 1 normal kill
+
+	if (IS_ALIVE(ent))
+	{
+		ent->client->resp.streakKills++;
+		if (ent->client->resp.streakKills > ent->client->resp.streakKillsHighest)
+			ent->client->resp.streakKillsHighest = ent->client->resp.streakKills;
+
+		if (ent->client->resp.streakKills % 5 == 0 && use_rewards->value)
+		{
+			Announce_Reward(ent, IMPRESSIVE);
 		}
-
-		if(teamdm->value)
-			teams[ent->client->resp.team].score++;
-		// end changing sound dir
-	} else { //Deathmatch
-
-		if (IS_ALIVE(ent)) {
-			ent->client->resp.streakKills++;
-			if (ent->client->resp.streakKills > ent->client->resp.streakKillsHighest)
-				ent->client->resp.streakKillsHighest = ent->client->resp.streakKills;
+		else if (ent->client->resp.streakKills % 12 == 0 && use_rewards->value)
+		{
+			Announce_Reward(ent, EXCELLENT);
 		}
+	}
 
+	// Increment team score if TeamDM is enabled
+	if(teamdm->value)
+		teams[ent->client->resp.team].score++;
+
+	// Streak kill rewards in Deathmatch mode
+	if (deathmatch->value && !teamplay->value) {
 		if (ent->client->resp.streakKills < 4 || ! use_rewards->value)
 			frags = 1;
 		else if (ent->client->resp.streakKills < 8)
@@ -452,39 +455,43 @@ void Add_Frag(edict_t * ent, int mod)
 		}
 		ent->client->resp.score += frags;
 
-		if(ent->client->resp.streakKills)
-			gi.cprintf(ent, PRINT_HIGH, "Kill count: %d\n", ent->client->resp.streakKills);
-
+		// Award team with appropriate streak reward count
 		if(teamdm->value)
 			teams[ent->client->resp.team].score += frags;
-	}
 
-	// AQ:TNG Igor[Rock] changing sound dir
-	if (fraglimit->value && use_warnings->value) {
-		if (ent->client->resp.score == fraglimit->value - 1) {
-			if (fragwarning < 3) {
-				CenterPrintAll("1 FRAG LEFT...");
-				gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD,
-					 gi.soundindex("tng/1_frag.wav"), 1.0, ATTN_NONE, 0.0);
-				fragwarning = 3;
-			}
-		} else if (ent->client->resp.score == fraglimit->value - 2) {
-			if (fragwarning < 2) {
-				CenterPrintAll("2 FRAGS LEFT...");
-				gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD,
-					 gi.soundindex("tng/2_frags.wav"), 1.0, ATTN_NONE, 0.0);
-				fragwarning = 2;
-			}
-		} else if (ent->client->resp.score == fraglimit->value - 3) {
-			if (fragwarning < 1) {
-				CenterPrintAll("3 FRAGS LEFT...");
-				gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD,
-					 gi.soundindex("tng/3_frags.wav"), 1.0, ATTN_NONE, 0.0);
-				fragwarning = 1;
+		// AQ:TNG Igor[Rock] changing sound dir
+		if (fraglimit->value && use_warnings->value) {
+			if (ent->client->resp.score == fraglimit->value - 1) {
+				if (fragwarning < 3) {
+					CenterPrintAll("1 FRAG LEFT...");
+					gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD,
+						gi.soundindex("tng/1_frag.wav"), 1.0, ATTN_NONE, 0.0);
+					fragwarning = 3;
+				}
+			} else if (ent->client->resp.score == fraglimit->value - 2) {
+				if (fragwarning < 2) {
+					CenterPrintAll("2 FRAGS LEFT...");
+					gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD,
+						gi.soundindex("tng/2_frags.wav"), 1.0, ATTN_NONE, 0.0);
+					fragwarning = 2;
+				}
+			} else if (ent->client->resp.score == fraglimit->value - 3) {
+				if (fragwarning < 1) {
+					CenterPrintAll("3 FRAGS LEFT...");
+					gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD,
+						gi.soundindex("tng/3_frags.wav"), 1.0, ATTN_NONE, 0.0);
+					fragwarning = 1;
+				}
 			}
 		}
+		// end of changing sound dir
 	}
-	// end of changing sound dir
+
+	// Announce kill streak to player if use_killcounts is enabled on server
+	if (use_killcounts->value) {
+		if(ent->client->resp.streakKills)
+			gi.cprintf(ent, PRINT_HIGH, "Kill count: %d\n", ent->client->resp.streakKills);
+	}
 }
 
 void Subtract_Frag(edict_t * ent)

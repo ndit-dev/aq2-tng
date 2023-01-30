@@ -1160,6 +1160,9 @@ extern cvar_t *e_enhancedSlippers;
 
 // END AQ2 ETE
 
+// 2023
+extern cvar_t *use_killcounts;
+
 #ifdef AQTION_EXTENSION
 extern int (*engine_Client_GetVersion)(edict_t *ent);
 extern int (*engine_Client_GetProtocol)(edict_t *ent);
