@@ -2222,6 +2222,14 @@ int WonGame (int winner)
 	// Increment roundNum for tracking
 	game.roundNum++;
 
+	// Reset kill streaks in team modes
+	if (use_killcounts->value){
+		for (i = 0; i < game.maxclients; i++) {
+			cl_ent = g_edicts + 1 + i;
+			cl_ent->client->resp.streakKills = 0;
+		}
+	}
+
 	return 0;
 }
 
