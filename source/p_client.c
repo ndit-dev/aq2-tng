@@ -345,7 +345,10 @@ static void FreeClientEdicts(gclient_t *client)
 void Announce_Reward(edict_t *ent, int rewardType){
 	char buf[256];
 
-	#if USE_AQTION
+	#ifdef USE_AQTION
+	char steamid[24];
+	char discordid[24];
+
 	#ifndef NO_BOTS
 		// Check if there's an AI bot in the game, if so, do nothing
 		if (game.ai_ent_found) {
@@ -355,8 +358,6 @@ void Announce_Reward(edict_t *ent, int rewardType){
 
 	// Gather stat-related info
 	if (stat_logs->value) {
-		char steamid[24];
-		char discordid[24];
 		Q_strncpyz(steamid, Info_ValueForKey(ent->client->pers.userinfo, "steamid"), sizeof(steamid));
 		Q_strncpyz(discordid, Info_ValueForKey(ent->client->pers.userinfo, "cl_discord_id"), sizeof(discordid));
 	}
@@ -367,7 +368,7 @@ void Announce_Reward(edict_t *ent, int rewardType){
 		CenterPrintAll(buf);
 		gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD, gi.soundindex("tng/impressive.wav"), 1.0, ATTN_NONE, 0.0);
 
-		#if USE_AQTION
+		#ifdef USE_AQTION
 		if (stat_logs->value)
 			LogAward(steamid, discordid, IMPRESSIVE);
 		#endif
@@ -377,17 +378,17 @@ void Announce_Reward(edict_t *ent, int rewardType){
 		CenterPrintAll(buf);
 		gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD, gi.soundindex("tng/excellent.wav"), 1.0, ATTN_NONE, 0.0);
 
-		#if USE_AQTION
+		#ifdef USE_AQTION
 		if (stat_logs->value)
 			LogAward(steamid, discordid, EXCELLENT);
 		#endif
 
 	} else if (rewardType == ACCURACY) {
-		sprintf(buf, sizeof(buf), "ACCURACY %s!", ent->client->pers.netname);
+		sprintf(buf, "ACCURACY %s!", ent->client->pers.netname);
 		CenterPrintAll(buf);
 		gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD, gi.soundindex("tng/accuracy.wav"), 1.0, ATTN_NONE, 0.0);
 
-		#if USE_AQTION
+		#ifdef USE_AQTION
 		if (stat_logs->value)
 			LogAward(steamid, discordid, ACCURACY);
 		#endif
@@ -396,7 +397,6 @@ void Announce_Reward(edict_t *ent, int rewardType){
 
 void Add_Frag(edict_t * ent, int mod)
 {
-	char buf[256];
 	int frags = 0;
 
 	if (in_warmup)
