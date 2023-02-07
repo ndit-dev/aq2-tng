@@ -1495,6 +1495,7 @@ void ClientFixLegs(edict_t *ent);
 void ClientUserinfoChanged(edict_t* ent, char* userinfo);
 void ClientDisconnect(edict_t* ent);
 void CopyToBodyQue(edict_t* ent);
+void Announce_Reward(edict_t *ent, int rewardType);
 
 //p_weapon.c
 void Weapon_Generic( edict_t * ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
