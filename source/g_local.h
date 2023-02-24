@@ -1159,9 +1159,6 @@ extern cvar_t *medkit_instant;
 // BEGIN AQ2 ETE
 extern cvar_t *e_enhancedSlippers;
 
-extern cvar_t *use_newirvision;
-extern cvar_t *use_indicators;
-
 // END AQ2 ETE
 
 #ifdef AQTION_EXTENSION
@@ -1211,8 +1208,9 @@ extern cvar_t *mapvote_next_limit;
 extern cvar_t *stat_apikey;
 extern cvar_t *stat_url;
 #ifdef AQTION_EXTENSION
-extern cvar_t *use_newirvision;
-extern cvar_t *use_indicators;
+extern cvar_t *use_newirvision;		// enable new irvision (only highlight baddies)
+extern cvar_t *use_indicators;		// enable/allow indicators
+extern cvar_t *use_xerp;			// allow clients to use cl_xerp
 #endif
 
 // Discord SDK integration with Q2Pro

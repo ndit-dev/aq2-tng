@@ -105,9 +105,8 @@ int G_customizeentityforclient(edict_t *clent, edict_t *ent, entity_state_t *sta
 		VectorCopy(clent->client->v_angle, state->angles);
 	}
 
-	// extrapolation, if we want that kind of thing, which we pretty much don't because antilag exists.
-	// this could be used in future if antilag is disabled.
-	if (clent->client->pers.cl_xerp)
+	// extrapolation, if we want that kind of thing (client and server both want it)
+	if (clent->client->pers.cl_xerp && use_xerp->value)
 	{
 		if (ent->client) // extrapolate clients
 		{

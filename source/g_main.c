@@ -491,6 +491,7 @@ cvar_t *stat_url;
 #ifdef AQTION_EXTENSION
 cvar_t *use_newirvision;
 cvar_t *use_indicators;
+cvar_t *use_xerp;
 #endif
 
 // Discord SDK integration with Q2Pro

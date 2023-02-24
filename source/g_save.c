@@ -559,8 +559,13 @@ void InitGame( void )
 	mapvote_next_limit = gi.cvar( "mapvote_next_limit", "0", 0);
 	stat_apikey = gi.cvar("stat_apikey", "none", 0);
 	stat_url = gi.cvar("stat_url", "https://apigateway.aq2world.com/api/v1/stats", 0);
+
+	// new AQtion Extension cvars
+#ifdef AQTION_EXTENSION
 	use_newirvision = gi.cvar("use_newirvision", "1", 0);
 	use_indicators = gi.cvar("use_indicators", "1", 0);
+	use_xerp = gi.cvar("use_xerp", "1", 0);
+#endif
 
 	// Discord SDK integration with Q2Pro
 	cl_discord = gi.cvar("cl_discord", "0", 0);
