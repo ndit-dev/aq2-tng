@@ -1351,6 +1351,19 @@ void ClientEndServerFrame (edict_t * ent)
 	current_player = ent;
 	current_client = ent->client;
 
+#ifdef AQTION_EXTENSION
+	if (current_client->arrow)
+	{
+		VectorCopy(ent->s.origin, current_client->arrow->s.origin);
+		current_client->arrow->s.origin[2] += ent->maxs[2];
+		current_client->arrow->s.origin[2] += 8 + sin(level.time * 2);
+
+		current_client->arrow->s.modelindex = level.model_arrow + (current_client->resp.team - 1);
+		current_client->arrow->s.renderfx = RF_TRANSLUCENT | RF_FULLBRIGHT | RF_DEPTHHACK;
+		current_client->arrow->dimension_visible = (1 << current_client->resp.team);
+	}
+#endif
+
 	//AQ2:TNG - Slicer : Stuffs the client x seconds after he enters the server, needed for Video check
 	if (ent->client->resp.checkframe[0] <= level.framenum)
 	{

@@ -3501,18 +3501,6 @@ void ClientBeginServerFrame(edict_t * ent)
 	client->dimension_observe = 1 | (1 << client->resp.team);
 	if (teamplay->value && client->resp.team == NOTEAM)
 		client->dimension_observe |= 0xE; // true spectators can see all teams
-
-
-	if (client->arrow)
-	{
-		VectorCopy(ent->s.origin, client->arrow->s.origin);
-		client->arrow->s.origin[2] += ent->maxs[2];
-		client->arrow->s.origin[2] += 8 + sin(level.time * 2);
-
-		client->arrow->s.modelindex = level.model_arrow + (client->resp.team - 1);
-		client->arrow->s.renderfx = RF_TRANSLUCENT | RF_FULLBRIGHT | RF_DEPTHHACK;
-		client->arrow->dimension_visible = (1 << client->resp.team);
-	}
 #endif
 
 	if (client->resp.penalty > 0 && level.realFramenum % HZ == 0)
