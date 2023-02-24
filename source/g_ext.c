@@ -119,6 +119,8 @@ int G_customizeentityforclient(edict_t *clent, edict_t *ent, entity_state_t *sta
 
 			if (clent->client->pers.cl_xerp == 2)
 				xerp_amount = min(xerp_amount, FRAMETIME/2);
+			else
+				xerp_amount = min(xerp_amount, 0.25);
 
 			pmove_t pm;
 			xerp_ent = ent;
@@ -151,6 +153,8 @@ int G_customizeentityforclient(edict_t *clent, edict_t *ent, entity_state_t *sta
 
 				if (clent->client->pers.cl_xerp == 2)
 					xerp_amount = min(xerp_amount, FRAMETIME / 2);
+				else
+					xerp_amount = min(xerp_amount, 0.25);
 
 				vec3_t start, end, velocity;
 				VectorCopy(state->origin, start);
