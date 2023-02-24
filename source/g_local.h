@@ -1197,6 +1197,10 @@ void  Ghud_SetSize(int i, int x, int y);
 int   Ghud_AddIcon(int x, int y, int image, int sizex, int sizey);
 int   Ghud_AddText(int x, int y, char *text);
 int   Ghud_AddNumber(int x, int y, int value);
+
+
+extern void(*engine_CvarSync_Set)(int index, const char *name, const char *val);
+void  CvarSync_Set(int index, const char *name, const char *val);
 #endif
 
 // 2022
@@ -1585,10 +1589,14 @@ typedef struct
 	int menu_shown;		// has the main menu been shown
 	qboolean dm_selected;		// if dm weapon selection has been done once
 
-	// Reki - added these options, controllable via userinfo cvar
+	// Reki - added these options, controllable via userinfo cvar (Reki update 2/24/23, controllable via cvarsync as well)
 	int limp_nopred;
 	int spec_flags;
 	qboolean antilag_optout;
+#ifdef AQTION_EXTENSION
+	int cl_xerp;
+	int cl_indicators;
+#endif
 
 	int mk23_mode;		// firing mode, semi or auto
 	int mp5_mode;
@@ -1699,6 +1707,11 @@ struct gclient_s
 
 	// known to compatible server
 	int				clientNum;
+
+	// Reki: cvar sync
+#ifdef AQTION_EXTENSION
+	cvarsyncvalue_t cl_cvar[CVARSYNC_MAX];
+#endif
 
 	// private to game
 	client_persistant_t	pers;
@@ -2279,6 +2292,12 @@ extern int ghud_team2_icon;
 extern int ghud_team2_num;
 extern int ghud_team3_icon;
 extern int ghud_team3_num;
+
+typedef enum {
+	clcvar_cl_antilag,
+	clcvar_cl_indicators,
+	clcvar_cl_xerp,
+} clcvar_t;
 #endif
 
 #ifndef NO_BOTS

@@ -48,6 +48,8 @@ void(*engine_Ghud_SetAnchor)(int i, float x, float y);
 void(*engine_Ghud_SetColor)(int i, int r, int g, int b, int a);
 void(*engine_Ghud_SetSize)(int i, int x, int y);
 
+void(*engine_CvarSync_Set)(int index, const char *name, const char *val);
+
 //
 // optional new entrypoints the engine may want to call
 edict_t *xerp_ent;
@@ -147,10 +149,6 @@ int G_customizeentityforclient(edict_t *client, edict_t *ent, entity_state_t *st
 			default:
 				return true;
 			}
-
-			trace_t trace;
-			trace = gi.trace(start, ent->mins, ent->maxs, end, ent, ent->clipmask ? ent->clipmask : MASK_SOLID);
-			VectorCopy(trace.endpos, state->origin);
 		}
 	}
 #endif
@@ -158,10 +156,42 @@ int G_customizeentityforclient(edict_t *client, edict_t *ent, entity_state_t *st
 	return true;
 }
 
+void G_CvarSync_Updated(int index, edict_t *clent)
+{
+	gclient_t *client = clent->client;
+
+	if (!client) // uh... this shouldn't happen
+		return;
+	
+	const char *val = client->cl_cvar[index];
+
+	switch (index)
+	{
+		case clcvar_cl_antilag:;
+			int antilag_value = client->pers.antilag_optout;
+			if (atoi(val) > 0)
+				client->pers.antilag_optout = qfalse;
+			else if (atoi(val) <= 0)
+				client->pers.antilag_optout = qtrue;
+
+			if (sv_antilag->value && antilag_value != client->pers.antilag_optout)
+				gi.cprintf(clent, PRINT_MEDIUM, "YOUR CL_ANTILAG IS NOW SET TO %i\n", !client->pers.antilag_optout);
+			break;
+
+		case clcvar_cl_xerp:
+			client->pers.cl_xerp = atoi(val);
+			break;
+
+		case clcvar_cl_indicators:
+			client->pers.cl_indicators = atoi(val);
+			break;
+	}
+}
 
 void G_InitExtEntrypoints(void)
 {
 	g_addextension("customizeentityforclient", G_customizeentityforclient);
+	g_addextension("CvarSync_Updated", G_CvarSync_Updated);
 }
 
 
@@ -337,4 +367,11 @@ int Ghud_AddNumber(int x, int y, int value)
 	return index;
 }
 
+void CvarSync_Set(int index, const char *name, const char *val)
+{
+	if (!engine_CvarSync_Set)
+		return;
+
+	engine_CvarSync_Set(index, name, val);
+}
 #endif

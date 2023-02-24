@@ -604,6 +604,8 @@ game_export_t *GetGameAPI (game_import_t * import)
 	engine_Ghud_SetAnchor = gi.CheckForExtension("Ghud_SetAnchor");
 	engine_Ghud_SetColor = gi.CheckForExtension("Ghud_SetColor");
 	engine_Ghud_SetSize = gi.CheckForExtension("Ghud_SetSize");
+
+	engine_CvarSync_Set = gi.CheckForExtension("CvarSync_Set");
 #endif
 
 
