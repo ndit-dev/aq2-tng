@@ -1159,6 +1159,9 @@ extern cvar_t *medkit_instant;
 // BEGIN AQ2 ETE
 extern cvar_t *e_enhancedSlippers;
 
+extern cvar_t *use_newirvision;
+extern cvar_t *use_indicators;
+
 // END AQ2 ETE
 
 #ifdef AQTION_EXTENSION
