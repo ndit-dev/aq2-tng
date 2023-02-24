@@ -76,7 +76,16 @@ int G_customizeentityforclient(edict_t *client, edict_t *ent, entity_state_t *st
 
 	if (!strcmp(ent->classname, "ind_arrow"))
 	{
-		if (client == ent->owner || ent->owner == client->client->chase_target)
+		if (clent == ent->owner || ent->owner == clent->client->chase_target)
+			return false;
+
+		if (!clent->client->pers.cl_indicators) // never show if client doesn't want them
+			return false;
+
+		if (!teamplay->value) // don't use indicators in non-teamplay
+			return false;
+
+		if ((use_indicators->value == 2 && clent->client->resp.team) || (clent->client->resp.team && clent->client->pers.cl_indicators != 2)) // disallow indicators for players in use_indicators 2, and don't use them for players unless cl_indicators 2
 			return false;
 
 		trace_t trace;
@@ -86,14 +95,14 @@ int G_customizeentityforclient(edict_t *client, edict_t *ent, entity_state_t *st
 		VectorCopy(ent->owner->s.origin, arrow_pos);
 		arrow_pos[2] += ent->owner->maxs[2] - 4;
 
-		VectorCopy(client->s.origin, view_pos);
-		view_pos[2] += client->viewheight;
+		VectorCopy(clent->s.origin, view_pos);
+		view_pos[2] += clent->viewheight;
 		
 		trace = gi.trace(view_pos, vnull, vnull, arrow_pos, ent->owner, CONTENTS_SOLID);
 		if (trace.fraction < 1)
 			return false;
 
-		VectorCopy(client->client->v_angle, state->angles);
+		VectorCopy(clent->client->v_angle, state->angles);
 	}
 
 	// extrapolation, if we want that kind of thing, which we pretty much don't because antilag exists.
