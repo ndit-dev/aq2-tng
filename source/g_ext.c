@@ -58,10 +58,10 @@ trace_t q_gameabi XERP_trace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end)
 	return gi.trace(start, mins, maxs, end, xerp_ent, MASK_PLAYERSOLID);
 }
 
-int G_customizeentityforclient(edict_t *client, edict_t *ent, entity_state_t *state)
+int G_customizeentityforclient(edict_t *clent, edict_t *ent, entity_state_t *state)
 {
 	// first check visibility masks
-	if (!(max(1, ent->dimension_visible) & max(1, client->client->dimension_observe)))
+	if (!(max(1, ent->dimension_visible) & max(1, clent->client->dimension_observe)))
 		return false;
 	
 	if (ent->client) // client specific changes
@@ -69,7 +69,7 @@ int G_customizeentityforclient(edict_t *client, edict_t *ent, entity_state_t *st
 		if ((int)use_newirvision->value)
 		{
 			// don't show teammates in irvision
-			if (teamplay->value && (ent->client->resp.team == client->client->resp.team))
+			if (teamplay->value && (ent->client->resp.team == clent->client->resp.team))
 				state->renderfx &= ~RF_IR_VISIBLE;
 		}
 	}
