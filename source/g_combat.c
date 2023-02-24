@@ -550,7 +550,9 @@ T_Damage (edict_t * targ, edict_t * inflictor, edict_t * attacker, vec3_t dir,
 								if (stat_logs->value && !ltk_loadbots->value) {
 									Q_strncpyz(steamid, Info_ValueForKey(attacker->client->pers.userinfo, "steamid"), sizeof(steamid));
 									Q_strncpyz(discordid, Info_ValueForKey(attacker->client->pers.userinfo, "cl_discord_id"), sizeof(discordid));
+									#ifdef USE_AQTION
 									LogAward(steamid, discordid, ACCURACY);
+									#endif
 								}
 							}
 						}

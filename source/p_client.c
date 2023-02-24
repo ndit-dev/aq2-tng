@@ -383,7 +383,9 @@ void Add_Frag(edict_t * ent, int mod)
 				gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD,
 					 gi.soundindex("tng/impressive.wav"), 1.0, ATTN_NONE, 0.0);
 				if (stat_logs->value && !ltk_loadbots->value) {
+					#ifdef USE_AQTION
 					LogAward(steamid, discordid, IMPRESSIVE);
+					#endif
 				}
 			}
 			else if (ent->client->resp.streakKills % 12 == 0 && use_rewards->value)
@@ -393,7 +395,9 @@ void Add_Frag(edict_t * ent, int mod)
 				gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD,
 					 gi.soundindex("tng/excellent.wav"), 1.0, ATTN_NONE, 0.0);
 				if (stat_logs->value && !ltk_loadbots->value) {
+					#ifdef USE_AQTION
 					LogAward(steamid, discordid, EXCELLENT);
+					#endif
 				}
 			}
 		}
@@ -817,9 +821,11 @@ void ClientObituary(edict_t * self, edict_t * inflictor, edict_t * attacker)
 			PrintDeathMessage(death_msg, self);
 			IRC_printf(IRC_T_KILL, death_msg);
 			AddKilledPlayer(self->client->attacker, self);
+			#ifdef USE_AQTION
 			if (stat_logs->value && !ltk_loadbots->value) { // Only create stats logs if stat_logs is 1 and ltk_loadbots is 0
 				LogKill(self, inflictor, self->client->attacker);
 			}
+			#endif
 			self->client->attacker->client->radio_num_kills++;
 
 			//MODIFIED FOR FF -FB
@@ -852,9 +858,11 @@ void ClientObituary(edict_t * self, edict_t * inflictor, edict_t * attacker)
 
 			self->enemy = NULL;
 
+			#ifdef USE_AQTION
 			if (stat_logs->value && !ltk_loadbots->value) { // Only create stats logs if stat_logs is 1 and ltk_loadbots is 0
 				LogWorldKill(self);
 			}
+			#endif
 		}
 		return;
 	}
@@ -1187,9 +1195,11 @@ void ClientObituary(edict_t * self, edict_t * inflictor, edict_t * attacker)
 			PrintDeathMessage(death_msg, self);
 			IRC_printf(IRC_T_KILL, death_msg);
 			AddKilledPlayer(attacker, self);
+			#ifdef USE_AQTION
 			if (stat_logs->value && !ltk_loadbots->value) { // Only create stats logs if stat_logs is 1 and ltk_loadbots is 0
 				LogKill(self, inflictor, attacker);
 			}
+			#endif
 
 			if (friendlyFire) {
 				if (!teamplay->value || team_round_going || !ff_afterround->value)
@@ -1214,9 +1224,11 @@ void ClientObituary(edict_t * self, edict_t * inflictor, edict_t * attacker)
 	sprintf(death_msg, "%s died\n", self->client->pers.netname);
 	PrintDeathMessage(death_msg, self);
 	IRC_printf(IRC_T_DEATH, death_msg);
+	#ifdef USE_AQTION
 	if (stat_logs->value && !ltk_loadbots->value) { // Only create stats logs if stat_logs is 1 and ltk_loadbots is 0
 		LogWorldKill(self);
 	}
+	#endif
 
 	Subtract_Frag(self);	//self->client->resp.score--;
 	Add_Death( self, true );
