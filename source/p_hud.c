@@ -842,9 +842,9 @@ void HUD_SpectatorUpdate(edict_t *clent)
 			char kdr_s[24];
 			memcpy(nm_s, cl->pers.netname, sizeof(nm_s));
 			if (IS_ALIVE(cl_ent))
-				sprintf_s(kdr_s, sizeof(kdr_s), "%i", cl->resp.kills);
+				snprintf(kdr_s, sizeof(kdr_s), "%i", cl->resp.kills);
 			else
-				sprintf_s(kdr_s, sizeof(kdr_s), "(%i)%c %i", cl->resp.deaths, 06, cl->resp.kills);
+				snprintf(kdr_s, sizeof(kdr_s), "(%i)%c %i", cl->resp.deaths, 06, cl->resp.kills);
 
 			nm_s[sizeof(nm_s) - 1] = 0; // make sure strings are terminated
 			kdr_s[16] = 0;
@@ -899,9 +899,9 @@ void HUD_SpectatorUpdate(edict_t *clent)
 			char kdr_s[24];
 			memcpy(nm_s, cl->pers.netname, sizeof(nm_s));
 			if (IS_ALIVE(cl_ent))
-				sprintf_s(kdr_s, sizeof(kdr_s), "%i", cl->resp.kills);
+				snprintf(kdr_s, sizeof(kdr_s), "%i", cl->resp.kills);
 			else
-				sprintf_s(kdr_s, sizeof(kdr_s), "%i %c(%i)", cl->resp.kills, 06, cl->resp.deaths);
+				snprintf(kdr_s, sizeof(kdr_s), "%i %c(%i)", cl->resp.kills, 06, cl->resp.deaths);
 
 			nm_s[sizeof(nm_s) - 1] = 0; // make sure strings are terminated
 			kdr_s[16] = 0;
