@@ -2937,24 +2937,30 @@ void ClientUserinfoChanged(edict_t *ent, char *userinfo)
 	}
 #endif
 
-	// Reki - spectator options, force team overlay/send easily parsable kill feed prints
-	s = Info_ValueForKey(userinfo, "cl_spectatorhud");
-	if (atoi(s))
-		client->pers.spec_flags |= SPECFL_SPECHUD;
-	else
-		client->pers.spec_flags &= SPECFL_SPECHUD;
 
-	s = Info_ValueForKey(userinfo, "cl_spectatorkillfeed");
-	if (atoi(s))
-		client->pers.spec_flags |= SPECFL_KILLFEED;
-	else
-		client->pers.spec_flags &= SPECFL_KILLFEED;
-
-	// Reki - disable antilag for *my own shooting*, not others shooting at me
 #ifdef AQTION_EXTENSION
-	if (strcmp(client->cl_cvar[clcvar_cl_antilag], "1") == 0) // if we're using cvarsync ignore this shite
+	if (!HAS_CVARSYNC(ent)) // only do these cl cvars if cvarsync isn't a thing, since it's much better than userinfo
 	{
 #endif
+		// Reki - spectator options, force team overlay/send easily parsable kill feed prints
+		s = Info_ValueForKey(userinfo, "cl_spectatorhud");
+		if (atoi(s))
+			client->pers.spec_flags |= SPECFL_SPECHUD | SPECFL_SPECHUD_NEW;
+		else
+			client->pers.spec_flags &= ~(SPECFL_SPECHUD | SPECFL_SPECHUD_NEW);
+
+	#ifdef AQTION_EXTENSION
+		if (Client_GetProtocol(ent) == 38) // Reki: new clients get new spec hud
+			client->pers.spec_flags &= ~SPECFL_SPECHUD;
+	#endif
+
+		s = Info_ValueForKey(userinfo, "cl_spectatorkillfeed");
+		if (atoi(s))
+			client->pers.spec_flags |= SPECFL_KILLFEED;
+		else
+			client->pers.spec_flags &= ~SPECFL_KILLFEED;
+
+		// Reki - disable antilag for *my own shooting*, not others shooting at me
 		s = Info_ValueForKey(userinfo, "cl_antilag");
 		int antilag_value = client->pers.antilag_optout;
 		if (s[0] == 0 || atoi(s) > 0)
