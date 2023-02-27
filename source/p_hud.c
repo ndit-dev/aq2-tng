@@ -51,16 +51,6 @@
 
 #include "g_local.h"
 
-#ifdef AQTION_EXTENSION
-int ghud_team1_icon;
-int ghud_team1_num;
-int ghud_team2_icon;
-int ghud_team2_num;
-int ghud_team3_icon;
-int ghud_team3_num;
-#endif
-
-
 /*
   ======================================================================
   
@@ -649,3 +639,284 @@ void G_SetStats (edict_t * ent)
 		A_Scoreboard (ent);
 	//FIREBLADE
 }
+
+
+#ifdef AQTION_EXTENSION
+
+void HUD_SetType(edict_t *clent, int type)
+{
+	if (clent->client->pers.hud_type == type)
+		return;
+
+	if (type == 0)
+		HUD_ClientSetup(clent);
+	else
+		HUD_SpectatorSetup(clent);
+}
+
+void HUD_ClientSetup(edict_t *clent)
+{
+	Ghud_ClearForClient(clent);
+	clent->client->pers.hud_type = 0;
+
+}
+
+void HUD_ClientUpdate(edict_t *clent)
+{
+
+}
+
+
+void HUD_SpectatorSetup(edict_t *clent)
+{
+	Ghud_ClearForClient(clent);
+	clent->client->pers.hud_type = 1;
+
+	int *hud = clent->client->pers.hud_items;
+
+	if (teamplay->value && spectator_hud->value)
+	{
+		for (int i = 0; i < 6; i++)
+		{
+			int x, y;
+			int h_base = h_nameplate_l + (i * 4);
+			int h;
+
+			x = 0;
+			y = 28 + (28 * i);
+
+			h = h_base;
+			hud[h] = Ghud_NewElement(clent, GHT_FILL);
+			Ghud_SetPosition(clent, hud[h], x, y);
+			Ghud_SetAnchor(clent, hud[h], 0, 0);
+			Ghud_SetSize(clent, hud[h], 112, 24);
+			Ghud_SetColor(clent, hud[h], 255, 80, 80, 230);
+
+			h = h_base + 1; // name
+			hud[h] = Ghud_AddText(clent, x + 110, y + 3, "");
+			Ghud_SetAnchor(clent, hud[h], 0, 0);
+			Ghud_SetTextFlags(clent, hud[h], UI_RIGHT);
+
+			h = h_base + 2; // k/d
+			hud[h] = Ghud_AddText(clent, x + 110, y + 14, "");
+			Ghud_SetAnchor(clent, hud[h], 0, 0);
+			Ghud_SetTextFlags(clent, hud[h], UI_RIGHT);
+
+			h = h_base + 3; // weapon select
+			hud[h] = Ghud_AddIcon(clent, x + 2, y + 2, level.pic_items[M4_NUM], 20, 20);
+			Ghud_SetAnchor(clent, hud[h], 0, 0);
+		}
+
+		for (int i = 0; i < 6; i++)
+		{
+			int x, y;
+			int h_base = h_nameplate_r + (i * 4);
+			int h;
+
+			x = -112;
+			y = 28 + (28 * i);
+
+			h = h_base;
+			hud[h] = Ghud_NewElement(clent, GHT_FILL);
+			Ghud_SetPosition(clent, hud[h], x, y);
+			Ghud_SetAnchor(clent, hud[h], 1, 0);
+			Ghud_SetSize(clent, hud[h], 112, 24);
+			Ghud_SetColor(clent, hud[h], 80, 120, 255, 230);
+
+			h = h_base + 1; // name
+			hud[h] = Ghud_AddText(clent, x + 2, y + 3, "");
+			Ghud_SetAnchor(clent, hud[h], 1, 0);
+			Ghud_SetTextFlags(clent, hud[h], UI_LEFT);
+
+			h = h_base + 2; // k/d
+			hud[h] = Ghud_AddText(clent, x + 2, y + 14, "");
+			Ghud_SetAnchor(clent, hud[h], 1, 0);
+			Ghud_SetTextFlags(clent, hud[h], UI_LEFT);
+
+			h = h_base + 3; // weapon select
+			hud[h] = Ghud_AddIcon(clent, x + 90, y + 2, level.pic_items[M4_NUM], 20, 20);
+			Ghud_SetAnchor(clent, hud[h], 1, 0);
+		}
+
+		hud[h_team_l] = Ghud_AddIcon(clent, 2, 2, level.pic_teamskin[1], 24, 24);
+		Ghud_SetAnchor(clent, hud[h_team_l], 0, 0);
+		hud[h_team_l_num] = Ghud_AddNumber(clent, 64, 2, 0);
+		Ghud_SetSize(clent, hud[h_team_l_num], 2, 0);
+		Ghud_SetAnchor(clent, hud[h_team_l_num], 0, 0);
+
+		hud[h_team_r] = Ghud_AddIcon(clent, -26, 2, level.pic_teamskin[2], 24, 24);
+		Ghud_SetAnchor(clent, hud[h_team_r], 1, 0);
+		hud[h_team_r_num] = Ghud_AddNumber(clent, -96, 2, 0);
+		Ghud_SetSize(clent, hud[h_team_r_num], 1, 0);
+		Ghud_SetAnchor(clent, hud[h_team_r_num], 1, 0);
+	}
+}
+
+void HUD_SpectatorUpdate(edict_t *clent)
+{
+	if (teamplay->value && spectator_hud->value)
+	{
+		int *hud = clent->client->pers.hud_items;
+
+		if (!(clent->client->pers.spec_flags & SPECFL_SPECHUD_NEW)) // hide all elements since client doesn't want them
+		{
+			for (int i = 0; i <= h_team_r_num; i++)
+			{
+				Ghud_SetFlags(clent, hud[i], GHF_HIDE);
+			}
+			return;
+		}
+
+		gclient_t *team1_players[6];
+		gclient_t *team2_players[6];
+		gclient_t *sortedClients[MAX_CLIENTS];
+		int totalClients, team1Clients, team2Clients;
+
+		memset(team1_players, 0, sizeof(team1_players));
+		memset(team2_players, 0, sizeof(team2_players));
+
+		team1Clients = 0;
+		team2Clients = 0;
+		totalClients = G_SortedClients(sortedClients);
+
+		for (int i = 0; i < totalClients; i++)
+		{
+			gclient_t *cl = sortedClients[i];
+
+			if (!cl->resp.team)
+				continue;
+
+			if (cl->resp.team == TEAM1)
+			{
+				if (team1Clients >= 6)
+					continue;
+
+				team1_players[team1Clients] = cl;
+				team1Clients++;
+				continue;
+			}
+			if (cl->resp.team == TEAM2)
+			{
+				if (team2Clients >= 6)
+					continue;
+
+				team2_players[team2Clients] = cl;
+				team2Clients++;
+				continue;
+			}
+		}
+
+
+		// team 1 (red team)
+		Ghud_SetInt(clent, hud[h_team_l_num], teams[TEAM1].score);
+
+		for (int i = 0; i < 6; i++)
+		{
+			int h = h_nameplate_l + (i * 4);
+			gclient_t *cl = team1_players[i];
+
+			if (!cl) // if there is no player, hide all the elements for their plate
+			{
+				Ghud_SetFlags(clent, hud[h + 0], GHF_HIDE);
+				Ghud_SetFlags(clent, hud[h + 1], GHF_HIDE);
+				Ghud_SetFlags(clent, hud[h + 2], GHF_HIDE);
+				Ghud_SetFlags(clent, hud[h + 3], GHF_HIDE);
+				continue;
+			}
+
+			// unhide our elements
+			Ghud_SetFlags(clent, hud[h + 0], 0);
+			Ghud_SetFlags(clent, hud[h + 1], 0);
+			Ghud_SetFlags(clent, hud[h + 2], 0);
+			Ghud_SetFlags(clent, hud[h + 3], 0);
+
+			// tint for deadness
+			edict_t *cl_ent = g_edicts + 1 + (cl - game.clients);
+			if (!IS_ALIVE(cl_ent))
+				Ghud_SetColor(clent, hud[h + 0], 110, 45, 45, 230);
+			else
+				Ghud_SetColor(clent, hud[h + 0], 220, 60, 60, 230);
+
+			// generate strings
+			char nm_s[11];
+			char kdr_s[24];
+			memcpy(nm_s, cl->pers.netname, sizeof(nm_s));
+			if (IS_ALIVE(cl_ent))
+				sprintf_s(kdr_s, sizeof(kdr_s), "%i", cl->resp.kills);
+			else
+				sprintf_s(kdr_s, sizeof(kdr_s), "(%i)%c %i", cl->resp.deaths, 06, cl->resp.kills);
+
+			nm_s[sizeof(nm_s) - 1] = 0; // make sure strings are terminated
+			kdr_s[16] = 0;
+
+			// update fields
+			Ghud_SetText(clent, hud[h + 1], nm_s);
+			Ghud_SetText(clent, hud[h + 2], kdr_s);
+
+			if (cl->pers.chosenWeapon)
+				Ghud_SetInt(clent, hud[h + 3], level.pic_items[cl->pers.chosenWeapon->typeNum]);
+			else
+				Ghud_SetInt(clent, hud[h + 3], level.pic_items[MK23_NUM]);
+		}
+
+
+		// team 2 (blue team)
+		Ghud_SetInt(clent, hud[h_team_r_num], teams[TEAM2].score);
+		if (teams[TEAM2].score >= 10) // gotta readjust size for justifying purposes
+			Ghud_SetSize(clent, hud[h_team_r_num], 2, 0);
+		else
+			Ghud_SetSize(clent, hud[h_team_r_num], 1, 0);
+
+		for (int i = 0; i < 6; i++)
+		{
+			int h = h_nameplate_r + (i * 4);
+			gclient_t *cl = team2_players[i];
+
+			if (!cl) // if there is no player, hide all the elements for their plate
+			{
+				Ghud_SetFlags(clent, hud[h + 0], GHF_HIDE);
+				Ghud_SetFlags(clent, hud[h + 1], GHF_HIDE);
+				Ghud_SetFlags(clent, hud[h + 2], GHF_HIDE);
+				Ghud_SetFlags(clent, hud[h + 3], GHF_HIDE);
+				continue;
+			}
+
+			// unhide our elements
+			Ghud_SetFlags(clent, hud[h + 0], 0);
+			Ghud_SetFlags(clent, hud[h + 1], 0);
+			Ghud_SetFlags(clent, hud[h + 2], 0);
+			Ghud_SetFlags(clent, hud[h + 3], 0);
+
+			// tint for deadness
+			edict_t *cl_ent = g_edicts + 1 + (cl - game.clients);
+			if (!IS_ALIVE(cl_ent))
+				Ghud_SetColor(clent, hud[h + 0], 30, 60, 110, 230);
+			else
+				Ghud_SetColor(clent, hud[h + 0], 40, 80, 220, 230);
+
+			// generate strings
+			char nm_s[11];
+			char kdr_s[24];
+			memcpy(nm_s, cl->pers.netname, sizeof(nm_s));
+			if (IS_ALIVE(cl_ent))
+				sprintf_s(kdr_s, sizeof(kdr_s), "%i", cl->resp.kills);
+			else
+				sprintf_s(kdr_s, sizeof(kdr_s), "%i %c(%i)", cl->resp.kills, 06, cl->resp.deaths);
+
+			nm_s[sizeof(nm_s) - 1] = 0; // make sure strings are terminated
+			kdr_s[16] = 0;
+
+			// update fields
+			Ghud_SetText(clent, hud[h + 1], nm_s);
+			Ghud_SetText(clent, hud[h + 2], kdr_s);
+
+			if (cl->pers.chosenWeapon)
+				Ghud_SetInt(clent, hud[h + 3], level.pic_items[cl->pers.chosenWeapon->typeNum]);
+			else
+				Ghud_SetInt(clent, hud[h + 3], level.pic_items[MK23_NUM]);
+		}
+	}
+}
+
+#endif
+

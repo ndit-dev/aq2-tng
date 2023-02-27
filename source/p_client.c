@@ -2706,6 +2706,17 @@ void ClientBeginDeathmatch(edict_t * ent)
 	ent->client->resp.enterframe = level.framenum;
 	ent->client->resp.gldynamic = 1;
 
+#ifdef AQTION_EXTENSION
+	if (teamplay->value)
+	{
+		HUD_SetType(ent, 1);
+	}
+	else
+	{
+		HUD_SetType(ent, 0);
+	}
+#endif
+
 	if (!ent->client->pers.connected) {
 		ent->client->pers.connected = true;
 		ClientUserinfoChanged(ent, ent->client->pers.userinfo);
@@ -3511,13 +3522,18 @@ void ClientBeginServerFrame(edict_t * ent)
 	unsigned short world_timestamp = (int)(level.time * 1000) % 60000;
 	client->ps.pmove.pm_timestamp = world_timestamp;
 
-	// network any pending ghud updates
-	Ghud_SendUpdates(ent);
-
 	// update dimension mask for team-only entities
 	client->dimension_observe = 1 | (1 << client->resp.team);
-	if (teamplay->value && client->resp.team == NOTEAM)
+
+	if (client->pers.hud_type)
+	{
 		client->dimension_observe |= 0xE; // true spectators can see all teams
+		HUD_SpectatorUpdate(ent);
+	}
+	else
+	{
+		HUD_ClientUpdate(ent);
+	}
 #endif
 
 	if (client->resp.penalty > 0 && level.realFramenum % HZ == 0)

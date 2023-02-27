@@ -37,16 +37,16 @@ extension_func_t *g_extension_funcs;
 int(*engine_Client_GetVersion)(edict_t *ent);
 int(*engine_Client_GetProtocol)(edict_t *ent);
 
-void(*engine_Ghud_SendUpdates)(edict_t *ent);
-int(*engine_Ghud_NewElement)(int type);
-void(*engine_Ghud_SetFlags)(int i, int val);
-void(*engine_Ghud_UnicastSetFlags)(edict_t *ent, int i, int val);
-void(*engine_Ghud_SetInt)(int i, int val);
-void(*engine_Ghud_SetText)(int i, char *text);
-void(*engine_Ghud_SetPosition)(int i, int x, int y, int z);
-void(*engine_Ghud_SetAnchor)(int i, float x, float y);
-void(*engine_Ghud_SetColor)(int i, int r, int g, int b, int a);
-void(*engine_Ghud_SetSize)(int i, int x, int y);
+void(*engine_Ghud_ClearForClient)(edict_t *ent);
+int(*engine_Ghud_NewElement)(edict_t *ent, int type);
+void(*engine_Ghud_RemoveElement)(edict_t *ent, int i);
+void(*engine_Ghud_SetFlags)(edict_t *ent, int i, int val);
+void(*engine_Ghud_SetInt)(edict_t *ent, int i, int val);
+void(*engine_Ghud_SetText)(edict_t *ent, int i, char *text);
+void(*engine_Ghud_SetPosition)(edict_t *ent, int i, int x, int y, int z);
+void(*engine_Ghud_SetAnchor)(edict_t *ent, int i, float x, float y);
+void(*engine_Ghud_SetColor)(edict_t *ent, int i, int r, int g, int b, int a);
+void(*engine_Ghud_SetSize)(edict_t *ent, int i, int x, int y);
 
 void(*engine_CvarSync_Set)(int index, const char *name, const char *val);
 
@@ -190,6 +190,8 @@ void G_CvarSync_Updated(int index, edict_t *clent)
 		return;
 	
 	const char *val = client->cl_cvar[index];
+	int val_i = atoi(val);
+	int val_f = atof(val);
 
 	switch (index)
 	{
@@ -205,11 +207,28 @@ void G_CvarSync_Updated(int index, edict_t *clent)
 			break;
 
 		case clcvar_cl_xerp:
-			client->pers.cl_xerp = atoi(val);
+			client->pers.cl_xerp = val_i;
 			break;
 
 		case clcvar_cl_indicators:
-			client->pers.cl_indicators = atoi(val);
+			client->pers.cl_indicators = val_i;
+			break;
+
+		case clcvar_cl_spectatorhud:
+			if (val_i)
+				client->pers.spec_flags |= (SPECFL_SPECHUD | SPECFL_SPECHUD_NEW);
+			else
+				client->pers.spec_flags &= ~(SPECFL_SPECHUD | SPECFL_SPECHUD_NEW);
+
+			if (Client_GetProtocol(clent) >= 38)
+				client->pers.spec_flags &= ~SPECFL_SPECHUD; // don't use old spec hud
+			break;
+
+		case clcvar_cl_spectatorkillfeed:
+			if (val_i)
+				client->pers.spec_flags |= SPECFL_KILLFEED;
+			else
+				client->pers.spec_flags &= ~SPECFL_KILLFEED;
 			break;
 	}
 }
@@ -270,92 +289,92 @@ int Client_GetProtocol(edict_t *ent)
 //
 // game hud
 //
-void Ghud_SendUpdates(edict_t *ent)
+void Ghud_ClearForClient(edict_t *ent)
 {
-	if (!engine_Ghud_SendUpdates)
+	if (!engine_Ghud_ClearForClient)
 		return;
 
-	engine_Ghud_SendUpdates(ent);
+	engine_Ghud_ClearForClient(ent);
 }
 
-int Ghud_NewElement(int type)
+int Ghud_NewElement(edict_t *ent, int type)
 {
 	if (!engine_Ghud_NewElement)
 		return 0;
 
-	return engine_Ghud_NewElement(type);
+	return engine_Ghud_NewElement(ent, type);
 }
 
-void Ghud_SetFlags(int i, int val)
+void Ghud_RemoveElement(edict_t *ent, int i)
+{
+	if (!engine_Ghud_RemoveElement)
+		return;
+
+	engine_Ghud_RemoveElement(ent, i);
+}
+
+void Ghud_SetFlags(edict_t *ent, int i, int val)
 {
 	if (!engine_Ghud_SetFlags)
 		return;
 
-	engine_Ghud_SetFlags(i, val);
+	engine_Ghud_SetFlags(ent, i, val);
 }
 
-void Ghud_UnicastSetFlags(edict_t *ent, int i, int val)
-{
-	if (!engine_Ghud_UnicastSetFlags)
-		return;
-
-	engine_Ghud_UnicastSetFlags(ent, i, val);
-}
-
-void Ghud_SetInt(int i, int val)
+void Ghud_SetInt(edict_t *ent, int i, int val)
 {
 	if (!engine_Ghud_SetInt)
 		return;
 
-	engine_Ghud_SetInt(i, val);
+	engine_Ghud_SetInt(ent, i, val);
 }
 
-void Ghud_SetText(int i, char *text)
+void Ghud_SetText(edict_t *ent, int i, char *text)
 {
 	if (!engine_Ghud_SetText)
 		return;
 
-	engine_Ghud_SetText(i, text);
+	engine_Ghud_SetText(ent, i, text);
 }
 
-void Ghud_SetPosition(int i, int x, int y)
+void Ghud_SetPosition(edict_t *ent, int i, int x, int y)
 {
 	if (!engine_Ghud_SetPosition)
 		return;
 
-	engine_Ghud_SetPosition(i, x, y, 0);
+	engine_Ghud_SetPosition(ent, i, x, y, 0);
 }
 
-void Ghud_SetPosition3D(int i, int x, int y, int z)
+void Ghud_SetPosition3D(edict_t *ent, int i, int x, int y, int z)
 {
 	if (!engine_Ghud_SetPosition)
 		return;
 
-	engine_Ghud_SetPosition(i, x, y, z);
+	engine_Ghud_SetPosition(ent, i, x, y, z);
 }
 
-void Ghud_SetSize(int i, int x, int y)
+void Ghud_SetSize(edict_t *ent, int i, int x, int y)
 {
 	if (!engine_Ghud_SetSize)
 		return;
 
-	engine_Ghud_SetSize(i, x, y);
+	engine_Ghud_SetSize(ent, i, x, y);
 }
 
-void Ghud_SetAnchor(int i, float x, float y)
+void Ghud_SetAnchor(edict_t *ent, int i, float x, float y)
 {
 	if (!engine_Ghud_SetAnchor)
 		return;
 
-	engine_Ghud_SetAnchor(i, x, y);
+	engine_Ghud_SetAnchor(ent, i, x, y);
 }
 
-void Ghud_SetColor(int i, int r, int g, int b, int a)
+void Ghud_SetColor(edict_t *ent, int i, int r, int g, int b, int a)
 {
 	if (!engine_Ghud_SetColor)
 		return;
 
-	engine_Ghud_SetColor(i, r, g, b, a);
+	engine_Ghud_SetColor(ent, i, r, g, b, a);
 }
 
 
@@ -363,32 +382,37 @@ void Ghud_SetColor(int i, int r, int g, int b, int a)
 // game hud abstractions,
 // makes code a bit cleaner
 //
-int Ghud_AddIcon(int x, int y, int image, int sizex, int sizey)
+int Ghud_AddIcon(edict_t *ent, int x, int y, int image, int sizex, int sizey)
 {
-	int index = Ghud_NewElement(GHT_IMG);
-	Ghud_SetPosition(index, x, y);
-	Ghud_SetSize(index, sizex, sizey);
-	Ghud_SetInt(index, image);
+	int index = Ghud_NewElement(ent, GHT_IMG);
+	Ghud_SetPosition(ent, index, x, y);
+	Ghud_SetSize(ent, index, sizex, sizey);
+	Ghud_SetInt(ent, index, image);
 
 	return index;
 }
 
 
-int Ghud_AddText(int x, int y, char *text)
+int Ghud_AddText(edict_t *ent, int x, int y, char *text)
 {
-	int index = Ghud_NewElement(GHT_TEXT);
-	Ghud_SetPosition(index, x, y);
-	Ghud_SetText(index, text);
+	int index = Ghud_NewElement(ent, GHT_TEXT);
+	Ghud_SetPosition(ent, index, x, y);
+	Ghud_SetText(ent, index, text);
 
 	return index;
 }
 
-
-int Ghud_AddNumber(int x, int y, int value)
+void Ghud_SetTextFlags(edict_t *ent, int i, int uiflags)
 {
-	int index = Ghud_NewElement(GHT_NUM);
-	Ghud_SetPosition(index, x, y);
-	Ghud_SetInt(index, value);
+	Ghud_SetSize(ent, i, (uiflags & 0xFFFF), (uiflags >> 16) & 0xFFFF);
+}
+
+
+int Ghud_AddNumber(edict_t *ent, int x, int y, int value)
+{
+	int index = Ghud_NewElement(ent, GHT_NUM);
+	Ghud_SetPosition(ent, index, x, y);
+	Ghud_SetInt(ent, index, value);
 
 	return index;
 }

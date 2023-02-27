@@ -542,7 +542,7 @@ void InitGame( void )
 
 	warmup = gi.cvar( "warmup", "0", CVAR_LATCH );
 	round_begin = gi.cvar( "round_begin", "15", 0 );
-	spectator_hud = gi.cvar( "spectator_hud", "0", CVAR_LATCH );
+	spectator_hud = gi.cvar( "spectator_hud", "1", CVAR_LATCH );
 
 	use_mvd2 = gi.cvar( "use_mvd2", "0", 0 );	// JBravo: q2pro MVD2 recording. 0 = off, 1 = on
 
@@ -664,6 +664,8 @@ void InitGame( void )
 	CvarSync_Set(clcvar_cl_antilag, "cl_antilag", "1");
 	CvarSync_Set(clcvar_cl_indicators, "cl_indicators", "1");
 	CvarSync_Set(clcvar_cl_xerp, "cl_xerp", "0");
+	CvarSync_Set(clcvar_cl_spectatorhud, "cl_spectatorhud", "1");
+	CvarSync_Set(clcvar_cl_spectatorkillfeed, "cl_spectatorkillfeed", "0");
 #endif
 }
 
