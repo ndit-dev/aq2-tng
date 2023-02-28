@@ -438,7 +438,6 @@ qboolean Info_Validate (const char *s);
 void Sys_Error (const char *error, ...);
 void Com_Printf (const char *msg, ...);
 
-
 /*
    ==========================================================
 

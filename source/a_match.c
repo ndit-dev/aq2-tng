@@ -84,6 +84,17 @@ void SendScores(void)
 		gi.bprintf(PRINT_HIGH, "\x9D\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9F\n");
 	}
 	gi.bprintf(PRINT_HIGH, "Match is over, waiting for next map, please vote a new one..\n");
+
+	#if USE_AQTION
+	// Needed to add this here because Matchmode does not call BeginIntermission, but other teamplay modes do call it
+		if (stat_logs->value) {
+			LogMatch();  // Generates end of game stats
+			LogEndMatchStats();  // Generates end of match stats
+		}
+	#endif
+	// Stats: Reset roundNum
+	game.roundNum = 0;
+	// Stats end
 }
 
 void Cmd_Sub_f(edict_t * ent)
@@ -304,7 +315,7 @@ void Cmd_Teamname_f(edict_t * ent)
 		strcpy( temp, "noname" );
 
 	gi.dprintf("%s (team %i) is now known as %s\n", team->name, teamNum, temp);
-	IRC_printf(IRC_T_GAME, "%n (team %i) is now known as %n", team->name, teamNum, temp);
+	IRC_printf(IRC_T_GAME, "%n (team %k) is now known as %n", team->name, teamNum, temp);
 	strcpy(team->name, temp);
 	gi.cprintf(ent, PRINT_HIGH, "New team name: %s\n", team->name);
 

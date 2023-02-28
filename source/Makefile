@@ -31,13 +31,16 @@ FILE_VERSION:=$(FILE_VERSION)~$(GIT_REV)
 endif
 
 CC?=gcc
-BASE_CFLAGS=-Wall -fno-strict-aliasing -DC_ONLY -DVERSION="\"$(VERSION)\"" -DAQTION_EXTENSION
+BASE_CFLAGS=-Wall -fno-strict-aliasing -DC_ONLY -DVERSION="\"$(VERSION)\""
 
 ifdef WEXTRA
 BASE_CFLAGS += -Wextra
 else
 # Temporary fix to hide a few warnings that haven't been fixed yet.
-BASE_CFLAGS += -Wno-format-truncation -Wno-unused-result
+BASE_CFLAGS += -Wno-unused-result
+ifneq ($(TNG_BUILD_FOR),DARWIN)
+BASE_CFLAGS += -Wno-format-truncation
+endif
 endif
 
 #use these cflags to optimize it
@@ -55,12 +58,6 @@ endif
 
 MACHINE=$(shell uname -m)
 SYSTEM=$(shell uname -s)
-
-# Fixes by bAron to get it compiling on max m1
-ifeq ($(TNG_BUILD_FOR),M1)
-	CC=clang
-	MACHINE=arm64e
-endif
 
 ARCH=$(MACHINE)
 
@@ -99,12 +96,23 @@ SHLIBEXT=dll
 SHLIBLIBS=-lws2_32
 endif
 
+ifeq ($(SYSTEM), Darwin)
+SHLIBEXT=dylib
+# Fixes by bAron to get it compiling on max m1
+ifeq ($(TNG_BUILD_FOR),M1)
+CC=clang
+MACHINE=arm
+CFLAGS+=-target aarch64-apple-darwin
+endif
+endif
+
+
 ifeq ($(USE_AQTION),TRUE)
+CFLAGS += -DUSE_AQTION -DAQTION_EXTENSION
 
 ifneq (,$(findstring WIN32,$(TNG_BUILD_FOR))$(findstring WIN64,$(TNG_BUILD_FOR)))
-BASE_CFLAGS += -I../q2pro-mgw-sdk/inc
-CFLAGS += -DCURL_STATICLIB
-SHLIBLIBS += -lcurl -lcrypt32
+CFLAGS += -I../q2pro-mgw-sdk/inc -DCURL_STATICLIB
+SHLIBLIBS += -lcurl -lcrypt32 -lwsock32 -lz -lws2_32
 ifeq ($(TNG_BUILD_FOR),WIN32)
 CFLAGS += -L../q2pro-mgw-sdk/lib
 else ifeq ($(TNG_BUILD_FOR),WIN64)

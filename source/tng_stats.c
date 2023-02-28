@@ -113,21 +113,24 @@ void Stats_AddHit( edict_t *ent, int gun, int hitPart )
 	if( in_warmup )
 		return;
 
-	if ((unsigned)gun >= MAX_GUNSTAT) {
+	// Adjusted logic to be inclusive rather than exclusive
+	if (((unsigned)gun <= MAX_GUNSTAT) || ((unsigned)gun == MOD_KICK) || ((unsigned)gun == MOD_PUNCH)) {
+
+		if (!teamplay->value || team_round_going || stats_afterround->value) {
+			ent->client->resp.hitsTotal++;
+			ent->client->resp.gunstats[gun].hits++;
+			ent->client->resp.hitsLocations[hitPart]++;
+
+			if (headShot)
+				ent->client->resp.gunstats[gun].headshots++;
+		}
+		if (!headShot) {
+			ent->client->resp.streakHS = 0;
+		}
+	}
+	else {
 		gi.dprintf( "Stats_AddHit: Bad gun number!\n" );
 		return;
-	}
-
-	if (!teamplay->value || team_round_going || stats_afterround->value) {
-		ent->client->resp.hitsTotal++;
-		ent->client->resp.gunstats[gun].hits++;
-		ent->client->resp.hitsLocations[hitPart]++;
-
-		if (headShot)
-			ent->client->resp.gunstats[gun].headshots++;
-	}
-	if (!headShot) {
-		ent->client->resp.streakHS = 0;
 	}
 }
 
@@ -488,95 +491,111 @@ void Cmd_Statmode_f(edict_t* ent)
 }
 
 #if USE_AQTION
-#include <curl/curl.h>
-// AQtion stats addon
-// Utilizes AWS API Gateway and AWS SQS
-// Review documentation to understand their use
 
-size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp)
-{
-   return size * nmemb;
-}
-void StatSend(const char *payload, ...)
-{	
-	va_list argptr;
-	char text[1024];
-	char apikeyheader[64] = "x-api-key: ";
-	char apiurl[128] = "\0";
-	int apikey_check;
+// Revisit one day...
 
-	// If stat logs are disabled or stat-apikey is default, just return
-	apikey_check = Q_stricmp(stat_apikey->string, "none");
-	if (!stat_logs->value || apikey_check == 0) {
-		return;
-	}
+// #include <curl/curl.h>
+// // AQtion stats addon
+// // Utilizes AWS API Gateway and AWS SQS
+// // Review documentation to understand their use
+
+// size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp)
+// {
+//    return size * nmemb;
+// }
+// void StatSend(const char *payload, ...)
+// {	
+// 	va_list argptr;
+// 	char text[1024];
+// 	char apikeyheader[64] = "x-api-key: ";
+// 	char apiurl[128] = "\0";
+// 	int apikey_check;
+
+// 	// If stat logs are disabled or stat-apikey is default, just return
+// 	apikey_check = Q_stricmp(stat_apikey->string, "none");
+// 	if (!stat_logs->value || apikey_check == 0) {
+// 		return;
+// 	}
 	
-	Q_strncatz(apikeyheader, stat_apikey->string, sizeof(apikeyheader));
-	Q_strncpyz(apiurl, stat_url->string, sizeof(apiurl));
+// 	Q_strncatz(apikeyheader, stat_apikey->string, sizeof(apikeyheader));
+// 	Q_strncpyz(apiurl, stat_url->string, sizeof(apiurl));
 	
-	va_start (argptr, payload);
-	vsnprintf (text, sizeof(text), payload, argptr);
-	va_end (argptr);
+// 	va_start (argptr, payload);
+// 	vsnprintf (text, sizeof(text), payload, argptr);
+// 	va_end (argptr);
 
-	CURL *curl = curl_easy_init();
-	struct curl_slist *headers = NULL;
-	headers = curl_slist_append(headers, "Accept: application/json");
-	headers = curl_slist_append(headers, "Content-Type: application/json");
-	headers = curl_slist_append(headers, apikeyheader);
+// 	CURL *curl = curl_easy_init();
+// 	struct curl_slist *headers = NULL;
+// 	headers = curl_slist_append(headers, "Accept: application/json");
+// 	headers = curl_slist_append(headers, "Content-Type: application/json");
+// 	headers = curl_slist_append(headers, apikeyheader);
 
-	curl_easy_setopt(curl, CURLOPT_URL, apiurl);
-	curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "POST");
-	curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, text);
+// 	curl_easy_setopt(curl, CURLOPT_URL, apiurl);
+// 	curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "POST");
+// 	curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+// 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, text);
 
-	// Do not print responses from curl request
-	// Comment below if you are debugging responses
-	// Hint: Forbidden would mean your stat_url is malformed,
-	// and a key error indicates your api key is bad or expired
-	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
+// 	// Do not print responses from curl request
+// 	// Comment below if you are debugging responses
+// 	// Hint: Forbidden would mean your stat_url is malformed,
+// 	// and a key error indicates your api key is bad or expired
+// 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
 
-	// Run it!
-	curl_easy_perform(curl);
-	curl_easy_cleanup(curl);
-	curl_global_cleanup();
-}
+// 	// Run it!
+// 	curl_easy_perform(curl);
+// 	curl_easy_cleanup(curl);
+// 	curl_global_cleanup();
+// }
 
-int Gamemode(void) // These are distinct game modes; you cannot have a teamdm tourney mode, for example
+
+
+#ifndef NO_BOTS
+/*
+=================
+Bot Check
+=================
+*/
+void StatBotCheck(void)
 {
-	int gamemode = 0;
-	if (teamdm->value) {
-		gamemode = GM_TEAMDM;
-	} else if (ctf->value) {
-		gamemode = GM_CTF;
-	} else if (use_tourney->value) {
-		gamemode = GM_TOURNEY;
-	} else if (teamplay->value) {
-		gamemode = GM_TEAMPLAY;  
-	} else if (deathmatch->value) {
-		gamemode = GM_DEATHMATCH;
-	}
-	return gamemode;
+    for (int i = 0; i < num_players; i++)
+    {
+        if (players[i]->is_bot)
+        {
+            game.ai_ent_found = true;
+            if (stat_logs->value) {
+                gi.dprintf("Bot detected, forcing stat_logs off\n");
+                gi.cvar_forceset(stat_logs->name, "0");    // Turn off stat collection
+            }
+            return;
+        }
+    }
+    game.ai_ent_found = false;
 }
+#endif
 
-int Gamemodeflag(void) 
-// These are gamemode flags that change the rules of gamemodes.
-// For example, you can have a darkmatch matchmode 3team teamplay server
+cvar_t* logfile_name;
+void Write_Stats(const char* msg, ...)
 {
-	int gamemodeflag = 0;
+	va_list	argptr;
+	char	stat_cpy[1024];
+	char	logpath[MAX_QPATH];
+	FILE* 	f;
 
-	if (use_3teams->value) {
-		gamemodeflag += GMF_3TEAMS;
+	va_start(argptr, msg);
+	vsprintf(stat_cpy, msg, argptr);
+	va_end(argptr);
+
+	logfile_name = gi.cvar("logfile_name", "", CVAR_NOSET);
+	sprintf(logpath, "action/logs/%s.stats", logfile_name->string);
+
+	if ((f = fopen(logpath, "a")) != NULL)
+	{
+		fprintf(f, "%s", stat_cpy);
+		fclose(f);
 	}
-	if (dom->value) {
-		gamemodeflag += GMF_DOMINATION;
-	}
-	if (darkmatch->value) {
-		gamemodeflag += GMF_DARKMATCH;
-	}
-	if (matchmode->value) {
-		gamemodeflag += GMF_MATCHMODE;
-	}
-	return gamemodeflag;
+	else
+		gi.dprintf("Error writing to %s.stats\n", logfile_name->string);
+
 }
 
 /*
@@ -602,11 +621,35 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 	char vip[24]; // Victim's IP:port
 	char vd[24]; // Victim's Discord ID
 	char *vi; // Victim's IP (without port)
+	char vloc[18]; // Victim's location
 	char k[24]; // Killer's Steam ID
 	char kn[128]; // Killer's name
 	char kip[24]; // Killer's IP:port
 	char kd[24]; // Killer's Discord ID
 	char *ki; // Killer's IP (without port)
+	char kloc[18]; // Killer's location
+
+	// Check if there's an AI bot in the game, if so, do nothing
+	if (game.ai_ent_found) {
+		return;
+	}
+
+	// Only record stats if there's more than one opponent
+    if (gameSettings & GS_DEATHMATCH) // Only check if in DM
+    {
+        int oc = 0; // Opponent count
+        for (int i = 0; i < game.maxclients; i++)
+        {
+            // If player is connected and not spectating, add them as an opponent
+            if (game.clients[i].pers.connected && game.clients[i].pers.spectator == false)
+            {
+                if (++oc > 1) // Two or more opponents are active, so log kills
+                    break;
+            }
+        }
+        if (oc == 1) // Only one opponent active, so don't log kills
+            return;
+    }
 
 	if ((team_round_going && !in_warmup) || (gameSettings & GS_DEATHMATCH)) // If round is active OR if deathmatch
 	{
@@ -638,24 +681,21 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 		eventtime = (int)time(NULL);
 		roundNum = game.roundNum + 1;
 
-		Q_strncpyz(
-			msg,
-			"{\"frag\":{\"sid\":\"%s\",\"mid\":\"%s\",\"v\":\"%s\",\"vd\":\"%s\",\"vn\":\"%s\",\"vi\":\"%s\",\"vt\":%i,\"vl\":%i,\"k\":\"%s\",\"kd\":\"%s\",\"kn\":\"%s\",\"ki\":\"%s\",\"kt\":%i,\"kl\":%i,\"w\":%i,\"i\":%i,\"l\":%i,\"ks\":%i,\"gm\":%i,\"gmf\":%i,\"ttk\":\"%d\",\"t\":%d,\"gt\":%d,\"m\":\"%s\",\"r\":\"%i\"}}\n",
-			sizeof(msg)
-		);
+		// Location data
+		sprintf(vloc, "%5.0f,%5.0f,%5.0f", self->s.origin[0], self->s.origin[1], self->s.origin[2]);
+		sprintf(kloc, "%5.0f,%5.0f,%5.0f", attacker->s.origin[0], attacker->s.origin[1], attacker->s.origin[2]);
 
-		StatSend(
-			msg,
+		Com_sprintf(
+			msg, sizeof(msg),
+			"{\"frag\":{\"sid\":\"%s\",\"mid\":\"%s\",\"v\":\"%s\",\"vn\":\"%s\",\"vi\":\"%s\",\"vt\":%i,\"vl\":%i,\"k\":\"%s\",\"kn\":\"%s\",\"ki\":\"%s\",\"kt\":%i,\"kl\":%i,\"w\":%i,\"i\":%i,\"l\":%i,\"ks\":%i,\"gm\":%i,\"gmf\":%i,\"ttk\":%d,\"t\":%d,\"gt\":%d,\"m\":\"%s\",\"r\":%i,\"vd\":\"%s\",\"kd\":\"%s\",\"vloc\":\"%s\",\"kloc\":\"%s\"}}\n",
 			server_id->string,
 			game.matchid,
 			v,
-			vd,
 			vn,
 			vi,
 			vt,
 			vl,
 			k,
-			kd,
 			kn,
 			ki,
 			kt,
@@ -670,8 +710,13 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 			eventtime,
 			gametime,
 			level.mapname,
-			roundNum
+			roundNum,
+			vd,
+			kd,
+			vloc,
+			kloc
 		);
+		Write_Stats(msg);
 	}
 }
 
@@ -696,6 +741,29 @@ void LogWorldKill(edict_t *self)
 	char vip[24];
 	char vd[24];
 	char *vi;
+	char vloc[18];
+
+	// Check if there's an AI bot in the game, if so, do nothing
+	if (game.ai_ent_found) {
+		return;
+	}
+
+	// Only record stats if there's more than one opponent
+    if (gameSettings & GS_DEATHMATCH) // Only check if in DM
+    {
+        int oc = 0; // Opponent count
+        for (int i = 0; i < game.maxclients; i++)
+        {
+            // If player is connected and not spectating, add them as an opponent
+            if (game.clients[i].pers.connected && game.clients[i].pers.spectator == false)
+            {
+                if (++oc > 1) // Two or more opponents are active, so log kills
+                    break;
+            }
+        }
+        if (oc == 1) // Only one opponent active, so don't log kills
+            return;
+    }
 
 	if ((team_round_going && !in_warmup) || (gameSettings & GS_DEATHMATCH)) // If round is active OR if deathmatch
 	{
@@ -721,24 +789,20 @@ void LogWorldKill(edict_t *self)
 		eventtime = (int)time(NULL);
 		roundNum = game.roundNum + 1;
 
-		Q_strncpyz(
-			msg,
-			"{\"frag\":{\"sid\":\"%s\",\"mid\":\"%s\",\"v\":\"%s\",\"vd\":\"%s\",\"vn\":\"%s\",\"vi\":\"%s\",\"vt\":%i,\"vl\":%i,\"k\":\"%s\",\"kd\":\"%s\",\"kn\":\"%s\",\"ki\":\"%s\",\"kt\":%i,\"kl\":%i,\"w\":%i,\"i\":%i,\"l\":%i,\"ks\":%i,\"gm\":%i,\"gmf\":%i,\"ttk\":\"%d\",\"t\":%d,\"gt\":%d,\"m\":\"%s\",\"r\":\"%i\"}}\n",
-			sizeof(msg)
-		);
+		// Location data
+		sprintf(vloc, "%5.0f,%5.0f,%5.0f", self->s.origin[0], self->s.origin[1], self->s.origin[2]);
 
-		StatSend(
-			msg,
+		Com_sprintf(
+			msg, sizeof(msg),
+			"{\"frag\":{\"sid\":\"%s\",\"mid\":\"%s\",\"v\":\"%s\",\"vn\":\"%s\",\"vi\":\"%s\",\"vt\":%i,\"vl\":%i,\"k\":\"%s\",\"kn\":\"%s\",\"ki\":\"%s\",\"kt\":%i,\"kl\":%i,\"w\":%i,\"i\":%i,\"l\":%i,\"ks\":%i,\"gm\":%i,\"gmf\":%i,\"ttk\":%d,\"t\":%d,\"gt\":%d,\"m\":\"%s\",\"r\":%i,\"vd\":\"%s\",\"kd\":\"%s\",\"vloc\":\"%s\",\"kloc\":\"%s\"}}\n",
 			server_id->string,
 			game.matchid,
 			v,
-			vd,
 			vn,
 			vi,
 			vt,
 			vl,
 			v,
-			vd,
 			vn,
 			vi,
 			vt,
@@ -753,8 +817,13 @@ void LogWorldKill(edict_t *self)
 			eventtime,
 			gametime,
 			level.mapname,
-			roundNum
+			roundNum,
+			vd,
+			vd,
+			vloc,
+			vloc
 		);
+		Write_Stats(msg);
 	}
 }
 
@@ -772,14 +841,19 @@ void LogMatch()
 	int t3 = teams[TEAM3].score;
 	eventtime = (int)time(NULL);
 
-	Q_strncpyz(
-		msg,
-		"{\"gamematch\":{\"mid\":\"%s\",\"sid\":\"%s\",\"t\":\"%d\",\"m\":\"%s\",\"gm\":\"%i\",\"gmf\":%i,\"t1\":%i,\"t2\":\"%i\",\"t3\":\"%i\"}}\n",
-		sizeof(msg)
-	);
+	// Check if there's an AI bot in the game, if so, do nothing
+	if (game.ai_ent_found) {
+		return;
+	}
 
-	StatSend(
-		msg,
+	// Check for scoreless teamplay, don't log, unless it's tourney mode
+	if ((t1 == 0 && t2 == 0 && t3 == 0) && (teamplay->value) && (!use_tourney->value)) {
+		return;
+	}
+
+	Com_sprintf(
+		msg, sizeof(msg),
+		"{\"gamematch\":{\"mid\":\"%s\",\"sid\":\"%s\",\"t\":\"%d\",\"m\":\"%s\",\"gm\":%i,\"gmf\":%i,\"t1\":%i,\"t2\":%i,\"t3\":%i}}\n",
 		game.matchid,
 		server_id->string,
 		eventtime,
@@ -790,6 +864,7 @@ void LogMatch()
 		t2,
 		t3
 	);
+	Write_Stats(msg);
 }
 
 /*
@@ -808,23 +883,24 @@ void LogAward(char* steamid, char* discordid, int award)
 	gametime = level.matchTime;
 	eventtime = (int)time(NULL);
 
-	Q_strncpyz(
-		msg,
-		"{\"award\":{\"sid\":\"%s\",\"mid\":\"%s\",\"t\":\"%d\",\"gt\":\"%d\",\"a\":%i,\"k\":%s,\"d\":%s,\"w\":\"%i\"}}\n",
-		sizeof(msg)
-	);
+	// Check if there's an AI bot in the game, if so, do nothing
+	if (game.ai_ent_found) {
+		return;
+	}
 
-	StatSend(
-		msg,
+	Com_sprintf(
+		msg, sizeof(msg),
+		"{\"award\":{\"sid\":\"%s\",\"mid\":\"%s\",\"t\":\"%d\",\"gt\":\"%d\",\"a\":%i,\"k\":\"%s\",\"w\":%i,\"d\":\"%s\"}}\n",
 		server_id->string,
 		game.matchid,
 		eventtime,
 		gametime,
 		award,
 		steamid,
-		discordid,
-		mod
+		mod,
+		discordid
 	);
+	Write_Stats(msg);
 }
 
 /*
@@ -843,16 +919,20 @@ void LogEndMatchStats()
 	char discordid[24];
 	totalClients = G_SortedClients(sortedClients);
 
+	// Check if there's an AI bot in the game, if so, do nothing
+	if (game.ai_ent_found) {
+		return;
+	}
+
 	for (i = 0; i < totalClients; i++){
 		cl = sortedClients[i];
 		shots = min( cl->resp.shotsTotal, 9999 );
+		secs = (level.framenum - cl->resp.enterframe) / HZ;
 
 		if (shots)
 				accuracy = (double)cl->resp.hitsTotal * 100.0 / (double)cl->resp.shotsTotal;
 			else
 				accuracy = 0;
-
-			secs = (level.framenum - cl->resp.enterframe) / HZ;
 			if (secs > 0)
 				fpm = (double)cl->resp.score * 60.0 / (double)secs;
 			else
@@ -860,18 +940,13 @@ void LogEndMatchStats()
 				
 		Q_strncpyz(steamid, Info_ValueForKey(cl->pers.userinfo, "steamid"), sizeof(steamid));
 		Q_strncpyz(discordid, Info_ValueForKey(cl->pers.userinfo, "cl_discord_id"), sizeof(discordid));
-		Q_strncpyz(
-			msg,
-			"{\"matchstats\":{\"sid\":\"%s\",\"mid\":\"%s\",\"s\":\"%s\",\"dis\":\"%s\",\"sc\":\"%i\",\"sh\":\"%i\",\"a\":\"%f\",\"f\":\"%f\",\"dd\":\"%i\",\"d\":\"%i\",\"k\":\"%i\",\"ctfc\":\"%i\",\"ctfcs\":\"%i\",\"ht\":\"%i\",\"tk\":\"%i\",\"t\":\"%i\",\"hks\":\"%i\",\"hhs\":\"%i\"}}\n",
-			sizeof(msg)
-		);
 
-		StatSend(
-			msg,
+		Com_sprintf(
+			msg, sizeof(msg),
+			"{\"matchstats\":{\"sid\":\"%s\",\"mid\":\"%s\",\"s\":\"%s\",\"sc\":%i,\"sh\":%i,\"a\":%f,\"f\":%f,\"dd\":%i,\"d\":%i,\"k\":%i,\"ctfc\":%i,\"ctfcs\":%i,\"ht\":%i,\"tk\":%i,\"t\":%i,\"hks\":%i,\"hhs\":%i,\"dis\":\"%s\",\"pt\":%i,\"hlh\":%i,\"hlc\":%i,\"hls\":%i,\"hll\":%i,\"hlkh\":%i,\"hlkv\":%i,\"hln\":%i,\"gss1\":%i,\"gss2\":%i,\"gss3\":%i,\"gss4\":%i,\"gss5\":%i,\"gss6\":%i,\"gss7\":%i,\"gss8\":%i,\"gss9\":%i,\"gss13\":%i,\"gss14\":%i,\"gss35\":%i,\"gsh1\":%i,\"gsh2\":%i,\"gsh3\":%i,\"gsh4\":%i,\"gsh5\":%i,\"gsh6\":%i,\"gsh7\":%i,\"gsh8\":%i,\"gsh9\":%i,\"gsh13\":%i,\"gsh14\":%i,\"gsh35\":%i,\"gshs1\":%i,\"gshs2\":%i,\"gshs3\":%i,\"gshs4\":%i,\"gshs5\":%i,\"gshs6\":%i,\"gshs7\":%i,\"gshs8\":%i,\"gshs9\":%i,\"gshs13\":%i,\"gshs14\":%i,\"gshs35\":%i,\"gsk1\":%i,\"gsk2\":%i,\"gsk3\":%i,\"gsk4\":%i,\"gsk5\":%i,\"gsk6\":%i,\"gsk7\":%i,\"gsk8\":%i,\"gsk9\":%i,\"gsk13\":%i,\"gsk14\":%i,\"gsk35\":%i,\"gsd1\":%i,\"gsd2\":%i,\"gsd3\":%i,\"gsd4\":%i,\"gsd5\":%i,\"gsd6\":%i,\"gsd7\":%i,\"gsd8\":%i,\"gsd9\":%i,\"gsd13\":%i,\"gsd14\":%i,\"gsd35\":%i}}\n",
 			server_id->string,
 			game.matchid,
 			steamid,
-			discordid,
 			cl->resp.score,
 			shots,
 			accuracy,
@@ -885,8 +960,78 @@ void LogEndMatchStats()
 			cl->resp.team_kills,
 			cl->resp.team,
 			cl->resp.streakKillsHighest,
-			cl->resp.streakHSHighest
+			cl->resp.streakHSHighest,
+			discordid,
+			secs,
+			cl->resp.hitsLocations[LOC_HDAM],
+			cl->resp.hitsLocations[LOC_CDAM],
+			cl->resp.hitsLocations[LOC_SDAM],
+			cl->resp.hitsLocations[LOC_LDAM],
+			cl->resp.hitsLocations[LOC_KVLR_HELMET],
+			cl->resp.hitsLocations[LOC_KVLR_VEST],
+			cl->resp.hitsLocations[LOC_NO],
+			cl->resp.gunstats[MOD_MK23].shots,
+			cl->resp.gunstats[MOD_MP5].shots,
+			cl->resp.gunstats[MOD_M4].shots,
+			cl->resp.gunstats[MOD_M3].shots,
+			cl->resp.gunstats[MOD_HC].shots,
+			cl->resp.gunstats[MOD_SNIPER].shots,
+			cl->resp.gunstats[MOD_DUAL].shots,
+			cl->resp.gunstats[MOD_KNIFE].shots,
+			cl->resp.gunstats[MOD_KNIFE_THROWN].shots,
+			cl->resp.gunstats[MOD_HG_SPLASH].shots,
+			cl->resp.gunstats[MOD_PUNCH].shots,
+			cl->resp.gunstats[MOD_KICK].shots,
+			cl->resp.gunstats[MOD_MK23].hits,
+			cl->resp.gunstats[MOD_MP5].hits,
+			cl->resp.gunstats[MOD_M4].hits,
+			cl->resp.gunstats[MOD_M3].hits,
+			cl->resp.gunstats[MOD_HC].hits,
+			cl->resp.gunstats[MOD_SNIPER].hits,
+			cl->resp.gunstats[MOD_DUAL].hits,
+			cl->resp.gunstats[MOD_KNIFE].hits,
+			cl->resp.gunstats[MOD_KNIFE_THROWN].hits,
+			cl->resp.gunstats[MOD_HG_SPLASH].hits,
+			cl->resp.gunstats[MOD_PUNCH].hits,
+			cl->resp.gunstats[MOD_KICK].hits,
+			cl->resp.gunstats[MOD_MK23].headshots,
+			cl->resp.gunstats[MOD_MP5].headshots,
+			cl->resp.gunstats[MOD_M4].headshots,
+			cl->resp.gunstats[MOD_M3].headshots,
+			cl->resp.gunstats[MOD_HC].headshots,
+			cl->resp.gunstats[MOD_SNIPER].headshots,
+			cl->resp.gunstats[MOD_DUAL].headshots,
+			cl->resp.gunstats[MOD_KNIFE].headshots,
+			cl->resp.gunstats[MOD_KNIFE_THROWN].headshots,
+			cl->resp.gunstats[MOD_HG_SPLASH].headshots,
+			cl->resp.gunstats[MOD_PUNCH].headshots,
+			cl->resp.gunstats[MOD_KICK].headshots,
+			cl->resp.gunstats[MOD_MK23].kills,
+			cl->resp.gunstats[MOD_MP5].kills,
+			cl->resp.gunstats[MOD_M4].kills,
+			cl->resp.gunstats[MOD_M3].kills,
+			cl->resp.gunstats[MOD_HC].kills,
+			cl->resp.gunstats[MOD_SNIPER].kills,
+			cl->resp.gunstats[MOD_DUAL].kills,
+			cl->resp.gunstats[MOD_KNIFE].kills,
+			cl->resp.gunstats[MOD_KNIFE_THROWN].kills,
+			cl->resp.gunstats[MOD_HG_SPLASH].kills,
+			cl->resp.gunstats[MOD_PUNCH].kills,
+			cl->resp.gunstats[MOD_KICK].kills,
+			cl->resp.gunstats[MOD_MK23].damage,
+			cl->resp.gunstats[MOD_MP5].damage,
+			cl->resp.gunstats[MOD_M4].damage,
+			cl->resp.gunstats[MOD_M3].damage,
+			cl->resp.gunstats[MOD_HC].damage,
+			cl->resp.gunstats[MOD_SNIPER].damage,
+			cl->resp.gunstats[MOD_DUAL].damage,
+			cl->resp.gunstats[MOD_KNIFE].damage,
+			cl->resp.gunstats[MOD_KNIFE_THROWN].damage,
+			cl->resp.gunstats[MOD_HG_SPLASH].damage,
+			cl->resp.gunstats[MOD_PUNCH].damage,
+			cl->resp.gunstats[MOD_KICK].damage
 		);
+		Write_Stats(msg);
 	}
 }
 #endif

@@ -303,8 +303,7 @@ cvar_t *hud_items_cycle;
 cvar_t *noscore;
 cvar_t *hud_noscore;
 cvar_t *use_newscore;
-cvar_t *scores2teamplay;
-cvar_t *scores2ctf;
+cvar_t *scoreboard;
 cvar_t *actionversion;
 cvar_t *needpass;
 cvar_t *use_voice;
@@ -312,6 +311,7 @@ cvar_t *ppl_idletime;
 cvar_t *use_buggy_bandolier;
 cvar_t *use_tourney;
 cvar_t *use_3teams;
+cvar_t *use_randoms; // Random weapons and items mode
 cvar_t *use_kickvote;
 cvar_t *mv_public;		// AQ:TNG - JBravo adding public voting
 cvar_t *vk_public;		// AQ:TNG - JBravo adding public voting
@@ -482,12 +482,21 @@ cvar_t *e_enhancedSlippers;
 // END AQ2 ETE
 
 // 2022
+
 cvar_t *sv_limp_highping;
 cvar_t *server_id;
 cvar_t *stat_logs;
 cvar_t *mapvote_next_limit;
 cvar_t *stat_apikey;
 cvar_t *stat_url;
+cvar_t *gm;
+cvar_t *gmf;
+cvar_t *sv_idleremove;
+cvar_t *g_spawn_items;
+
+// 2023
+cvar_t *use_killcounts;  // Display kill counts in console to clients on frag
+
 #ifdef AQTION_EXTENSION
 cvar_t *use_newirvision;
 cvar_t *use_indicators;

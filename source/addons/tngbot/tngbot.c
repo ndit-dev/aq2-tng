@@ -337,8 +337,7 @@ int parse_input (char *inbuf)
     if (pos1 < strlen(inbuf)) {
       if (strstr (von, "!") != NULL) {
 	/* user message */
-	for (pos2 = 0; (pos2 < strlen(von)) && (von[pos2] != '!'); pos2++)
-	  ;
+	for (pos2 = 0; (pos2 < strlen(von)) && (von[pos2] != '!'); pos2++);
 	von[pos2] = 0;
 	pos1 += strlen (" PRIVMSG ");
 

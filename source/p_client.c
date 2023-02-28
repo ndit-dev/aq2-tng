@@ -320,6 +320,7 @@
 #include "m_player.h"
 #include "cgf_sfx_glass.h"
 
+
 static void FreeClientEdicts(gclient_t *client)
 {
 	//remove lasersight
@@ -349,70 +350,97 @@ static void FreeClientEdicts(gclient_t *client)
 #endif
 }
 
+void Announce_Reward(edict_t *ent, int rewardType){
+	char buf[256];
+
+	if (rewardType == IMPRESSIVE) {
+		sprintf(buf, "IMPRESSIVE %s!", ent->client->pers.netname);
+			CenterPrintAll(buf);
+			gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD,
+					gi.soundindex("tng/impressive.wav"), 1.0, ATTN_NONE, 0.0);
+
+			#if USE_AQTION
+
+			#ifndef NO_BOTS
+				// Check if there's an AI bot in the game, if so, do nothing
+				if (game.ai_ent_found) {
+					return;
+				}
+			#endif
+			if (stat_logs->value) {
+				char steamid[24];
+				char discordid[24];
+				Q_strncpyz(steamid, Info_ValueForKey(ent->client->pers.userinfo, "steamid"), sizeof(steamid));
+				Q_strncpyz(discordid, Info_ValueForKey(ent->client->pers.userinfo, "cl_discord_id"), sizeof(discordid));
+				LogAward(steamid, discordid, IMPRESSIVE);
+			}
+			#endif
+	} else if (rewardType == EXCELLENT) {
+		sprintf(buf, "EXCELLENT %s (%dx)!", ent->client->pers.netname,ent->client->resp.streakKills/12);
+				CenterPrintAll(buf);
+				gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD,
+					 gi.soundindex("tng/excellent.wav"), 1.0, ATTN_NONE, 0.0);
+
+				#if USE_AQTION
+				#ifndef NO_BOTS
+					// Check if there's an AI bot in the game, if so, do nothing
+					if (game.ai_ent_found) {
+						return;
+					}
+				#endif
+				if (stat_logs->value) {
+					char steamid[24];
+					char discordid[24];
+					Q_strncpyz(steamid, Info_ValueForKey(ent->client->pers.userinfo, "steamid"), sizeof(steamid));
+					Q_strncpyz(discordid, Info_ValueForKey(ent->client->pers.userinfo, "cl_discord_id"), sizeof(discordid));
+					LogAward(steamid, discordid, EXCELLENT);
+				}
+				#endif
+	}
+}
+
 void Add_Frag(edict_t * ent, int mod)
 {
 	char buf[256];
 	int frags = 0;
-	char steamid[24];
-	char discordid[24];
-	Q_strncpyz(steamid, Info_ValueForKey(ent->client->pers.userinfo, "steamid"), sizeof(steamid));
-	Q_strncpyz(discordid, Info_ValueForKey(ent->client->pers.userinfo, "cl_discord_id"), sizeof(discordid));
 
 	if (in_warmup)
 		return;
 
 	ent->client->resp.kills++;
+	// All normal weapon damage
 	if (mod > 0 && mod < MAX_GUNSTAT) {
 		ent->client->resp.gunstats[mod].kills++;
 	}
+	// Grenade splash, kicks and punch damage
+	if (mod > 0 && ((mod == MOD_HG_SPLASH) || (mod == MOD_KICK) || (mod == MOD_PUNCH))) {
+		ent->client->resp.gunstats[mod].kills++;
+	}
 
-	if (teamplay->value && teamdm->value != 2)
+	ent->client->resp.score++;	// just 1 normal kill
+
+	if (IS_ALIVE(ent))
 	{
-		ent->client->resp.score++;	// just 1 normal kill
+		ent->client->resp.streakKills++;
+		if (ent->client->resp.streakKills > ent->client->resp.streakKillsHighest)
+			ent->client->resp.streakKillsHighest = ent->client->resp.streakKills;
 
-		if (IS_ALIVE(ent))
+		if (ent->client->resp.streakKills % 5 == 0 && use_rewards->value)
 		{
-			ent->client->resp.streakKills++;
-			if (ent->client->resp.streakKills > ent->client->resp.streakKillsHighest)
-				ent->client->resp.streakKillsHighest = ent->client->resp.streakKills;
-
-			if (ent->client->resp.streakKills % 5 == 0 && use_rewards->value)
-			{
-				sprintf(buf, "IMPRESSIVE %s!", ent->client->pers.netname);
-				CenterPrintAll(buf);
-				gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD,
-					 gi.soundindex("tng/impressive.wav"), 1.0, ATTN_NONE, 0.0);
-				if (stat_logs->value && !ltk_loadbots->value) {
-					#ifdef USE_AQTION
-					LogAward(steamid, discordid, IMPRESSIVE);
-					#endif
-				}
-			}
-			else if (ent->client->resp.streakKills % 12 == 0 && use_rewards->value)
-			{
-				sprintf(buf, "EXCELLENT %s (%dx)!", ent->client->pers.netname,ent->client->resp.streakKills/12);
-				CenterPrintAll(buf);
-				gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD,
-					 gi.soundindex("tng/excellent.wav"), 1.0, ATTN_NONE, 0.0);
-				if (stat_logs->value && !ltk_loadbots->value) {
-					#ifdef USE_AQTION
-					LogAward(steamid, discordid, EXCELLENT);
-					#endif
-				}
-			}
+			Announce_Reward(ent, IMPRESSIVE);
 		}
-
-		if(teamdm->value)
-			teams[ent->client->resp.team].score++;
-		// end changing sound dir
-	} else { //Deathmatch
-
-		if (IS_ALIVE(ent)) {
-			ent->client->resp.streakKills++;
-			if (ent->client->resp.streakKills > ent->client->resp.streakKillsHighest)
-				ent->client->resp.streakKillsHighest = ent->client->resp.streakKills;
+		else if (ent->client->resp.streakKills % 12 == 0 && use_rewards->value)
+		{
+			Announce_Reward(ent, EXCELLENT);
 		}
+	}
 
+	// Increment team score if TeamDM is enabled
+	if(teamdm->value)
+		teams[ent->client->resp.team].score++;
+
+	// Streak kill rewards in Deathmatch mode
+	if (deathmatch->value && !teamplay->value) {
 		if (ent->client->resp.streakKills < 4 || ! use_rewards->value)
 			frags = 1;
 		else if (ent->client->resp.streakKills < 8)
@@ -435,39 +463,43 @@ void Add_Frag(edict_t * ent, int mod)
 		}
 		ent->client->resp.score += frags;
 
-		if(ent->client->resp.streakKills)
-			gi.cprintf(ent, PRINT_HIGH, "Kill count: %d\n", ent->client->resp.streakKills);
-
+		// Award team with appropriate streak reward count
 		if(teamdm->value)
 			teams[ent->client->resp.team].score += frags;
-	}
 
-	// AQ:TNG Igor[Rock] changing sound dir
-	if (fraglimit->value && use_warnings->value) {
-		if (ent->client->resp.score == fraglimit->value - 1) {
-			if (fragwarning < 3) {
-				CenterPrintAll("1 FRAG LEFT...");
-				gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD,
-					 gi.soundindex("tng/1_frag.wav"), 1.0, ATTN_NONE, 0.0);
-				fragwarning = 3;
-			}
-		} else if (ent->client->resp.score == fraglimit->value - 2) {
-			if (fragwarning < 2) {
-				CenterPrintAll("2 FRAGS LEFT...");
-				gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD,
-					 gi.soundindex("tng/2_frags.wav"), 1.0, ATTN_NONE, 0.0);
-				fragwarning = 2;
-			}
-		} else if (ent->client->resp.score == fraglimit->value - 3) {
-			if (fragwarning < 1) {
-				CenterPrintAll("3 FRAGS LEFT...");
-				gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD,
-					 gi.soundindex("tng/3_frags.wav"), 1.0, ATTN_NONE, 0.0);
-				fragwarning = 1;
+		// AQ:TNG Igor[Rock] changing sound dir
+		if (fraglimit->value && use_warnings->value) {
+			if (ent->client->resp.score == fraglimit->value - 1) {
+				if (fragwarning < 3) {
+					CenterPrintAll("1 FRAG LEFT...");
+					gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD,
+						gi.soundindex("tng/1_frag.wav"), 1.0, ATTN_NONE, 0.0);
+					fragwarning = 3;
+				}
+			} else if (ent->client->resp.score == fraglimit->value - 2) {
+				if (fragwarning < 2) {
+					CenterPrintAll("2 FRAGS LEFT...");
+					gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD,
+						gi.soundindex("tng/2_frags.wav"), 1.0, ATTN_NONE, 0.0);
+					fragwarning = 2;
+				}
+			} else if (ent->client->resp.score == fraglimit->value - 3) {
+				if (fragwarning < 1) {
+					CenterPrintAll("3 FRAGS LEFT...");
+					gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD,
+						gi.soundindex("tng/3_frags.wav"), 1.0, ATTN_NONE, 0.0);
+					fragwarning = 1;
+				}
 			}
 		}
+		// end of changing sound dir
 	}
-	// end of changing sound dir
+
+	// Announce kill streak to player if use_killcounts is enabled on server
+	if (use_killcounts->value) {
+		if(ent->client->resp.streakKills)
+			gi.cprintf(ent, PRINT_HIGH, "Kill count: %d\n", ent->client->resp.streakKills);
+	}
 }
 
 void Subtract_Frag(edict_t * ent)
@@ -635,7 +667,6 @@ void player_pain(edict_t * self, edict_t * other, float kick, int damage)
 }
 
 // ^^^
-
 
 // PrintDeathMessage: moved the actual printing of the death messages to here, to handle
 //  the fact that live players shouldn't receive them in teamplay.  -FB
@@ -821,11 +852,13 @@ void ClientObituary(edict_t * self, edict_t * inflictor, edict_t * attacker)
 			PrintDeathMessage(death_msg, self);
 			IRC_printf(IRC_T_KILL, death_msg);
 			AddKilledPlayer(self->client->attacker, self);
-			#ifdef USE_AQTION
-			if (stat_logs->value && !ltk_loadbots->value) { // Only create stats logs if stat_logs is 1 and ltk_loadbots is 0
+
+			#if USE_AQTION
+			if (stat_logs->value) { // Only create stats logs if stat_logs is 1
 				LogKill(self, inflictor, self->client->attacker);
 			}
 			#endif
+
 			self->client->attacker->client->radio_num_kills++;
 
 			//MODIFIED FOR FF -FB
@@ -848,7 +881,7 @@ void ClientObituary(edict_t * self, edict_t * inflictor, edict_t * attacker)
 		else
 		{
 			sprintf( death_msg, "%s %s\n", self->client->pers.netname, message );
-			PrintDeathMessage( death_msg, self );
+			PrintDeathMessage(death_msg, self );
 			IRC_printf( IRC_T_DEATH, death_msg );
 
 			if (!teamplay->value || team_round_going || !ff_afterround->value)  {
@@ -857,9 +890,9 @@ void ClientObituary(edict_t * self, edict_t * inflictor, edict_t * attacker)
 			}
 
 			self->enemy = NULL;
-
-			#ifdef USE_AQTION
-			if (stat_logs->value && !ltk_loadbots->value) { // Only create stats logs if stat_logs is 1 and ltk_loadbots is 0
+      
+			#if USE_AQTION
+			if (stat_logs->value) { // Only create stats logs if stat_logs is 1
 				LogWorldKill(self);
 			}
 			#endif
@@ -974,7 +1007,7 @@ void ClientObituary(edict_t * self, edict_t * inflictor, edict_t * attacker)
 			}
 			break;
 		case MOD_HC:
-			n = rand() % 2 + 1;
+			n = rand() % 3 + 1;
 			if (n == 1) {
 				if (attacker->client->pers.hc_mode)	// AQ2:TNG Deathwatch - Single Barreled HC Death Messages
 				{
@@ -984,7 +1017,7 @@ void ClientObituary(edict_t * self, edict_t * inflictor, edict_t * attacker)
 					message = " ate";
 					message2 = "'s sawed-off 12 gauge";
 				}
-			} else {
+			} else if (n == 2 ){
 				if (attacker->client->pers.hc_mode)	// AQ2:TNG Deathwatch - Single Barreled HC Death Messages
 				{
 					message = " won't be able to pass a metal detector anymore thanks to";
@@ -992,7 +1025,10 @@ void ClientObituary(edict_t * self, edict_t * inflictor, edict_t * attacker)
 				} else {
 					message = " is full of buckshot from";
 					message2 = "'s sawed off shotgun";
-				}
+				} 
+			} else {
+				// minch <3
+				message = " was minched by";
 			}
 			break;
 		case MOD_SNIPER:
@@ -1195,8 +1231,9 @@ void ClientObituary(edict_t * self, edict_t * inflictor, edict_t * attacker)
 			PrintDeathMessage(death_msg, self);
 			IRC_printf(IRC_T_KILL, death_msg);
 			AddKilledPlayer(attacker, self);
-			#ifdef USE_AQTION
-			if (stat_logs->value && !ltk_loadbots->value) { // Only create stats logs if stat_logs is 1 and ltk_loadbots is 0
+
+			#if USE_AQTION
+			if (stat_logs->value) {
 				LogKill(self, inflictor, attacker);
 			}
 			#endif
@@ -1224,8 +1261,9 @@ void ClientObituary(edict_t * self, edict_t * inflictor, edict_t * attacker)
 	sprintf(death_msg, "%s died\n", self->client->pers.netname);
 	PrintDeathMessage(death_msg, self);
 	IRC_printf(IRC_T_DEATH, death_msg);
-	#ifdef USE_AQTION
-	if (stat_logs->value && !ltk_loadbots->value) { // Only create stats logs if stat_logs is 1 and ltk_loadbots is 0
+
+	#if USE_AQTION
+	if (stat_logs->value) { // Only create stats logs if stat_logs is 1
 		LogWorldKill(self);
 	}
 	#endif
@@ -1337,21 +1375,6 @@ void TossItemsOnDeath(edict_t * ent)
 		quad = false;
 	else
 		quad = (ent->client->quad_framenum > (level.framenum + HZ));
-
-	if (quad) {
-		edict_t *drop;
-		float spread;
-
-		spread = 300.0 * crandom();
-		ent->client->v_angle[YAW] += spread;
-		drop = Drop_Item(ent, FindItemByClassname("item_quad"));
-		ent->client->v_angle[YAW] -= spread;
-		drop->spawnflags |= DROPPED_PLAYER_ITEM;
-
-		drop->touch = Touch_Item;
-		drop->nextthink = ent->client->quad_framenum;
-		drop->think = G_FreeEdict;
-	}
 }
 
 void TossClientWeapon(edict_t * self)
@@ -1382,17 +1405,6 @@ void TossClientWeapon(edict_t * self)
 		drop = Drop_Item(self, item);
 		self->client->v_angle[YAW] += spread;
 		drop->spawnflags = DROPPED_PLAYER_ITEM;
-	}
-
-	if (quad) {
-		self->client->v_angle[YAW] += spread;
-		drop = Drop_Item(self, FindItemByClassname("item_quad"));
-		self->client->v_angle[YAW] -= spread;
-		drop->spawnflags |= DROPPED_PLAYER_ITEM;
-
-		drop->touch = Touch_Item;
-		drop->nextthink = self->client->quad_framenum;
-		drop->think = G_FreeEdict;
 	}
 }
 
@@ -2756,7 +2768,8 @@ void ClientBeginDeathmatch(edict_t * ent)
 	vInitClient(ent);
 
 #ifndef NO_BOTS
-	ACEIT_RebuildPlayerList();
+    	ACEIT_RebuildPlayerList();
+		StatBotCheck();
 #endif
 
 	// locate ent at a spawn point
@@ -3088,11 +3101,6 @@ void ClientDisconnect(edict_t * ent)
 
 	gi.bprintf(PRINT_HIGH, "%s disconnected\n", ent->client->pers.netname);
 	IRC_printf(IRC_T_SERVER, "%n disconnected", ent->client->pers.netname);
-	//Stats begin
-	//Get client stats when disconnected and not in intermission as stats are printed during intermission already
-	//if (stat_logs->value && !ltk_loadbots->value && !level.intermission_framenum) {
-	//	LogEndMatchStats();
-	//}
 
 	if( !teamplay->value && !ent->client->pers.spectator )
 	{
@@ -3145,6 +3153,7 @@ void ClientDisconnect(edict_t * ent)
 	ent->is_bot = false;
 	ent->think = NULL;
 	ACEIT_RebuildPlayerList();
+	StatBotCheck();
 #endif
 }
 
@@ -3496,9 +3505,9 @@ void ClientThink(edict_t * ent, usercmd_t * ucmd)
 		}
 	}
 
-	if( ucmd->forwardmove || ucmd->sidemove || client->oldbuttons != client->buttons
-		|| (ent->solid == SOLID_NOT && ent->deadflag != DEAD_DEAD) )  // No idle noises at round start.
-		client->resp.idletime = 0;
+	if( ucmd->forwardmove || ucmd->sidemove || (client->oldbuttons != client->buttons)
+		|| ((ent->solid == SOLID_NOT) && (ent->deadflag != DEAD_DEAD)) ) // No idle noises at round start.
+			client->resp.idletime = 0;
 	else if( ! client->resp.idletime )
 		client->resp.idletime = level.framenum;
 }
@@ -3658,18 +3667,30 @@ void ClientBeginServerFrame(edict_t * ent)
 
 	if (ent->solid != SOLID_NOT)
 	{
-		int idleframes;
+		int idleframes = client->resp.idletime ? (level.framenum - client->resp.idletime) : 0;
 
 		if( client->punch_desired && ! client->jumping && ! lights_camera_action && ! client->uvTime )
 			punch_attack( ent );
 		client->punch_desired = false;
 
-		idleframes = ppl_idletime->value * HZ;
-		if( (idleframes > 0) && client->resp.idletime && IS_ALIVE(ent) && (level.framenum >= client->resp.idletime + idleframes) )
-		{
+		if( (ppl_idletime->value > 0) && idleframes && (idleframes % (int)(ppl_idletime->value * HZ) == 0) )
 			//plays a random sound/insane sound, insane1-9.wav
 			gi.sound( ent, CHAN_VOICE, gi.soundindex(va( "insane/insane%i.wav", rand() % 9 + 1 )), 1, ATTN_NORM, 0 );
+
+		if( (sv_idleremove->value > 0) && (idleframes > (sv_idleremove->value * HZ)) && client->resp.team )
+		{
+			// Removes member from team once sv_idleremove value in seconds has been reached
+			int idler_team = client->resp.team;
+			if( teamplay->value )
+				LeaveTeam( ent );
+			if( matchmode->value )
+			{
+				MM_LeftTeam( ent );
+				teams[ idler_team ].ready = 0;
+			}
 			client->resp.idletime = 0;
+			gi.dprintf( "%s has been removed from play due to reaching the sv_idleremove timer of %i seconds\n",
+				client->pers.netname, (int) sv_idleremove->value );
 		}
 
 		if (client->autoreloading && (client->weaponstate == WEAPON_END_MAG)

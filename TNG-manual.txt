@@ -188,6 +188,15 @@ Features
 
   Commands:
   llsound [0/1] - When on (1), Low Lag Sounds will be used.
+  Note: This functionality has been enhanced for AQtion, if this is disabled (0) then all weapon sounds will
+  retain standard functionality and all clients will be forced to use the same sound file (mk23fire.wav, for example).
+  If this is enabled (1), clients can adjust which sound file is played per weapon, based on the following cvars:
+    * cl_mk23_sound
+    * cl_mp5_sound
+    * cl_m4_sound
+    * cl_m3_sound
+    * cl_hc_sound
+    * cl_ssg_sound
 
 * Announcer
   The announcer that says "Lights, Camera, Action!" has his vocabulary increased by several words, announcing
@@ -368,6 +377,14 @@ Features
 
   Commands:
   ppl_idletime [#] - Allowed idle time in seconds before a client will start to make sounds. 0 to turn it off.
+
+* Anti Idle
+  To help with problem idlers, use this feature to remove them from their teams so that someone else can join in without 
+  needing to votekick.  This affects teamplay modes only, as regular DM does not use teams. If you want to remove in DM mode, use sv_idlekick.
+
+  Commands:
+  sv_idleremove [#] - Allow idle time in seconds before a player gets removed from their team.  Suggested this be a value over 60.
+  Set to 0 to disable.
 
 * Gibs
   Gibs are a rewarding sight for successful headshots. TNG offers a variable which can turn gibs on headshots
@@ -596,6 +613,9 @@ Features
   limp_nopred [0/1] - client cvar, clients can set this to force on or off movement prediction when taking leg damage.
   Set to "0" for classic behavior, set to "1" to fix the jitter
 
+* Force Spawn items
+  g_spawn_items [0/1] - server cvar, set to "1" to allow for item/ammo/weapon spawns in games that you choose your starting weapon,
+  for example, dm_choose, teamplay, etc.  Forced set to "0" for matchmode.  Set "0" for normal play.
 
 --------------------------------------------------------------------------------------------------------------------
 Contact Information

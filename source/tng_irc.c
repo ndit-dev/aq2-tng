@@ -16,7 +16,7 @@
 #ifdef WIN32
 #include <io.h>
 #include <winsock2.h>
-#define bzero(a,b)		memset(a,0,b)
+#define bzero(a,b) memset(a,0,b)
 #else
 #include <unistd.h>
 #include <sys/types.h>
@@ -277,18 +277,17 @@ irc_parse ( void )
   
   if (strlen (irc_data.input)) {
     if (ircdebug->value)
-      gi.dprintf ("IRC: << %s\n", irc_data.input);
-
+		gi.dprintf ("IRC: << %s\n", irc_data.input);
     if (*irc_data.input == ':') {
       for ( pos=1; irc_data.input[pos]; pos++) {
-	if (irc_data.input[pos] == ' ') {
-	  break;
-	} else {
-	  wer[pos-1] = irc_data.input[pos];
+		if (irc_data.input[pos] == ' ') {
+			break;
+		} else {
+			wer[pos-1] = irc_data.input[pos];
+		}
 	}
-      }
-      wer[pos-1] = 0;
-      pos++;
+		wer[pos-1] = 0;
+		pos++;
 
       if (Q_strnicmp (wer, irc_data.ircuser, strlen(irc_data.ircuser)) == 0) {
 	cp = strchr(irc_data.input, ' ');

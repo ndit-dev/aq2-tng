@@ -739,6 +739,7 @@ typedef struct
   int gamemode;
   int gamemodeflags;
   int roundNum;
+  qboolean ai_ent_found;
 }
 game_locals_t;
 
@@ -949,11 +950,12 @@ extern int sm_meat_index;
 #define GM_CTF 2
 #define GM_TOURNEY 3
 #define GM_DEATHMATCH 4
+#define GM_DOMINATION 5
 
 // Game Mode Flags
 #define GMF_NONE 0
 #define GMF_3TEAMS 1
-#define GMF_DOMINATION 2
+//#define NEW_MODE 2       // If new game mode flags are created, use 2 for its value first
 #define GMF_DARKMATCH 4
 #define GMF_MATCHMODE 8
 
@@ -997,8 +999,7 @@ extern cvar_t *hud_items_cycle;
 extern cvar_t *noscore;
 extern cvar_t *hud_noscore;
 extern cvar_t *use_newscore;
-extern cvar_t *scores2teamplay;
-extern cvar_t *scores2ctf;
+extern cvar_t *scoreboard;
 extern cvar_t *actionversion;
 #ifndef NO_BOTS
 extern cvar_t *ltk_jumpy;
@@ -1007,6 +1008,7 @@ extern cvar_t *use_voice;
 extern cvar_t *ppl_idletime;
 extern cvar_t *use_tourney;
 extern cvar_t *use_3teams;
+extern cvar_t *use_randoms; // Random weapons and items mode
 extern cvar_t *use_kickvote;
 extern cvar_t *mv_public;
 extern cvar_t *vk_public;
@@ -1162,6 +1164,9 @@ extern cvar_t *e_enhancedSlippers;
 
 // END AQ2 ETE
 
+// 2023
+extern cvar_t *use_killcounts;
+
 #ifdef AQTION_EXTENSION
 extern int (*engine_Client_GetVersion)(edict_t *ent);
 extern int (*engine_Client_GetProtocol)(edict_t *ent);
@@ -1204,11 +1209,16 @@ void  CvarSync_Set(int index, const char *name, const char *val);
 
 // 2022
 extern cvar_t *sv_limp_highping;
-extern cvar_t *server_id;
-extern cvar_t *stat_logs;
-extern cvar_t *mapvote_next_limit;
-extern cvar_t *stat_apikey;
-extern cvar_t *stat_url;
+extern cvar_t *server_id; // Unique server_id
+extern cvar_t *stat_logs; // Enables/disables logging of stats
+extern cvar_t *mapvote_next_limit; // Time left that disables map voting
+extern cvar_t *stat_apikey; // Stats URL key
+extern cvar_t *stat_url; // Stats URL endpoint
+extern cvar_t *g_spawn_items; // Enables item spawning in GS_WEAPONCHOOSE games
+extern cvar_t *gm; // Gamemode
+extern cvar_t *gmf; // Gamemodeflags
+extern cvar_t *sv_idleremove; // Remove idlers
+
 #ifdef AQTION_EXTENSION
 extern cvar_t *use_newirvision;		// enable new irvision (only highlight baddies)
 extern cvar_t *use_indicators;		// enable/allow indicators
@@ -1484,8 +1494,11 @@ void ED_CallSpawn( edict_t *ent );
 char* ED_NewString(char* string);
 void G_UpdateSpectatorStatusbar( void );
 void G_UpdatePlayerStatusbar( edict_t *ent, int force );
+int Gamemodeflag(void);
+int Gamemode(void);
+#if USE_AQTION
 void generate_uuid();
-
+#endif
 //
 // p_client.c
 //
@@ -1512,11 +1525,14 @@ void InitTookDamage(void);
 void ProduceShotgunDamageReport(edict_t*);
 
 //tng_stats.c
+void StatBotCheck(void);
+#ifdef USE_AQTION
 void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker);
 void LogWorldKill(edict_t *self);
 void LogMatch();
 void LogAward(char* steamid, char* discordid, int award);
 void LogEndMatchStats();
+#endif
 
 //============================================================================
 
@@ -1658,6 +1674,7 @@ typedef struct
   int team_wounds;
   
   int idletime;
+  int totalidletime;
   int tourneynumber;
   edict_t *kickvote;
 
@@ -1678,7 +1695,7 @@ typedef struct
   int streakHSHighest;				//Highest headshots in a Row
 
   int hitsLocations[LOC_MAX];		//Number of hits for different locations
-  gunStats_t gunstats[MAX_GUNSTAT]; //Number of shots/hits for different guns
+  gunStats_t gunstats[MOD_TOTAL]; //Number of shots/hits for different guns, adjusted to MOD_TOTAL to allow grenade, kick and punch stats
 
   //AQ2:TNG - Slicer: Video Checking and further Cheat cheking vars
   char vidref[16];
@@ -1687,6 +1704,7 @@ typedef struct
   float glmodulate;
   float glclear;
   float gldynamic;
+  float glbrightness;
   qboolean checked;
   int checkframe[3];
 
