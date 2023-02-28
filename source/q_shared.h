@@ -1436,4 +1436,15 @@ typedef struct
 }
 player_state_t;
 
+
+// Reki : Cvar Sync info shared between engine and game
+#define CVARSYNC_MAXSIZE	64
+#define CVARSYNC_MAX		32
+typedef struct {
+	char name[CVARSYNC_MAXSIZE];
+	char value[CVARSYNC_MAXSIZE];
+} cvarsync_t;
+
+typedef char cvarsyncvalue_t[CVARSYNC_MAXSIZE];
+
 #endif
