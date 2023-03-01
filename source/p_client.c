@@ -2648,12 +2648,21 @@ void PutClientInServer(edict_t * ent)
 		ent->solid = SOLID_NOT;
 		ent->svflags |= SVF_NOCLIENT;
 		ent->client->ps.gunindex = 0;
+
+#ifdef AQTION_EXTENSION
+		if (!ent->client->resp.team)
+			HUD_SetType(ent, 1);
+#endif
 		gi.linkentity(ent);
 		return;
 	}
 
 #ifndef NO_BOTS
 	}  // end if( respawn )
+#endif
+
+#ifdef AQTION_EXTENSION
+	HUD_SetType(ent, -1);
 #endif
 
 	if (!teamplay->value) {	// this handles telefrags...
@@ -2717,7 +2726,7 @@ void ClientBeginDeathmatch(edict_t * ent)
 
 	ent->client->resp.enterframe = level.framenum;
 	ent->client->resp.gldynamic = 1;
-
+	
 #ifdef AQTION_EXTENSION
 	if (teamplay->value)
 	{
@@ -2725,7 +2734,7 @@ void ClientBeginDeathmatch(edict_t * ent)
 	}
 	else
 	{
-		HUD_SetType(ent, 0);
+		HUD_SetType(ent, -1);
 	}
 #endif
 
@@ -2769,7 +2778,9 @@ void ClientBeginDeathmatch(edict_t * ent)
 
 #ifndef NO_BOTS
     	ACEIT_RebuildPlayerList();
+#if USE_AQTION
 		StatBotCheck();
+#endif
 #endif
 
 	// locate ent at a spawn point
@@ -3153,7 +3164,9 @@ void ClientDisconnect(edict_t * ent)
 	ent->is_bot = false;
 	ent->think = NULL;
 	ACEIT_RebuildPlayerList();
+#if USE_AQTION
 	StatBotCheck();
+#endif
 #endif
 }
 
@@ -3540,7 +3553,7 @@ void ClientBeginServerFrame(edict_t * ent)
 	// update dimension mask for team-only entities
 	client->dimension_observe = 1 | (1 << client->resp.team);
 
-	if (client->pers.hud_type)
+	if (client->resp.hud_type == 1)
 	{
 		client->dimension_observe |= 0xE; // true spectators can see all teams
 		HUD_SpectatorUpdate(ent);

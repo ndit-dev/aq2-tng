@@ -645,19 +645,24 @@ void G_SetStats (edict_t * ent)
 
 void HUD_SetType(edict_t *clent, int type)
 {
-	if (clent->client->pers.hud_type == type)
+	if (clent->client->resp.hud_type == type)
 		return;
-
-	if (type == 0)
+	
+	if (type == -1)
 		HUD_ClientSetup(clent);
-	else
+	else if (type == 1)
 		HUD_SpectatorSetup(clent);
+	else
+	{
+		Ghud_ClearForClient(clent);
+		clent->client->resp.hud_type = 0;
+	}
 }
 
 void HUD_ClientSetup(edict_t *clent)
 {
 	Ghud_ClearForClient(clent);
-	clent->client->pers.hud_type = 0;
+	clent->client->resp.hud_type = -1;
 
 }
 
@@ -670,9 +675,9 @@ void HUD_ClientUpdate(edict_t *clent)
 void HUD_SpectatorSetup(edict_t *clent)
 {
 	Ghud_ClearForClient(clent);
-	clent->client->pers.hud_type = 1;
+	clent->client->resp.hud_type = 1;
 
-	int *hud = clent->client->pers.hud_items;
+	int *hud = clent->client->resp.hud_items;
 
 	if (teamplay->value && spectator_hud->value)
 	{
@@ -756,7 +761,7 @@ void HUD_SpectatorUpdate(edict_t *clent)
 {
 	if (teamplay->value && spectator_hud->value)
 	{
-		int *hud = clent->client->pers.hud_items;
+		int *hud = clent->client->resp.hud_items;
 
 		if (!(clent->client->pers.spec_flags & SPECFL_SPECHUD_NEW)) // hide all elements since client doesn't want them
 		{
@@ -808,6 +813,8 @@ void HUD_SpectatorUpdate(edict_t *clent)
 
 
 		// team 1 (red team)
+		Ghud_SetFlags(clent, hud[h_team_l], 0);
+		Ghud_SetFlags(clent, hud[h_team_l_num], 0);
 		Ghud_SetInt(clent, hud[h_team_l_num], teams[TEAM1].score);
 
 		for (int i = 0; i < 6; i++)
@@ -861,6 +868,8 @@ void HUD_SpectatorUpdate(edict_t *clent)
 
 
 		// team 2 (blue team)
+		Ghud_SetFlags(clent, hud[h_team_r], 0);
+		Ghud_SetFlags(clent, hud[h_team_r_num], 0);
 		Ghud_SetInt(clent, hud[h_team_r_num], teams[TEAM2].score);
 		if (teams[TEAM2].score >= 10) // gotta readjust size for justifying purposes
 			Ghud_SetSize(clent, hud[h_team_r_num], 2, 0);
