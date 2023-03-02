@@ -1229,7 +1229,7 @@ void JoinTeam (edict_t * ent, int desired_team, int skip_menuclose)
 	if (desired_team == NOTEAM)
 		HUD_SetType(ent, 1);
 	else
-		HUD_SetType(ent, 0);
+		HUD_SetType(ent, -1);
 #endif
 
 	if (level.intermission_framenum)

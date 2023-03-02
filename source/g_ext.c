@@ -60,6 +60,13 @@ trace_t q_gameabi XERP_trace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end)
 
 int G_customizeentityforclient(edict_t *clent, edict_t *ent, entity_state_t *state)
 {
+	if (!clent) // don't touch mvds
+	{
+		if (!strcmp(ent->classname, "ind_arrow"))
+			return false;
+		return true;
+	}
+
 	// first check visibility masks
 	if (!(max(1, ent->dimension_visible) & max(1, clent->client->dimension_observe)))
 		return false;

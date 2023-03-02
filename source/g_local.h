@@ -1623,11 +1623,6 @@ typedef struct
 	int id;			// id command on or off
 	int irvision;			// ir on or off (only matters if player has ir device, currently bandolier)
 
-#ifdef AQTION_EXTENSION
-	int	hud_items[64];
-	int hud_type;
-#endif
-
 	ignorelist_t ignorelist;
 }
 client_persistant_t;
@@ -1715,6 +1710,11 @@ typedef struct
   vec3_t jmp_teleport_origin;
   vec3_t jmp_teleport_v_angle;
   qboolean jmp_teleport_ducked;
+
+#ifdef AQTION_EXTENSION
+  int	hud_items[64];
+  int	hud_type;
+#endif
 
   //char skin[MAX_SKINLEN];
 }
