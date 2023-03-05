@@ -805,6 +805,9 @@ void HUD_SpectatorUpdate(edict_t *clent)
 			if (!cl->resp.team)
 				continue;
 
+			if (cl->resp.subteam)
+				continue;
+
 			if (cl->resp.team == TEAM1)
 			{
 				if (team1Clients >= 6)
