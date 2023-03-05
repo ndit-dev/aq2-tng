@@ -1367,7 +1367,7 @@ void ClientEndServerFrame (edict_t * ent)
 		//
 
 		current_client->arrow->s.modelindex = level.model_arrow + (current_client->resp.team - 1);
-		current_client->arrow->s.renderfx = RF_TRANSLUCENT | RF_FULLBRIGHT | RF_DEPTHHACK;
+		current_client->arrow->s.renderfx = RF_INDICATOR;
 		current_client->arrow->dimension_visible = (1 << current_client->resp.team);
 	}
 #endif
