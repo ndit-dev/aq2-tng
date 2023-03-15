@@ -762,19 +762,19 @@ void attract_mode_bot_check(void)
 			randombotname = bot->client->pers.netname;
     	}
 	}
-
+	gi.dprintf("Seg 3");
 	adjustment = (tgt_bot_count - player_count);
 
 	// Add Bots
 	// If this evaluates as true, then add the number of bots
 	// we are short, regardless of attract_mode 1 or 2
-	gi.dprintf("Seg 3");
+	gi.dprintf("Seg 4");
 	if(player_count < tgt_bot_count) {
 		gi.dprintf("tgt_bot_count is %d, player_count is %d\n", tgt_bot_count, player_count);
 		attract_mode_add(adjustment);
 	}
 
-	gi.dprintf("Seg 4");
+	gi.dprintf("Seg 5");
 	// Remove Bots
 
 	// If no bots, don't do anything
