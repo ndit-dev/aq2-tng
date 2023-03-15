@@ -67,6 +67,7 @@ void ACEIT_RebuildPlayerList( void )
 	size_t i;
 	int bcount = 0;
 	char *bname;
+	char bot_names[32][32] = {0};
 
 	num_players = 0;
 
@@ -82,9 +83,10 @@ void ACEIT_RebuildPlayerList( void )
 		if(players[i]->is_bot){
 			bname = ent->client->pers.netname;
 			bcount++;
-			strncpy(game.bot_names, bname, sizeof(bname));
+			strncpy(bot_names, bname, sizeof(bname));
 		}
 	}
+	strncpy(game.bot_names, bot_names, sizeof(bot_names));
 	game.bot_count = bcount;
 }
 
