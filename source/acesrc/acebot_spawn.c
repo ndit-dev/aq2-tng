@@ -728,7 +728,7 @@ void attract_mode_add(int adjust)
 
 void attract_mode_bot_check(void)
 {
-	int i, player_count, cur_bot_count, tgt_bot_count;
+	int i, cur_bot_count, tgt_bot_count;
 	int team1, team2, team3;
 	int maxclientsminus1, player_count, adjustment;
 	char *randombotname;
@@ -767,7 +767,7 @@ void attract_mode_bot_check(void)
 	// If this evaluates as true, then add the number of bots
 	// we are short, regardless of attract_mode 1 or 2
 	if(player_count < tgt_bot_count) {
-		gi.dprintf("tgt_bot_count is %d, player_count is %d, num_players is %s\n", tgt_bot_count, player_count, num_players);
+		gi.dprintf("tgt_bot_count is %d, player_count is %d\n", tgt_bot_count, player_count);
 		attract_mode_add(adjustment);
 	}
 
@@ -792,7 +792,7 @@ void attract_mode_bot_check(void)
 		// Check if the number of players is equal to or
 		// more than the maxclients minus 1 (to keep an open slot)
 		// the start removing bots
-		if(num_players >= maxclientsminus1){
+		if(player_count >= maxclientsminus1){
 			ACESP_RemoveBot(randombotname);
 		}
 	}
