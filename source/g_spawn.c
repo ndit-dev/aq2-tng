@@ -1262,7 +1262,11 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	// Normal operations, load LTK bots as normal
 	if (!attract_mode->value) {
 		ACESP_LoadBotConfig();
+	} else {
+		// Load initial bots
+		attract_mode_bot_check();
 	}
+
 #endif
 }
 
