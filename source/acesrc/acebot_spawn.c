@@ -762,6 +762,8 @@ void attract_mode_bot_check(void)
 	real_player_count = (num_players - game.bot_count);
 	diff = (tgt_bot_count - game.bot_count);
 
+	// Sanity check here, in case something else edits these values
+	// the diff can never be less than 0
 	if(diff < 0){
 		diff = 0;
 	}
