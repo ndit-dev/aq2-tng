@@ -728,9 +728,9 @@ void attract_mode_add(int adjust)
 
 void attract_mode_bot_check(void)
 {
-	int i, cur_bot_count, tgt_bot_count;
+	int i, player_count, cur_bot_count, tgt_bot_count;
 	int team1, team2, team3;
-	int maxclientsminus1, real_player_count, adjustment;
+	int maxclientsminus1, player_count, adjustment;
 	char *randombotname;
 	edict_t *bot;
 
@@ -751,20 +751,23 @@ void attract_mode_bot_check(void)
 		}
 	}
 	// Gets the current bot count
-    for (int i = 0; i < num_players; i++){
+    for (int i = 0; i < game.maxclients; i++){
+		if (!players[i]->is_bot){
+			player_count++;
+		}
         if (players[i]->is_bot){
 			cur_bot_count++;
 			randombotname = bot->client->pers.netname;
     	}
 	}
 
-	real_player_count = (num_players - cur_bot_count);
-	adjustment = (tgt_bot_count - real_player_count);
+	adjustment = (tgt_bot_count - player_count);
 
 	// Add Bots
 	// If this evaluates as true, then add the number of bots
 	// we are short, regardless of attract_mode 1 or 2
-	if(real_player_count < tgt_bot_count) {
+	if(player_count < tgt_bot_count) {
+		gi.dprintf("tgt_bot_count is %d, real_player_count is %d, num_players is %s\n", tgt_bot_count, real_player_count, num_players);
 		attract_mode_add(adjustment);
 	}
 
@@ -776,7 +779,7 @@ void attract_mode_bot_check(void)
 	}
 
 	if(attract_mode->value == 1) {
-		if(real_player_count > tgt_bot_count) {
+		if(player_count > tgt_bot_count) {
 			ACESP_RemoveBot(randombotname);
 		} else {
 			// We're at equilibrium, there are as many real
