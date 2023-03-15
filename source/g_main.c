@@ -499,6 +499,7 @@ cvar_t *use_killcounts;  // Display kill counts in console to clients on frag
 cvar_t *attract_mode;
 cvar_t *attract_mode_botcount;
 cvar_t *attract_mode_delay;
+cvar_t *attract_mode_team;
 
 #ifdef AQTION_EXTENSION
 cvar_t *use_newirvision;

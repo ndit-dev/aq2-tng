@@ -574,6 +574,7 @@ void InitGame( void )
 	attract_mode = gi.cvar("attract_mode", "0", 0);
 	attract_mode_botcount = gi.cvar("attract_mode_botcount", "6", 0);
 	attract_mode_delay = gi.cvar("attract_mode_delay", "30", 0);
+	attract_mode_team = gi.cvar("attract_mode_team", "0", 0);
 
 	// new AQtion Extension cvars
 #ifdef AQTION_EXTENSION

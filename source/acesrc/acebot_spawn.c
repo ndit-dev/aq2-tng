@@ -332,10 +332,13 @@ edict_t *ACESP_SpawnBotFromConfig( char *inString )
 	Info_SetValueForKey( userinfo, "spectator", "0" ); // NOT a spectator
 	Info_SetValueForKey( userinfo, "gender", gender );
 	
-	Com_sprintf( team_str, 2, "%i", team );
-	
-	bot = ACESP_SpawnBot( team_str, name, modelskin, userinfo );
-	
+	// Only spawn from config if attract mode is disabled
+	if (!attract_mode->value) {
+		bot = ACESP_SpawnBot( team_str, name, modelskin, userinfo );
+	} else {
+		gi.dprintf("Warning: attract_mode is enabled, I am not spawning bots from config.\n");
+	}
+
 	// FIXME: This might have to happen earlier to take effect.
 	if( bot )
 	{
@@ -703,6 +706,58 @@ void ACESP_RemoveBot(char *name)
 		gi.bprintf (PRINT_MEDIUM, "No bot removed\n", name);
 
 //	ACESP_SaveBots(); // Save them again
+}
+
+void attract_mode_begin(void)
+{
+	int i, bot_team, bot_count;
+
+	bot_team = (int)attract_mode_team->value;
+	bot_count = (int)attract_mode_botcount->value;
+
+	for( i = 0; i < bot_count; i ++ )
+		if(teamplay->value) {
+			ACESP_SpawnBot( bot_team, NULL, NULL, NULL );
+		} else {
+			ACESP_SpawnBot (NULL, NULL, NULL, NULL);
+		}
+}
+
+void attract_mode_bot_check(void)
+{
+	int i, cur_bot_count, tgt_bot_count, team1, team2, team3;
+	tgt_bot_count = (int)attract_mode_botcount->value;
+
+	// No one is in the server, no check needs to be made
+	if (num_players == 0)
+		return;
+		
+	// Gets the players per team if teamplay is enabled
+	if (teamplay->value) {
+		for (i = 0; i < game.maxclients; i++)
+		{
+			if (!g_edicts[i + 1].inuse)
+				continue;
+			if (game.clients[i].resp.team == TEAM1)
+				team1++;
+			else if (game.clients[i].resp.team == TEAM2)
+				team2++;
+			else if (game.clients[i].resp.team == TEAM3)
+				team3++;
+		}
+	}
+
+    for (int i = 0; i < num_players; i++)
+    {
+        if (players[i]->is_bot)
+			cur_bot_count++;
+    }
+
+	// If the current bot count is lower than the attract mode count
+	// and the number of players is less than the max clients, then...
+	if((cur_bot_count < tgt_bot_count) && (num_players < game.maxclients)) {
+		attract_mode_begin();
+	}
 }
 
 //====================================
