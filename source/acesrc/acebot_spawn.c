@@ -711,12 +711,13 @@ void ACESP_RemoveBot(char *name)
 void attract_mode_add(int adjust)
 {
 	int i, bot_team;
+	char bot_team;
 
 	bot_team = (int)attract_mode_team->value;
 
 	for( i = 0; i < adjust; i ++ )
 		if(teamplay->value) {
-			ACESP_SpawnBot(bot_team, NULL, NULL, NULL);
+			ACESP_SpawnBot(atoi(bot_team), NULL, NULL, NULL);
 		} else {
 			ACESP_SpawnBot(NULL, NULL, NULL, NULL);
 		}
