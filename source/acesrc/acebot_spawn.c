@@ -715,6 +715,7 @@ void ACESP_RemoveBot(char *name)
 void attract_mode_add(int adjust)
 {
 	int i;
+	
 	for( i = 0; i < adjust; i ++ ) {
 		ACESP_SpawnBot(NULL, NULL, NULL, NULL);
 	}
@@ -731,12 +732,11 @@ void attract_mode_bot_check(void)
 	int team1 = 0;
 	int team2 = 0;
 	int team3 = 0;
-	int i, real_player_count, adjustment;
+	int i, real_player_count, diff;
 	int maxclientsminus1 = (game.maxclients - 1);
 	int tgt_bot_count = (int)attract_mode_botcount->value;
 	char *bname;
 	char bot_names[32][32] = {0};
-	edict_t *bot;
 
 	gi.dprintf("Seg 1\n");
 	// Gets the players per team if teamplay is enabled
@@ -760,16 +760,23 @@ void attract_mode_bot_check(void)
 	gi.dprintf("Seg 2\n");
 
 	real_player_count = (num_players - game.bot_count);
-	adjustment = (tgt_bot_count - real_player_count);
+	diff = (tgt_bot_count - game.bot_count);
 
-	gi.dprintf("tgt_bot_count is %d, real_player_count is %d, num_players is %d, game.bot_count is %d, adjustment value is %d\n", tgt_bot_count, real_player_count, num_players, game.bot_count, adjustment);
+	gi.dprintf("tgt_bot_count is %d, real_player_count is %d, num_players is %d, game.bot_count is %d, diff value is %d\n", tgt_bot_count, real_player_count, num_players, game.bot_count, diff);
 
 	// Add Bots
 	// If this evaluates as true, then add the number of bots
 	// we are short, regardless of attract_mode 1 or 2
 	gi.dprintf("Seg 3\n");
-	if(real_player_count < tgt_bot_count) {
-		attract_mode_add(adjustment);
+
+	// We've reached our bot count, do nothing
+	if(tgt_bot_count == game.bot_count) {
+		return;
+	}
+
+	// We have fewer than our bot count, add the difference
+	if(tgt_bot_count > game.bot_count) {
+		attract_mode_add(diff);
 	}
 
 	gi.dprintf("Seg 4\n");
@@ -784,6 +791,7 @@ void attract_mode_bot_check(void)
 	// a bot name as a parameter
 	if (num_players > 0) {
 		int j = 0;
+		edict_t *bot;
 		for (int i = 0; i < num_players; i++){
 			if (players[i]->is_bot){
 				bname = bot->client->pers.netname;
@@ -792,8 +800,8 @@ void attract_mode_bot_check(void)
 			}
 		}
 	}
-
-	gi.dprintf("Bot names: %s", bot_names);
+	gi.dprintf("Seg 5\n");
+	gi.dprintf("Bot names: %s\n", bot_names);
 
 	if(attract_mode->value == 1) {
 		if(real_player_count > tgt_bot_count) {
@@ -803,6 +811,7 @@ void attract_mode_bot_check(void)
 			// players as attract_mode_botcount, do nothing
 			return;
 		}
+	gi.dprintf("Seg 6\n");
 
 	} else if (attract_mode->value == 2) {
 
