@@ -708,29 +708,36 @@ void ACESP_RemoveBot(char *name)
 //	ACESP_SaveBots(); // Save them again
 }
 
-void attract_mode_begin(void)
+void attract_mode_add(int adjust)
 {
-	int i, bot_team, bot_count;
+	int i, bot_team;
 
 	bot_team = (int)attract_mode_team->value;
-	bot_count = (int)attract_mode_botcount->value;
 
-	for( i = 0; i < bot_count; i ++ )
+	for( i = 0; i < adjust; i ++ )
 		if(teamplay->value) {
-			ACESP_SpawnBot( bot_team, NULL, NULL, NULL );
+			ACESP_SpawnBot(bot_team, NULL, NULL, NULL);
 		} else {
-			ACESP_SpawnBot (NULL, NULL, NULL, NULL);
+			ACESP_SpawnBot(NULL, NULL, NULL, NULL);
 		}
 }
 
+// void attract_mode_remove(char botname)
+// {
+// 	int i, bot_team, bot_count;
+// 	ACESP_RemoveBot(botname);
+// }
+
 void attract_mode_bot_check(void)
 {
-	int i, cur_bot_count, tgt_bot_count, team1, team2, team3;
-	tgt_bot_count = (int)attract_mode_botcount->value;
+	int i, cur_bot_count, tgt_bot_count;
+	int team1, team2, team3;
+	int maxclientsminus1, real_player_count, adjustment;
+	char *randombotname;
+	edict_t *bot;
 
-	// No one is in the server, no check needs to be made
-	if (num_players == 0)
-		return;
+	maxclientsminus1 = (game.maxclients - 1);
+	tgt_bot_count = (int)attract_mode_botcount->value;
 		
 	// Gets the players per team if teamplay is enabled
 	if (teamplay->value) {
@@ -746,18 +753,29 @@ void attract_mode_bot_check(void)
 				team3++;
 		}
 	}
-
-    for (int i = 0; i < num_players; i++)
-    {
+	// Gets the current bot count
+    for (int i = 0; i < num_players; i++) {
         if (players[i]->is_bot)
 			cur_bot_count++;
+			randombotname = bot->client->pers.netname;
     }
 
-	// If the current bot count is lower than the attract mode count
-	// and the number of players is less than the max clients, then...
-	if((cur_bot_count < tgt_bot_count) && (num_players < game.maxclients)) {
-		attract_mode_begin();
+	real_player_count = (num_players - cur_bot_count);
+	adjustment = (tgt_bot_count - real_player_count);
+	if(attract_mode->value == 1) {
+
+		if(real_player_count < tgt_bot_count) {
+			attract_mode_add(adjustment);
+		} else if(real_player_count > tgt_bot_count) {
+			ACESP_RemoveBot(randombotname);
+		} else {
+			// We're at equilibrium, there are as many real
+			// players as attract_mode_botcount, do nothing
+			return;
+		}
+
 	}
+
 }
 
 //====================================
