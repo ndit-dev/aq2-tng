@@ -762,11 +762,22 @@ void attract_mode_bot_check(void)
 
 	real_player_count = (num_players - cur_bot_count);
 	adjustment = (tgt_bot_count - real_player_count);
-	if(attract_mode->value == 1) {
 
-		if(real_player_count < tgt_bot_count) {
+	// Add Bots
+	// If this evaluates as true, then add the number of bots
+	// we are short, regardless of attract_mode 1 or 2
+	if(real_player_count < tgt_bot_count) {
 			attract_mode_add(adjustment);
-		} else if(real_player_count > tgt_bot_count) {
+
+	// Remove Bots
+
+	// If no bots, don't do anything
+	if(cur_bot_count == 0) {
+		return;
+	}
+
+	if(attract_mode->value == 1) {
+		if(real_player_count > tgt_bot_count) {
 			ACESP_RemoveBot(randombotname);
 		} else {
 			// We're at equilibrium, there are as many real
@@ -774,6 +785,14 @@ void attract_mode_bot_check(void)
 			return;
 		}
 
+	} else if (attract_mode->value == 2) {
+
+		// Check if the number of players is equal to or
+		// more than the maxclients minus 1 (to keep an open slot)
+		// the start removing bots
+		if(num_players >= maxclientsminus1){
+			ACESP_RemoveBot(randombotname);
+		}
 	}
 
 }
