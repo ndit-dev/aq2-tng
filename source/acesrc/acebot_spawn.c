@@ -757,6 +757,7 @@ void attract_mode_bot_check(void)
 		if (!players[i]->is_bot){
 			player_count++;
 		}
+		gi.dprintf("Seg 2.5");
         if (players[i]->is_bot){
 			cur_bot_count++;
 			randombotname = bot->client->pers.netname;
