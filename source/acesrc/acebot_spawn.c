@@ -728,7 +728,8 @@ void attract_mode_add(int adjust)
 
 void attract_mode_bot_check(void)
 {
-	int i, real_player_count, cur_bot_count, tgt_bot_count;
+	int cur_bot_count = 0;
+	int i, real_player_count, tgt_bot_count;
 	int team1, team2, team3;
 	int maxclientsminus1, adjustment;
 	char *randombotname;
@@ -756,11 +757,13 @@ void attract_mode_bot_check(void)
 	}
 	gi.dprintf("Seg 2");
 	// Gets the current bot count
-    for (int i = 0; i < game.maxclients; i++){
-        if (players[i]->is_bot){
-			cur_bot_count++;
-			randombotname = bot->client->pers.netname;
-    	}
+	if (num_players > 0) {
+		for (int i = 0; i < num_players; i++){
+			if (players[i]->is_bot){
+				cur_bot_count++;
+				randombotname = bot->client->pers.netname;
+			}
+		}
 	}
 	gi.dprintf("Seg 3");
 
@@ -772,7 +775,6 @@ void attract_mode_bot_check(void)
 	// we are short, regardless of attract_mode 1 or 2
 	gi.dprintf("Seg 4");
 	if(real_player_count < tgt_bot_count) {
-		gi.dprintf("tgt_bot_count is %d, real_player_count is %d\n", tgt_bot_count, real_player_count);
 		attract_mode_add(adjustment);
 	}
 
@@ -783,6 +785,8 @@ void attract_mode_bot_check(void)
 	if(cur_bot_count == 0) {
 		return;
 	}
+
+	gi.dprintf("tgt_bot_count is %d, real_player_count is %d, num_players is %d, cur_bot_count is %d, adjustment value is %d\n", tgt_bot_count, real_player_count, num_players, cur_bot_count, adjustment);
 
 	if(attract_mode->value == 1) {
 		if(real_player_count > tgt_bot_count) {
