@@ -737,7 +737,7 @@ void attract_mode_bot_check(void)
 	char *randombotname;
 	edict_t *bot;
 
-	gi.dprintf("Seg 1");
+	gi.dprintf("Seg 1\n");
 	// Gets the players per team if teamplay is enabled
 	if (teamplay->value) {
 		for (i = 0; i < game.maxclients; i++){
@@ -756,7 +756,7 @@ void attract_mode_bot_check(void)
 		gi.dprintf("Team 1: %d - Team 2: %d, - Team 3: %d\n", team1, team2, team3);
 	}
 
-	gi.dprintf("Seg 2");
+	gi.dprintf("Seg 2\n");
 	// Gets the current bot count
 	// if (num_players > 0) {
 	// 	for (int i = 0; i < num_players; i++){
@@ -770,15 +770,18 @@ void attract_mode_bot_check(void)
 	real_player_count = (num_players - game.bot_count);
 	adjustment = (tgt_bot_count - real_player_count);
 
+	gi.dprintf("tgt_bot_count is %d, real_player_count is %d, num_players is %d, game.bot_count is %d, adjustment value is %d\n", tgt_bot_count, real_player_count, num_players, game.bot_count, adjustment);
+	gi.dprintf("Bot names: %s", game.bot_names);
+
 	// Add Bots
 	// If this evaluates as true, then add the number of bots
 	// we are short, regardless of attract_mode 1 or 2
-	gi.dprintf("Seg 4");
+	gi.dprintf("Seg 3\n");
 	if(real_player_count < tgt_bot_count) {
 		attract_mode_add(adjustment);
 	}
 
-	gi.dprintf("Seg 5");
+	gi.dprintf("Seg 4\n");
 	// Remove Bots
 
 	// If no bots, don't do anything
@@ -786,8 +789,7 @@ void attract_mode_bot_check(void)
 		return;
 	}
 
-	gi.dprintf("tgt_bot_count is %d, real_player_count is %d, num_players is %d, game.bot_count is %d, adjustment value is %d\n", tgt_bot_count, real_player_count, num_players, game.bot_count, adjustment);
-	gi.dprintf("Bot names: %s", game.bot_names);
+
 
 	if(attract_mode->value == 1) {
 		if(real_player_count > tgt_bot_count) {

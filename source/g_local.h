@@ -740,8 +740,8 @@ typedef struct
   int gamemodeflags;
   int roundNum;
   qboolean ai_ent_found;
-  int bot_count = 0;
-  char bot_names[32][16];
+  int bot_count;
+  char bot_names[32][32] = {0};
 }
 game_locals_t;
 
