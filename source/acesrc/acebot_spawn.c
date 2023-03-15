@@ -762,6 +762,10 @@ void attract_mode_bot_check(void)
 	real_player_count = (num_players - game.bot_count);
 	diff = (tgt_bot_count - game.bot_count);
 
+	if(diff < 0){
+		diff = 0;
+	}
+
 	gi.dprintf("tgt_bot_count is %d, real_player_count is %d, num_players is %d, game.bot_count is %d, diff value is %d\n", tgt_bot_count, real_player_count, num_players, game.bot_count, diff);
 
 	// Add Bots
@@ -789,23 +793,29 @@ void attract_mode_bot_check(void)
 
 	// Gather all bot names, because removebot requires
 	// a bot name as a parameter
-	if (num_players > 0) {
-		int j = 0;
-		edict_t *bot;
-		for (int i = 0; i < num_players; i++){
-			if (players[i]->is_bot){
-				bname = bot->client->pers.netname;
-				Q_strncpyz(bot_names[j], bname, sizeof(bname));
-				j++;
-			}
-		}
-	}
+	// if (num_players > 0) {
+	// 	int j = 0;
+	// 	edict_t *bot;
+	// 	for (int i = 0; i < num_players; i++){
+	// 		bot = g_edicts + i + 1;
+	// 		gi.dprintf("Seg 4.1\n");
+	// 		if (bot->is_bot){
+	// 			gi.dprintf("Seg 4.2\n");
+	// 			bname = bot->client->pers.netname;
+	// 			gi.dprintf("Seg 4.3\n");
+	// 			Q_strncpyz(bot_names[j], bname, sizeof(bname));
+	// 			gi.dprintf("Seg 4.4\n");
+	// 			j++;
+	// 			gi.dprintf("Seg 4.5\n");
+	// 		}
+	// 	}
+	// }
 	gi.dprintf("Seg 5\n");
-	gi.dprintf("Bot names: %s\n", bot_names);
+	//gi.dprintf("Bot names: %s\n", bot_names);
 
 	if(attract_mode->value == 1) {
 		if(real_player_count > tgt_bot_count) {
-			ACESP_RemoveBot(bot_names[0]);
+			ACESP_RemoveBot(NULL);
 		} else {
 			// We're at equilibrium, there are as many real
 			// players as attract_mode_botcount, do nothing
@@ -819,7 +829,7 @@ void attract_mode_bot_check(void)
 		// more than the maxclients minus 1 (to keep an open slot)
 		// the start removing bots
 		if(real_player_count >= maxclientsminus1){
-			ACESP_RemoveBot(bot_names[0]);
+			ACESP_RemoveBot(NULL);
 		}
 	}
 
