@@ -616,6 +616,10 @@ edict_t *ACESP_SpawnBot( char *team_str, char *name, char *skin, char *userinfo 
 			team = GetNextTeamNumber();
 		team_str = LocalTeamNames[ team ];
 	}
+
+	if(attract_mode->value){
+		team = (int)attract_mode_team->value;
+	}
 	
 	ACESP_PutClientInServer( bot, true, team );
 	
@@ -710,17 +714,10 @@ void ACESP_RemoveBot(char *name)
 
 void attract_mode_add(int adjust)
 {
-	int i, bot_team;
-	char bot_team;
-
-	bot_team = (int)attract_mode_team->value;
-
-	for( i = 0; i < adjust; i ++ )
-		if(teamplay->value) {
-			ACESP_SpawnBot(atoi(bot_team), NULL, NULL, NULL);
-		} else {
-			ACESP_SpawnBot(NULL, NULL, NULL, NULL);
-		}
+	int i;
+	for( i = 0; i < adjust; i ++ ) {
+		ACESP_SpawnBot(NULL, NULL, NULL, NULL);
+	}
 }
 
 // void attract_mode_remove(char botname)
@@ -742,8 +739,7 @@ void attract_mode_bot_check(void)
 		
 	// Gets the players per team if teamplay is enabled
 	if (teamplay->value) {
-		for (i = 0; i < game.maxclients; i++)
-		{
+		for (i = 0; i < game.maxclients; i++){
 			if (!g_edicts[i + 1].inuse)
 				continue;
 			if (game.clients[i].resp.team == TEAM1)
@@ -755,11 +751,12 @@ void attract_mode_bot_check(void)
 		}
 	}
 	// Gets the current bot count
-    for (int i = 0; i < num_players; i++) {
-        if (players[i]->is_bot)
+    for (int i = 0; i < num_players; i++){
+        if (players[i]->is_bot){
 			cur_bot_count++;
 			randombotname = bot->client->pers.netname;
-    }
+    	}
+	}
 
 	real_player_count = (num_players - cur_bot_count);
 	adjustment = (tgt_bot_count - real_player_count);
@@ -768,7 +765,8 @@ void attract_mode_bot_check(void)
 	// If this evaluates as true, then add the number of bots
 	// we are short, regardless of attract_mode 1 or 2
 	if(real_player_count < tgt_bot_count) {
-			attract_mode_add(adjustment);
+		attract_mode_add(adjustment);
+	}
 
 	// Remove Bots
 
