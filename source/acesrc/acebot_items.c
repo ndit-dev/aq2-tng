@@ -78,7 +78,7 @@ void ACEIT_RebuildPlayerList( void )
 			num_players ++;
 		}
 
-		if(players[i]->is_bot){
+		if(ent->is_bot){
 			bcount++;
 		}
 	}
