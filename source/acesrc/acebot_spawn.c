@@ -737,6 +737,7 @@ void attract_mode_bot_check(void)
 	maxclientsminus1 = (game.maxclients - 1);
 	tgt_bot_count = (int)attract_mode_botcount->value;
 		
+	gi.dprint("Seg 1");
 	// Gets the players per team if teamplay is enabled
 	if (teamplay->value) {
 		for (i = 0; i < game.maxclients; i++){
@@ -750,6 +751,7 @@ void attract_mode_bot_check(void)
 				team3++;
 		}
 	}
+	gi.dprint("Seg 2");
 	// Gets the current bot count
     for (int i = 0; i < game.maxclients; i++){
 		if (!players[i]->is_bot){
@@ -766,11 +768,13 @@ void attract_mode_bot_check(void)
 	// Add Bots
 	// If this evaluates as true, then add the number of bots
 	// we are short, regardless of attract_mode 1 or 2
+	gi.dprint("Seg 3");
 	if(player_count < tgt_bot_count) {
 		gi.dprintf("tgt_bot_count is %d, player_count is %d\n", tgt_bot_count, player_count);
 		attract_mode_add(adjustment);
 	}
 
+	gi.dprint("Seg 4");
 	// Remove Bots
 
 	// If no bots, don't do anything
