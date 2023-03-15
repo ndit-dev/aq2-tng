@@ -767,7 +767,7 @@ void attract_mode_bot_check(void)
 	// If this evaluates as true, then add the number of bots
 	// we are short, regardless of attract_mode 1 or 2
 	if(player_count < tgt_bot_count) {
-		gi.dprintf("tgt_bot_count is %d, real_player_count is %d, num_players is %s\n", tgt_bot_count, real_player_count, num_players);
+		gi.dprintf("tgt_bot_count is %d, player_count is %d, num_players is %s\n", tgt_bot_count, player_count, num_players);
 		attract_mode_add(adjustment);
 	}
 
