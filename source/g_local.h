@@ -740,6 +740,8 @@ typedef struct
   int gamemodeflags;
   int roundNum;
   qboolean ai_ent_found;
+  int bot_count = 0;
+  char bot_names[32][16];
 }
 game_locals_t;
 
@@ -2103,7 +2105,7 @@ struct edict_s
 
 	qboolean is_bot; 
 	qboolean is_jumping; 
-	qboolean is_triggering; 
+	qboolean is_triggering;
 	 
 	// For movement 
 	vec3_t move_vector;  

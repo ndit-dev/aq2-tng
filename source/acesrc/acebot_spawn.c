@@ -728,19 +728,15 @@ void attract_mode_add(int adjust)
 
 void attract_mode_bot_check(void)
 {
-	int cur_bot_count = 0;
-	int i, real_player_count, tgt_bot_count;
-	int team1, team2, team3;
-	int maxclientsminus1, adjustment;
+	int team1 = 0;
+	int team2 = 0;
+	int team3 = 0;
+	int i, real_player_count, adjustment;
+	int maxclientsminus1 = (game.maxclients - 1);
+	int tgt_bot_count = (int)attract_mode_botcount->value;
 	char *randombotname;
 	edict_t *bot;
 
-	// Rebuild the player list to populate num_players
-	ACEIT_RebuildPlayerList();
-
-	maxclientsminus1 = (game.maxclients - 1);
-	tgt_bot_count = (int)attract_mode_botcount->value;
-		
 	gi.dprintf("Seg 1");
 	// Gets the players per team if teamplay is enabled
 	if (teamplay->value) {
@@ -755,19 +751,23 @@ void attract_mode_bot_check(void)
 				team3++;
 		}
 	}
+
+	if (teamplay->value){
+		gi.dprintf("Team 1: %d - Team 2: %d, - Team 3: %d\n", team1, team2, team3);
+	}
+
 	gi.dprintf("Seg 2");
 	// Gets the current bot count
-	if (num_players > 0) {
-		for (int i = 0; i < num_players; i++){
-			if (players[i]->is_bot){
-				cur_bot_count++;
-				randombotname = bot->client->pers.netname;
-			}
-		}
-	}
-	gi.dprintf("Seg 3");
+	// if (num_players > 0) {
+	// 	for (int i = 0; i < num_players; i++){
+	// 		if (players[i]->is_bot){
+	// 			cur_bot_count++;
+	// 			randombotname = bot->client->pers.netname;
+	// 		}
+	// 	}
+	// }
 
-	real_player_count = (num_players - cur_bot_count);
+	real_player_count = (num_players - game.bot_count);
 	adjustment = (tgt_bot_count - real_player_count);
 
 	// Add Bots
@@ -782,11 +782,12 @@ void attract_mode_bot_check(void)
 	// Remove Bots
 
 	// If no bots, don't do anything
-	if(cur_bot_count == 0) {
+	if(game.bot_count == 0) {
 		return;
 	}
 
-	gi.dprintf("tgt_bot_count is %d, real_player_count is %d, num_players is %d, cur_bot_count is %d, adjustment value is %d\n", tgt_bot_count, real_player_count, num_players, cur_bot_count, adjustment);
+	gi.dprintf("tgt_bot_count is %d, real_player_count is %d, num_players is %d, game.bot_count is %d, adjustment value is %d\n", tgt_bot_count, real_player_count, num_players, game.bot_count, adjustment);
+	gi.dprintf("Bot names: %s", game.bot_names);
 
 	if(attract_mode->value == 1) {
 		if(real_player_count > tgt_bot_count) {
