@@ -712,21 +712,6 @@ void ACESP_RemoveBot(char *name)
 //	ACESP_SaveBots(); // Save them again
 }
 
-void attract_mode_add(int adjust)
-{
-	int i;
-	
-	for( i = 0; i < adjust; i ++ ) {
-		ACESP_SpawnBot(NULL, NULL, NULL, NULL);
-	}
-}
-
-// void attract_mode_remove(char botname)
-// {
-// 	int i, bot_team, bot_count;
-// 	ACESP_RemoveBot(botname);
-// }
-
 void attract_mode_bot_check(void)
 {
 	int team1 = 0;
@@ -782,6 +767,7 @@ void attract_mode_bot_check(void)
 	if(diff < 0){
 		// bot count changed, remove some bots!
 		ACESP_RemoveBot(NULL);
+		return;
 	}
 
 	if(attract_mode->value == 1) {
