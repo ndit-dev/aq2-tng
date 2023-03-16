@@ -2779,10 +2779,10 @@ void ClientBeginDeathmatch(edict_t * ent)
 #ifndef NO_BOTS
     	ACEIT_RebuildPlayerList();
 #if USE_AQTION
-		StatBotCheck();
 		if(attract_mode->value){
 			attract_mode_bot_check();
 		}
+		StatBotCheck();
 #endif
 #endif
 

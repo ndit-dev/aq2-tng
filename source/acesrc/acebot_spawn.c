@@ -735,8 +735,6 @@ void attract_mode_bot_check(void)
 	int i, real_player_count, diff;
 	int maxclientsminus1 = (game.maxclients - 1);
 	int tgt_bot_count = (int)attract_mode_botcount->value;
-	char *bname;
-	char bot_names[32][32] = {0};
 
 	gi.dprintf("Seg 1\n");
 	// Gets the players per team if teamplay is enabled
@@ -778,10 +776,9 @@ void attract_mode_bot_check(void)
 	// We've reached our bot count, do nothing
 	if(tgt_bot_count == game.bot_count) {
 		return;
-	}
-
+	} 
 	// We have fewer than our bot count, add the difference
-	if(tgt_bot_count > game.bot_count) {
+	else if(tgt_bot_count > game.bot_count) {
 		attract_mode_add(diff);
 	}
 
@@ -793,27 +790,7 @@ void attract_mode_bot_check(void)
 		return;
 	}
 
-	// Gather all bot names, because removebot requires
-	// a bot name as a parameter
-	// if (num_players > 0) {
-	// 	int j = 0;
-	// 	edict_t *bot;
-	// 	for (int i = 0; i < num_players; i++){
-	// 		bot = g_edicts + i + 1;
-	// 		gi.dprintf("Seg 4.1\n");
-	// 		if (bot->is_bot){
-	// 			gi.dprintf("Seg 4.2\n");
-	// 			bname = bot->client->pers.netname;
-	// 			gi.dprintf("Seg 4.3\n");
-	// 			Q_strncpyz(bot_names[j], bname, sizeof(bname));
-	// 			gi.dprintf("Seg 4.4\n");
-	// 			j++;
-	// 			gi.dprintf("Seg 4.5\n");
-	// 		}
-	// 	}
-	// }
 	gi.dprintf("Seg 5\n");
-	//gi.dprintf("Bot names: %s\n", bot_names);
 
 	if(attract_mode->value == 1) {
 		if(real_player_count > tgt_bot_count) {

@@ -1263,7 +1263,8 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	if (!attract_mode->value) {
 		ACESP_LoadBotConfig();
 	} else {
-		// Load initial bots
+		// Reset bot count, load initial bots
+		game.bot_count = 0;
 		attract_mode_bot_check();
 	}
 

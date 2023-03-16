@@ -1646,4 +1646,10 @@ void ClientEndServerFrame (edict_t * ent)
 	*/
 
 	RadioThink(ent);
+
+	#if USE_AQTION
+		if(attract_mode->value){
+			attract_mode_bot_check();
+		}
+	#endif
 }
