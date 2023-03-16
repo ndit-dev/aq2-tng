@@ -732,11 +732,10 @@ void attract_mode_bot_check(void)
 	int team1 = 0;
 	int team2 = 0;
 	int team3 = 0;
-	int i, real_player_count, diff;
+	int i, real_player_count, diff, mode_1_adjust;
 	int maxclientsminus1 = (game.maxclients - 1);
 	int tgt_bot_count = (int)attract_mode_botcount->value;
 
-	gi.dprintf("Seg 1\n");
 	// Gets the players per team if teamplay is enabled
 	if (teamplay->value) {
 		for (i = 0; i < game.maxclients; i++){
@@ -755,53 +754,44 @@ void attract_mode_bot_check(void)
 		gi.dprintf("Team 1: %d - Team 2: %d, - Team 3: %d\n", team1, team2, team3);
 	}
 
-	gi.dprintf("Seg 2\n");
-
 	real_player_count = (num_players - game.bot_count);
 	diff = (tgt_bot_count - game.bot_count);
-
-	// Sanity check here, in case something else edits these values
-	// the diff can never be less than 0
-	if(diff < 0){
-		diff = 0;
-	}
+	mode_1_adjust = (tgt_bot_count - real_player_count);
 
 	gi.dprintf("tgt_bot_count is %d, real_player_count is %d, num_players is %d, game.bot_count is %d, diff value is %d\n", tgt_bot_count, real_player_count, num_players, game.bot_count, diff);
 
 	// Add Bots
 	// If this evaluates as true, then add the number of bots
 	// we are short, regardless of attract_mode 1 or 2
-	gi.dprintf("Seg 3\n");
 
 	// We've reached our bot count, do nothing
 	if(tgt_bot_count == game.bot_count) {
 		return;
 	} 
-	// We have fewer than our bot count, add the difference
+	// We have fewer than our bot count, add 1 bot at a time
 	else if(tgt_bot_count > game.bot_count) {
-		attract_mode_add(diff);
+		ACESP_SpawnBot(NULL, NULL, NULL, NULL);
 	}
 
-	gi.dprintf("Seg 4\n");
 	// Remove Bots
-
 	// If no bots, don't do anything
 	if(game.bot_count == 0) {
 		return;
 	}
 
-	gi.dprintf("Seg 5\n");
+	if(diff < 0){
+		// bot count changed, remove some bots!
+		ACESP_RemoveBot(NULL);
+	}
 
 	if(attract_mode->value == 1) {
-		if(real_player_count > tgt_bot_count) {
+		if(mode_1_adjust != tgt_bot_count){
 			ACESP_RemoveBot(NULL);
 		} else {
 			// We're at equilibrium, there are as many real
 			// players as attract_mode_botcount, do nothing
 			return;
 		}
-	gi.dprintf("Seg 6\n");
-
 	} else if (attract_mode->value == 2) {
 
 		// Check if the number of players is equal to or
