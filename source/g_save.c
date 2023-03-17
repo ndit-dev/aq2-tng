@@ -572,6 +572,7 @@ void InitGame( void )
 	// 2023
 	use_killcounts = gi.cvar("use_killcounts", "1", 0);
 	attract_mode = gi.cvar("attract_mode", "0", 0);
+	attract_mode_newnames = gi.cvar("attract_mode_newnames", "1", 0);
 	attract_mode_botcount = gi.cvar("attract_mode_botcount", "6", 0);
 	attract_mode_delay = gi.cvar("attract_mode_delay", "30", 0);
 	attract_mode_team = gi.cvar("attract_mode_team", "0", 0);

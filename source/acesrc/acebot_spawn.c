@@ -242,7 +242,7 @@ if (ltk_loadbots->value){
 //
 edict_t *ACESP_SpawnBotFromConfig( char *inString )
 {
-	edict_t	*bot;
+	edict_t	*bot = NULL;
 	char	userinfo[MAX_INFO_STRING];
 	int		count=1;
 	char	name[32];
@@ -717,9 +717,11 @@ void attract_mode_bot_check(void)
 	int team1 = 0;
 	int team2 = 0;
 	int team3 = 0;
-	int i, real_player_count, diff, mode_1_adjust;
+	int i, real_player_count, diff;
 	int maxclientsminus1 = (game.maxclients - 1);
 	int tgt_bot_count = (int)attract_mode_botcount->value;
+
+	ACEIT_RebuildPlayerList();
 
 	// Gets the players per team if teamplay is enabled
 	if (teamplay->value) {
@@ -740,53 +742,93 @@ void attract_mode_bot_check(void)
 	}
 
 	real_player_count = (num_players - game.bot_count);
-	diff = (tgt_bot_count - game.bot_count);
-	mode_1_adjust = (tgt_bot_count - real_player_count);
+	diff = (tgt_bot_count - real_player_count);
 
 	gi.dprintf("tgt_bot_count is %d, real_player_count is %d, num_players is %d, game.bot_count is %d, diff value is %d\n", tgt_bot_count, real_player_count, num_players, game.bot_count, diff);
+
+	// Bot Maintenance
+
+	/* Logic is as follows:
+	  If (game.botcount - real_player_count) == attract_mode_botcount
+	    (Current bots + real players is equal to attract_mode_botcount value)
+	  Then do nothing, we are where we want to be
+
+	  Else
+
+	  If (game.botcount - real_player_count) > attract_mode_botcount
+	  	(Current Bots + Real Players is more than the attract_mode_botcount value)
+	  Then remove a bot until these numbers are equal
+
+	  Else
+
+	  If (game.botcount - real_player_count) < attract_mode_botcount
+	  	(Current Bots + Real Players is less than the attract_mode_botcount value)
+	  Then add a bot until these numbers are equal
+	*/
+
+	if (tgt_bot_count - real_player_count == game.bot_count) {
+		return;
+	} else if (tgt_bot_count - real_player_count > game.bot_count) {
+		//gi.dprintf("I'm adding a bot because %d - %d < %d", tgt_bot_count, real_player_count, game.bot_count);
+		ACESP_SpawnBot(NULL, NULL, NULL, NULL);
+	} else if ((tgt_bot_count - real_player_count < game.bot_count) && (attract_mode->value == 1)) {
+		// This removes 1 bot per real player
+
+		//gi.dprintf("I'm removing a bot because %d - %d > %d", tgt_bot_count, real_player_count, game.bot_count);
+		ACESP_RemoveBot("");
+	} else if ((num_players == maxclientsminus1) && (attract_mode->value == 2)) {
+		// This removes 1 bot once we are at maxclients - 1 so we have room for a real player
+
+		//gi.dprintf("I'm removing a bot because %d - %d > %d", tgt_bot_count, real_player_count, game.bot_count);
+		ACESP_RemoveBot("");
+	}
 
 	// Add Bots
 	// If this evaluates as true, then add the number of bots
 	// we are short, regardless of attract_mode 1 or 2
 
 	// We've reached our bot count, do nothing
-	if(tgt_bot_count == game.bot_count) {
-		return;
-	} 
-	// We have fewer than our bot count, add 1 bot at a time
-	else if(tgt_bot_count > game.bot_count) {
-		ACESP_SpawnBot(NULL, NULL, NULL, NULL);
-	}
+	// if(tgt_bot_count == game.bot_count) {
+	// 	return;
+	// }
+	// // We have fewer than our bot count, add 1 bot at a time
+	// else if(tgt_bot_count > game.bot_count) {
+	// 	ACESP_SpawnBot(NULL, NULL, NULL, NULL);
+	// }
+
+	//This is a test
+	//ACESP_RemoveBot(NULL);
 
 	// Remove Bots
 	// If no bots, don't do anything
-	if(game.bot_count == 0) {
-		return;
-	}
+	// if(game.bot_count == 0) {
+	// 	return;
+	// }
 
-	if(diff < 0){
-		// bot count changed, remove some bots!
-		ACESP_RemoveBot(NULL);
-		return;
-	}
+	// if(diff < 0){
+	// 	// bot count changed, remove some bots!
+	// 	// Empty string means remove the most recent bot added
+	// 	ACESP_RemoveBot("");
+	// 	return;
+	// }
 
-	if(attract_mode->value == 1) {
-		if(mode_1_adjust != tgt_bot_count){
-			ACESP_RemoveBot(NULL);
-		} else {
-			// We're at equilibrium, there are as many real
-			// players as attract_mode_botcount, do nothing
-			return;
-		}
-	} else if (attract_mode->value == 2) {
+	// if(attract_mode->value == 1) {
+	// 	if(mode_1_adjust != tgt_bot_count){
+	// 		ACESP_RemoveBot("");
+	// 	} else {
+	// 		// We're at equilibrium, there are as many real
+	// 		// players as attract_mode_botcount, do nothing
+	// 		return;
+	// 	}
+	// } else if (attract_mode->value == 2) {
 
-		// Check if the number of players is equal to or
-		// more than the maxclients minus 1 (to keep an open slot)
-		// the start removing bots
-		if(real_player_count >= maxclientsminus1){
-			ACESP_RemoveBot(NULL);
-		}
-	}
+	// 	// Check if the number of players is equal to or
+	// 	// more than the maxclients minus 1 (to keep an open slot)
+	// 	// the start removing bots
+	// 	if(real_player_count >= maxclientsminus1){
+	// 		ACESP_RemoveBot("");
+	// 	}
+	// }
 
 }
 
@@ -811,13 +853,20 @@ qboolean	nameused[NUMNAMES][NUMNAMES];
 //====================================
 // AQ2World Staff Names -- come shoot at us!
 // Find time to implement this!  Or better yet, 
-// load names from a file rather than this array
+// load names from a file rather than this array?
 //====================================
-// #define AQ2WORLDNUMNAMES	14
-// char	*aq2names[AQ2WORLDNUMNAMES] = {
-// 	"bAron", "darksaint", "FragBait", "matic", "stan0x", "TgT", "dmc", "dox", "KaniZ", "keffo", "QuimBy", "Rezet", "Royce", "vrol"
-// 	};
-//qboolean	adminnameused[AQ2WORLDNUMNAMES];
+#define AQ2WTEAM	11
+char	*aq2names1[AQ2WTEAM] = {
+	"bAron", "darksaint", "FragBait", "matic", "JukS", "TgT", "dmc", "dox", "KaniZ", "keffo", "QuimBy"
+	};
+char	*aq2names2[AQ2WTEAM] = {
+	"Rezet", "Royce", "vrol", "mikota", "Reki", "ReKTeK", "Ralle", "Tech", "dmc", "Raptor007", "Ferrick"
+	};
+char	*aq2tags[AQ2WTEAM] = {
+	"[BOT]", "<ai>", ".beep.", ">ROBOT<", "/iNhUmAn/", "^bZZZv,", "-machin3-", ")anDroiD)", "-b0rg_", "*r0b0t*", " FaK3:"
+	};
+
+qboolean	adminnameused[AQ2WTEAM][AQ2WTEAM];
 // END AQ2World Staff Names //
 
 //====================================
@@ -826,26 +875,60 @@ qboolean	nameused[NUMNAMES][NUMNAMES];
 void	LTKsetBotName( char	*bot_name )
 {
 	int	part1,part2;
+	int randomnames;
 	part1 = part2 = 0;
 
-	do // Load random bot names from NUMNAMES lists
-	{
-		part1 = rand()% NUMNAMES;
-		part2 = rand()% NUMNAMES;
-	}while( nameused[part1][part2]);
+	if(!attract_mode->value){
+		randomnames = NUMNAMES;
+	} else {
+		randomnames = AQ2WTEAM;
+	}
+
+	while(1) {
+			part1 = rand() % randomnames;
+			part2 = rand() % randomnames;
+			if (!attract_mode_newnames->value) {
+				if (!nameused[part1][part2]) {
+					break;
+				}
+			} else {
+				if (!adminnameused[part1][part2]) {
+					break;
+				}
+			}
+		}
 
 	// Mark that name as used
-	nameused[part1][part2] = true;
-	// Now put the name together
-	if( random() < 0.5 )
-	{
-		strcpy( bot_name, names1[part1]);
-		strcat( bot_name, names2[part2]);
+	if (!attract_mode_newnames->value) {
+		nameused[part1][part2] = true;
+	} else {
+		adminnameused[part1][part2] = true;
 	}
-	else
-	{
-		strcpy( bot_name, names3[part1]);
-		strcat( bot_name, names4[part2]);
+	// Now put the name together
+
+	// Old names, for the classic feel
+	if(!attract_mode_newnames->value) {
+		if( random() < 0.5 )
+		{
+			strcpy( bot_name, names1[part1]);
+			strcat( bot_name, names2[part2]);
+		}
+		else
+		{
+			strcpy( bot_name, names3[part1]);
+			strcat( bot_name, names4[part2]);
+		}
+	} else { // New AQ2World Team names
+		if( random() < 0.5 )
+		{
+			strcpy( bot_name, aq2names1[part1]);
+			strcat( bot_name, aq2tags[part2]);
+		}
+		else
+		{
+			strcpy( bot_name, aq2tags[part1]);
+			strcat( bot_name, aq2names2[part2]);
+		}
 	}
 }
 
