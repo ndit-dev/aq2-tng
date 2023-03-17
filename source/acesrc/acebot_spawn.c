@@ -619,8 +619,8 @@ edict_t *ACESP_SpawnBot( char *team_str, char *name, char *skin, char *userinfo 
 
 	if(attract_mode->value && attract_mode_team->value){
 		team = (int)attract_mode_team->value;
-		if ((!use_3teams->value) && (team = TEAM3)){
-			gi.dprintf("Warning: attract_mode_team was 3, but use_3teams is not enabled!  Bots will default to team 1.\n");
+		if ((!use_3teams->value) && (team >= TEAM3)){
+			gi.dprintf("Warning: attract_mode_team was %d, but use_3teams is not enabled!  Bots will default to team 1.\n", team);
 			gi.cvar_forceset("attract_mode_team", "1");
 			team = 1;
 		}
