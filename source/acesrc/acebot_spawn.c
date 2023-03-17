@@ -617,8 +617,13 @@ edict_t *ACESP_SpawnBot( char *team_str, char *name, char *skin, char *userinfo 
 		team_str = LocalTeamNames[ team ];
 	}
 
-	if(attract_mode->value){
+	if(attract_mode->value && attract_mode_team->value){
 		team = (int)attract_mode_team->value;
+		if ((!use_3teams->value) && (team = TEAM3)){
+			gi.dprintf("Warning: attract_mode_team was 3, but use_3teams is not enabled!  Bots will default to team 1.\n");
+			gi.cvar_forceset("attract_mode_team", "1");
+			team = 1;
+		}
 	}
 	
 	ACESP_PutClientInServer( bot, true, team );
@@ -717,11 +722,21 @@ void attract_mode_bot_check(void)
 	int team1 = 0;
 	int team2 = 0;
 	int team3 = 0;
-	int i, real_player_count, diff;
-	int maxclientsminus1 = (game.maxclients - 1);
-	int tgt_bot_count = (int)attract_mode_botcount->value;
+	int i, real_player_count;
+	int maxclientsminus1 = (int)(maxclients->value - 1);
+	int mode2mccheck = (int)(maxclients->value - 2);
 
 	ACEIT_RebuildPlayerList();
+	// Some sanity checking before we proceed
+
+	// Cannot have the attract_mode_botcount at a value of N-2 of the maxclients
+	if ((attract_mode->value == 2) && (attract_mode_botcount->value >= mode2mccheck))
+	{
+		gi.dprintf( "attract_mode is 2, attract_mode_botcount is %d, maxclients is too low, forcing it to 0\n", attract_mode_botcount->value);
+        gi.cvar_forceset("attract_mode_botcount", "0");
+    }
+
+	int tgt_bot_count = (int)attract_mode_botcount->value;
 
 	// Gets the players per team if teamplay is enabled
 	if (teamplay->value) {
@@ -737,14 +752,13 @@ void attract_mode_bot_check(void)
 		}
 	}
 
-	if (teamplay->value){
-		gi.dprintf("Team 1: %d - Team 2: %d, - Team 3: %d\n", team1, team2, team3);
-	}
 
 	real_player_count = (num_players - game.bot_count);
-	diff = (tgt_bot_count - real_player_count);
 
-	gi.dprintf("tgt_bot_count is %d, real_player_count is %d, num_players is %d, game.bot_count is %d, diff value is %d\n", tgt_bot_count, real_player_count, num_players, game.bot_count, diff);
+	// if (teamplay->value){
+	// 	gi.dprintf("Team 1: %d - Team 2: %d, - Team 3: %d\n", team1, team2, team3);
+	// }
+	//gi.dprintf("tgt_bot_count is %d, real_player_count is %d, num_players is %d, game.bot_count is %d\n", tgt_bot_count, real_player_count, num_players, game.bot_count);
 
 	// Bot Maintenance
 
@@ -779,57 +793,9 @@ void attract_mode_bot_check(void)
 	} else if ((num_players == maxclientsminus1) && (attract_mode->value == 2)) {
 		// This removes 1 bot once we are at maxclients - 1 so we have room for a real player
 
-		//gi.dprintf("I'm removing a bot because %d - %d > %d", tgt_bot_count, real_player_count, game.bot_count);
+		gi.dprintf("I'm removing a bot because num_players = %d and maxclients is %d", num_players, game.maxclients);
 		ACESP_RemoveBot("");
 	}
-
-	// Add Bots
-	// If this evaluates as true, then add the number of bots
-	// we are short, regardless of attract_mode 1 or 2
-
-	// We've reached our bot count, do nothing
-	// if(tgt_bot_count == game.bot_count) {
-	// 	return;
-	// }
-	// // We have fewer than our bot count, add 1 bot at a time
-	// else if(tgt_bot_count > game.bot_count) {
-	// 	ACESP_SpawnBot(NULL, NULL, NULL, NULL);
-	// }
-
-	//This is a test
-	//ACESP_RemoveBot(NULL);
-
-	// Remove Bots
-	// If no bots, don't do anything
-	// if(game.bot_count == 0) {
-	// 	return;
-	// }
-
-	// if(diff < 0){
-	// 	// bot count changed, remove some bots!
-	// 	// Empty string means remove the most recent bot added
-	// 	ACESP_RemoveBot("");
-	// 	return;
-	// }
-
-	// if(attract_mode->value == 1) {
-	// 	if(mode_1_adjust != tgt_bot_count){
-	// 		ACESP_RemoveBot("");
-	// 	} else {
-	// 		// We're at equilibrium, there are as many real
-	// 		// players as attract_mode_botcount, do nothing
-	// 		return;
-	// 	}
-	// } else if (attract_mode->value == 2) {
-
-	// 	// Check if the number of players is equal to or
-	// 	// more than the maxclients minus 1 (to keep an open slot)
-	// 	// the start removing bots
-	// 	if(real_player_count >= maxclientsminus1){
-	// 		ACESP_RemoveBot("");
-	// 	}
-	// }
-
 }
 
 //====================================

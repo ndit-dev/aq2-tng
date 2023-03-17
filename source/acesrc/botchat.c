@@ -32,11 +32,11 @@ char *ltk_welcomes[DBC_WELCOMES] =
 		"Give your arse a rest, %s. try talking through your mouth",
 		"Damn! I hoped Thresh would be here...",
 		"Hey Mom, they gave me a gun!",
-		"I gotta find a better server...",
 		"Hey, any of you guys played before?",
 		"Hi %s, I wondered if you'd show your face around here again.",
 		"Nice :-) :-) :-)",
 		"OK %s, let's get this over with"
+		"SUG BALLE SUG BALLE SUG BALLE"
 };
 
 #define DBC_KILLEDS 13
@@ -44,7 +44,7 @@ char *ltk_killeds[DBC_KILLEDS] =
 {
         "B*stard! %s messed up my hair.",
         "All right, %s. Now I'm feeling put out!",
-        "Hey! Go easy on me! I'm a newbie!",
+		"Why you little!",
 		"Ooooh, %s, that smarts!",
 		"%s's mother cooks socks in hell!",
 		"Hey, %s, how about a match - your face and my arse!",
