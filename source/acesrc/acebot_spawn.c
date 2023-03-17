@@ -755,29 +755,36 @@ void attract_mode_bot_check(void)
 
 	real_player_count = (num_players - game.bot_count);
 
+	// Debug area, uncomment for gratiuitous amounts of spam
 	// if (teamplay->value){
 	// 	gi.dprintf("Team 1: %d - Team 2: %d, - Team 3: %d\n", team1, team2, team3);
 	// }
 	//gi.dprintf("tgt_bot_count is %d, real_player_count is %d, num_players is %d, game.bot_count is %d\n", tgt_bot_count, real_player_count, num_players, game.bot_count);
 
 	// Bot Maintenance
-
 	/* Logic is as follows:
-	  If (game.botcount - real_player_count) == attract_mode_botcount
-	    (Current bots + real players is equal to attract_mode_botcount value)
+	  If (attract_mode_botcount - real_player_count) == game.botcount
+	    (Current bots - real players is equal to attract_mode_botcount value)
 	  Then do nothing, we are where we want to be
 
 	  Else
 
-	  If (game.botcount - real_player_count) > attract_mode_botcount
+	  If (attract_mode_botcount - real_player_count) > game.botcount
+	  	(Current Bots + Real Players is less than the attract_mode_botcount value)
+	  Then add a bot until these numbers are equal
+
+	  Else
+
+	  If (attract_mode_botcount - real_player_count) < game.botcount AND if attract_mode is 1
 	  	(Current Bots + Real Players is more than the attract_mode_botcount value)
 	  Then remove a bot until these numbers are equal
 
 	  Else
 
-	  If (game.botcount - real_player_count) < attract_mode_botcount
-	  	(Current Bots + Real Players is less than the attract_mode_botcount value)
-	  Then add a bot until these numbers are equal
+	  If (total players == (maxclients - 1)) AND if attract_mode is 2
+	  	(Current Bots + Real Players is more than the attract_mode_botcount value)
+	  Then remove a bot only if we're near the maxclients number
+	 
 	*/
 
 	if (tgt_bot_count - real_player_count == game.bot_count) {
@@ -822,6 +829,7 @@ qboolean	nameused[NUMNAMES][NUMNAMES];
 // load names from a file rather than this array?
 //====================================
 #define AQ2WTEAM	11
+#define AQ2WFULLNAME	AQ2WTEAM*2
 char	*aq2names1[AQ2WTEAM] = {
 	"bAron", "darksaint", "FragBait", "matic", "JukS", "TgT", "dmc", "dox", "KaniZ", "keffo", "QuimBy"
 	};
@@ -832,7 +840,7 @@ char	*aq2tags[AQ2WTEAM] = {
 	"[BOT]", "<ai>", ".beep.", ">ROBOT<", "/iNhUmAn/", "^bZZZv,", "-machin3-", ")anDroiD)", "-b0rg_", "*r0b0t*", " FaK3:"
 	};
 
-qboolean	adminnameused[AQ2WTEAM][AQ2WTEAM];
+qboolean	adminnameused[AQ2WTEAM][AQ2WFULLNAME];
 // END AQ2World Staff Names //
 
 //====================================

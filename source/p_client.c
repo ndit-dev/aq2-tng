@@ -2814,6 +2814,12 @@ void ClientBeginDeathmatch(edict_t * ent)
 		PrintMOTD(ent);
 	}
 
+	if(attract_mode->value && game.bot_count > 0){
+		char msg[128];
+		Com_sprintf(msg, sizeof(msg), "This server contains BOTS for you to play with until real players join up!  Enjoy!");
+		gi.centerprintf(ent, msg);
+	}
+
 	ent->client->resp.motd_refreshes = 1;
 
 	//AQ2:TNG - Slicer: Set time to check clients
