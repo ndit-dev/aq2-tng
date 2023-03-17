@@ -47,6 +47,7 @@
 #include "acebot.h"
 #include "botchat.h"
 #include "botscan.h"
+#include <time.h>
 
 //AQ2 ADD
 #define	CONFIG_FILE_VERSION 1
@@ -508,11 +509,7 @@ void ACESP_SetName(edict_t *bot, char *name, char *skin, char *team)
 	// name
 	if( (!name) || !strlen(name) ){
 		// RiEvEr - new code to get random bot names
-		if(ltk_classic->value){
-			LTKsetBotName(bot_name);
-		} else {
-			LTKsetBotNameNew();
-		}
+		LTKsetBotName(bot_name);
 	} else {
 		strcpy(bot_name,name);
 	}
@@ -565,10 +562,24 @@ void ACESP_SetName(edict_t *bot, char *name, char *skin, char *team)
 				sprintf(bot_skin,"sas/sasuc");
 		} else if (!ltk_classic->value) {
 				// Find skins at random and use them
+			char *modelnames[9] = {"male", "female", "actionmale", "aqmarine", "terror", "sas", "messiah", "sydney"};
+			int n = sizeof(modelnames) / sizeof(modelnames[0]);
+			int index;
+			// Get a random seed
+			srand(time(NULL));
+			index = rand() % n;
 
-				
-				return;
-				// ^^ Remove this when ready
+			char *chosenmodel = modelnames[index];
+
+
+
+			// Finally, we assign a skin
+
+			//Static skin for now until VFS is fixed
+			//sprintf(bot_skin, "%s/%s", chosenmodel, chosenskin);
+			
+			sprintf(bot_skin, "%s/%s", "male", "robber");
+
 		} else {
 			strcpy(bot_skin,skin);
 		}
@@ -618,7 +629,7 @@ edict_t *ACESP_SpawnBot( char *team_str, char *name, char *skin, char *userinfo 
 			ACESP_SetName( bot, name, skin, team_str );  // includes ClientConnect
 		} else if (!ltk_classic->value) {
 			// New naming method
-			ACESP_SetNameNew( bot, name, skin, team_str );
+			ACESP_SetName( bot, name, skin, team_str );
 		} else {
 			ClientConnect( bot, userinfo );
 		}
