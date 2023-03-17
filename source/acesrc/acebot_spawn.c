@@ -57,6 +57,7 @@ void	AllWeapons( edict_t *ent );
 void	EquipClient( edict_t *ent );
 char	*TeamName(int team);
 void	LTKsetBotName( char	*bot_name );
+void	LTKsetBotNameNew(void);
 void	ACEAI_Cmd_Choose( edict_t *ent, char *s);
 
 //==========================================
@@ -505,62 +506,73 @@ void ACESP_SetName(edict_t *bot, char *name, char *skin, char *team)
 
 	// Set the name for the bot.
 	// name
-	if( (!name) || !strlen(name) )
-	{
+	if( (!name) || !strlen(name) ){
 		// RiEvEr - new code to get random bot names
-		LTKsetBotName(bot_name);
-	}
-	else
+		if(ltk_classic->value){
+			LTKsetBotName(bot_name);
+		} else {
+			LTKsetBotNameNew();
+		}
+	} else {
 		strcpy(bot_name,name);
+	}
 
 	// skin
 	if( (!skin) || !strlen(skin) )
 	{
-		// randomly choose skin 
-		rnd = random();
-		if(rnd  < 0.05)
-			sprintf(bot_skin,"male/bluebeard");
-		else if(rnd < 0.1)
-			sprintf(bot_skin,"female/brianna");
-		else if(rnd < 0.15)
-			sprintf(bot_skin,"male/blues");
-		else if(rnd < 0.2)
-			sprintf(bot_skin,"female/ensign");
-		else if(rnd < 0.25)
-			sprintf(bot_skin,"female/jezebel");
-		else if(rnd < 0.3)
-			sprintf(bot_skin,"female/jungle");
-		else if(rnd < 0.35)
-			sprintf(bot_skin,"sas/sasurban");
-		else if(rnd < 0.4)
-			sprintf(bot_skin,"terror/urbanterr");
-		else if(rnd < 0.45)
-			sprintf(bot_skin,"female/venus");
-		else if(rnd < 0.5)
-			sprintf(bot_skin,"sydney/sydney");
-		else if(rnd < 0.55)
-			sprintf(bot_skin,"male/cajin");
-		else if(rnd < 0.6)
-			sprintf(bot_skin,"male/commando");
-		else if(rnd < 0.65)
-			sprintf(bot_skin,"male/grunt");
-		else if(rnd < 0.7)
-			sprintf(bot_skin,"male/mclaine");
-		else if(rnd < 0.75)
-			sprintf(bot_skin,"male/robber");
-		else if(rnd < 0.8)
-			sprintf(bot_skin,"male/snowcamo");
-		else if(rnd < 0.85)
-			sprintf(bot_skin,"terror/swat");
-		else if(rnd < 0.9)
-			sprintf(bot_skin,"terror/jungleterr");
-		else if(rnd < 0.95)
-			sprintf(bot_skin,"sas/saspolice");
-		else 
-			sprintf(bot_skin,"sas/sasuc");
+		if(ltk_classic->value){
+			// randomly choose skin 
+			rnd = random();
+			if(rnd  < 0.05)
+				sprintf(bot_skin,"male/bluebeard");
+			else if(rnd < 0.1)
+				sprintf(bot_skin,"female/brianna");
+			else if(rnd < 0.15)
+				sprintf(bot_skin,"male/blues");
+			else if(rnd < 0.2)
+				sprintf(bot_skin,"female/ensign");
+			else if(rnd < 0.25)
+				sprintf(bot_skin,"female/jezebel");
+			else if(rnd < 0.3)
+				sprintf(bot_skin,"female/jungle");
+			else if(rnd < 0.35)
+				sprintf(bot_skin,"sas/sasurban");
+			else if(rnd < 0.4)
+				sprintf(bot_skin,"terror/urbanterr");
+			else if(rnd < 0.45)
+				sprintf(bot_skin,"female/venus");
+			else if(rnd < 0.5)
+				sprintf(bot_skin,"sydney/sydney");
+			else if(rnd < 0.55)
+				sprintf(bot_skin,"male/cajin");
+			else if(rnd < 0.6)
+				sprintf(bot_skin,"male/commando");
+			else if(rnd < 0.65)
+				sprintf(bot_skin,"male/grunt");
+			else if(rnd < 0.7)
+				sprintf(bot_skin,"male/mclaine");
+			else if(rnd < 0.75)
+				sprintf(bot_skin,"male/robber");
+			else if(rnd < 0.8)
+				sprintf(bot_skin,"male/snowcamo");
+			else if(rnd < 0.85)
+				sprintf(bot_skin,"terror/swat");
+			else if(rnd < 0.9)
+				sprintf(bot_skin,"terror/jungleterr");
+			else if(rnd < 0.95)
+				sprintf(bot_skin,"sas/saspolice");
+			else 
+				sprintf(bot_skin,"sas/sasuc");
+		} else if (!ltk_classic->value) {
+				// Find skins at random and use them
+
+				
+				return;
+				// ^^ Remove this when ready
+		} else {
+			strcpy(bot_skin,skin);
+		}
 	}
-	else
-		strcpy(bot_skin,skin);
 
 	// initialise userinfo
 	memset (userinfo, 0, sizeof(userinfo));
@@ -600,10 +612,17 @@ edict_t *ACESP_SpawnBot( char *team_str, char *name, char *skin, char *userinfo 
 	bot->yaw_speed = 1000;  // deg/sec
 	
 	// To allow bots to respawn
-	if( ! userinfo )
-		ACESP_SetName( bot, name, skin, team_str );  // includes ClientConnect
-	else
-		ClientConnect( bot, userinfo );
+	if( ! userinfo ) {
+		if (ltk_classic->value) {
+			// Classic naming method
+			ACESP_SetName( bot, name, skin, team_str );  // includes ClientConnect
+		} else if (!ltk_classic->value) {
+			// New naming method
+			ACESP_SetNameNew( bot, name, skin, team_str );
+		} else {
+			ClientConnect( bot, userinfo );
+		}
+	}
 	
 	ClientBeginDeathmatch( bot );
 	
@@ -843,8 +862,13 @@ char	*aq2tags[AQ2WTEAM] = {
 qboolean	adminnameused[AQ2WTEAM][AQ2WFULLNAME];
 // END AQ2World Staff Names //
 
+void	LTKsetBotNameNew(void)
+{
+	return;
+}
+
 //====================================
-// New random bot naming routine
+// Classic random bot naming routine
 //====================================
 void	LTKsetBotName( char	*bot_name )
 {

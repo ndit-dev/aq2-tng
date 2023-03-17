@@ -96,6 +96,7 @@ extern cvar_t	*ltk_chat;	// Chat setting for bots, off or on (0,1)
 extern cvar_t	*ltk_routing;	// Set to 1 to drop nodes, otherwise you won't do it!
 extern cvar_t	*ltk_botfile;	// Set this to adjust which botdata file to load, default is botdata
 extern cvar_t	*ltk_loadbots;	// Set to 0 to not load bots from ltk_botfile value, 1 for normal operation
+extern cvar_t	*ltk_classic;  // Set to 0 to use the new naming system and skins.  1 for classic operation
 
 extern int lights_camera_action;
 

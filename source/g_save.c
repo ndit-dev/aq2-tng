@@ -600,6 +600,7 @@ void InitGame( void )
 	ltk_routing = gi.cvar( "ltk_routing", "0", 0 );
 	ltk_botfile = gi.cvar( "ltk_botfile", "botdata.cfg", 0);
 	ltk_loadbots = gi.cvar( "ltk_loadbots", "1", 0);
+	ltk_classic = gi.cvar( "ltk_classic", "1", 0);
 #endif
 
 	// items
