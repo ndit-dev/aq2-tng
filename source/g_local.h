@@ -1718,7 +1718,7 @@ typedef struct
   qboolean jmp_teleport_ducked;
 
 #ifdef AQTION_EXTENSION
-  int	hud_items[64];
+  int	hud_items[128];
   int	hud_type;
 #endif
 
@@ -2312,8 +2312,8 @@ extern int gameSettings;
 // hud (through ghud extension)
 typedef enum {
 	h_nameplate_l = 0,
-	h_nameplate_r = 24,
-	h_nameplate_end = 47,
+	h_nameplate_r = 30,
+	h_nameplate_end = 61,
 	h_team_l,
 	h_team_l_num,
 	h_team_r,
