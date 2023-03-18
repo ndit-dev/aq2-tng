@@ -571,13 +571,19 @@ void ACESP_SetName(edict_t *bot, char *name, char *skin, char *team)
 
 			char *chosenmodel = modelnames[index];
 
+			// Add logic here to randomly select a skin based on the model
 
+			// Scan all skins in model-name based directory
+			// such as actionmale/
+			// and populate an array
 
-			// Finally, we assign a skin
+			// Randomly select a skin from this array
 
-			//Static skin for now until VFS is fixed
+			// Finally, we assign the randomly selected skin
 			//sprintf(bot_skin, "%s/%s", chosenmodel, chosenskin);
+
 			
+			// Assign static skin for now until VFS is vailable
 			sprintf(bot_skin, "%s/%s", "male", "robber");
 
 		} else {
