@@ -423,7 +423,7 @@ void ACESP_Respawn (edict_t *self)
 {
 	respawn( self );
 	
-	if( random() < 0.15)
+	if( random() < 0.10)
 	{
 		// Store current enemies available
 		int		i, counter = 0;
@@ -562,28 +562,23 @@ void ACESP_SetName(edict_t *bot, char *name, char *skin, char *team)
 				sprintf(bot_skin,"sas/sasuc");
 		} else if (!ltk_classic->value) {
 				// Find skins at random and use them
-			char *modelnames[9] = {"male", "female", "actionmale", "aqmarine", "terror", "sas", "messiah", "sydney"};
+			char *modelnames[8] = {"male", "female", "actionmale", "aqmarine", "terror", "sas", "messiah", "sydney"};
 			int n = sizeof(modelnames) / sizeof(modelnames[0]);
-			int index;
+			int indexmodel, indexskin;
 			// Get a random seed
 			srand(time(NULL));
-			index = rand() % n;
+			indexmodel = rand() % n;
 
-			char *chosenmodel = modelnames[index];
+			char *chosenmodel = modelnames[indexmodel];
 
 			// Add logic here to randomly select a skin based on the model
 
 			// Scan all skins in model-name based directory
 			// such as actionmale/
 			// and populate an array
-
-			// Randomly select a skin from this array
-
-			// Finally, we assign the randomly selected skin
-			//sprintf(bot_skin, "%s/%s", chosenmodel, chosenskin);
-
 			
-			// Assign static skin for now until VFS is vailable
+			//gi.dprintf("I chose model %s with skin %s\n", chosenmodel, chosenskin);
+			// Assign static skin for now until VFS is available via GetExtendedGameAPI()
 			sprintf(bot_skin, "%s/%s", "male", "robber");
 
 		} else {

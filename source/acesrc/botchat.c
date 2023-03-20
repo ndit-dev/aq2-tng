@@ -79,6 +79,34 @@ char *ltk_insults[DBC_INSULTS] =
 };
 
 
+
+#define AQTION_KILLDS 8
+char *aqtion_killeds[AQTION_KILLDS] =
+{
+		"SUG BALLE SUG BALLE"
+        "hahahaha",
+		"lol",
+		"Try using a real gun, %s!",
+		"rofl",
+		"you are getting better, I think",
+		"nice shot",
+		"scared me half to death, %s"
+};
+
+#define AQTION_INSULTS 8
+char *aqtion_insults[AQTION_INSULTS] =
+{
+		"Check out the Discord server!  -->  https://discord.aq2world.com   <--",
+        "Have you visited the forums recently?  -->  https://forums.aq2world.com  <--",
+        "no achievement for u!",
+		"%s is probably still using a ball mouse lol",
+		"well that was unforunate",
+		"gottem",
+		"peek a boooo!",
+		"meh!"
+};
+
+
 void LTK_Chat (edict_t *bot, edict_t *object, int speech)
 {
         char final[150];
@@ -87,18 +115,33 @@ void LTK_Chat (edict_t *bot, edict_t *object, int speech)
         if ((!object) || (!object->client))
                 return;
 
-        if (speech == DBC_WELCOME)
-                text = ltk_welcomes[rand()%DBC_WELCOMES];
-        else if (speech == DBC_KILLED)
-                text = ltk_killeds[rand()%DBC_KILLEDS];
-        else if (speech == DBC_INSULT)
-                text = ltk_insults[rand()%DBC_INSULTS];
-        else
-        {
-                if( debug_mode )
-                        gi.bprintf (PRINT_HIGH, "LTK_Chat: Unknown speech type attempted!(out of range)");
-                return;
-        }
+		if(!ltk_classic->value){
+			if (speech == DBC_WELCOME)
+					text = ltk_welcomes[rand()%DBC_WELCOMES];
+			else if (speech == DBC_KILLED)
+					text = ltk_killeds[rand()%DBC_KILLEDS];
+			else if (speech == DBC_INSULT)
+					text = ltk_insults[rand()%DBC_INSULTS];
+			else
+			{
+					if( debug_mode )
+							gi.bprintf (PRINT_HIGH, "LTK_Chat: Unknown speech type attempted!(out of range)");
+					return;
+			}
+		} else {
+			if (speech == DBC_WELCOME)
+				return;
+			else if (speech == DBC_KILLED)
+					text = aqtion_killeds[rand()%AQTION_KILLDS];
+			else if (speech == DBC_INSULT)
+					text = aqtion_insults[rand()%AQTION_INSULTS];
+			else
+			{
+					if( debug_mode )
+							gi.bprintf (PRINT_HIGH, "LTK_Chat: Unknown speech type attempted!(out of range)");
+					return;
+			}
+		}
 
         sprintf (final, text, object->client->pers.netname);
 
