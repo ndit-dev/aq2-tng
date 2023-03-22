@@ -629,7 +629,7 @@ edict_t *ACESP_SpawnBot( char *team_str, char *name, char *skin, char *userinfo 
 			// Classic naming method
 			ACESP_SetName( bot, name, skin, team_str );  // includes ClientConnect
 		} else if (!ltk_classic->value) {
-			// New naming method
+			// TODO: New naming method
 			ACESP_SetName( bot, name, skin, team_str );
 		} else {
 			ClientConnect( bot, userinfo );
@@ -764,7 +764,7 @@ void attract_mode_bot_check(void)
 	if ((attract_mode->value == 2) && (attract_mode_botcount->value >= mode2mccheck))
 	{
 		gi.dprintf( "attract_mode is 2, attract_mode_botcount is %d, maxclients is too low, forcing it to 0\n", attract_mode_botcount->value);
-        gi.cvar_forceset("attract_mode_botcount", "0");
+		gi.cvar_forceset("attract_mode_botcount", "0");
     }
 
 	int tgt_bot_count = (int)attract_mode_botcount->value;
