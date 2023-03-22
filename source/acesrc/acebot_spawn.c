@@ -517,73 +517,75 @@ void ACESP_SetName(edict_t *bot, char *name, char *skin, char *team)
 	// skin
 	if( (!skin) || !strlen(skin) )
 	{
-		if(ltk_classic->value){
+		//Not working yet
+		//if(ltk_classic->value){
 			// randomly choose skin 
-			rnd = random();
-			if(rnd  < 0.05)
-				sprintf(bot_skin,"male/bluebeard");
-			else if(rnd < 0.1)
-				sprintf(bot_skin,"female/brianna");
-			else if(rnd < 0.15)
-				sprintf(bot_skin,"male/blues");
-			else if(rnd < 0.2)
-				sprintf(bot_skin,"female/ensign");
-			else if(rnd < 0.25)
-				sprintf(bot_skin,"female/jezebel");
-			else if(rnd < 0.3)
-				sprintf(bot_skin,"female/jungle");
-			else if(rnd < 0.35)
-				sprintf(bot_skin,"sas/sasurban");
-			else if(rnd < 0.4)
-				sprintf(bot_skin,"terror/urbanterr");
-			else if(rnd < 0.45)
-				sprintf(bot_skin,"female/venus");
-			else if(rnd < 0.5)
-				sprintf(bot_skin,"sydney/sydney");
-			else if(rnd < 0.55)
-				sprintf(bot_skin,"male/cajin");
-			else if(rnd < 0.6)
-				sprintf(bot_skin,"male/commando");
-			else if(rnd < 0.65)
-				sprintf(bot_skin,"male/grunt");
-			else if(rnd < 0.7)
-				sprintf(bot_skin,"male/mclaine");
-			else if(rnd < 0.75)
-				sprintf(bot_skin,"male/robber");
-			else if(rnd < 0.8)
-				sprintf(bot_skin,"male/snowcamo");
-			else if(rnd < 0.85)
-				sprintf(bot_skin,"terror/swat");
-			else if(rnd < 0.9)
-				sprintf(bot_skin,"terror/jungleterr");
-			else if(rnd < 0.95)
-				sprintf(bot_skin,"sas/saspolice");
-			else 
-				sprintf(bot_skin,"sas/sasuc");
-		} else if (!ltk_classic->value) {
-				// Find skins at random and use them
-			char *modelnames[8] = {"male", "female", "actionmale", "aqmarine", "terror", "sas", "messiah", "sydney"};
-			int n = sizeof(modelnames) / sizeof(modelnames[0]);
-			int indexmodel, indexskin;
-			// Get a random seed
-			srand(time(NULL));
-			indexmodel = rand() % n;
+		rnd = random();
+		if(rnd  < 0.05)
+			sprintf(bot_skin,"male/bluebeard");
+		else if(rnd < 0.1)
+			sprintf(bot_skin,"female/brianna");
+		else if(rnd < 0.15)
+			sprintf(bot_skin,"male/blues");
+		else if(rnd < 0.2)
+			sprintf(bot_skin,"female/ensign");
+		else if(rnd < 0.25)
+			sprintf(bot_skin,"female/jezebel");
+		else if(rnd < 0.3)
+			sprintf(bot_skin,"female/jungle");
+		else if(rnd < 0.35)
+			sprintf(bot_skin,"sas/sasurban");
+		else if(rnd < 0.4)
+			sprintf(bot_skin,"terror/urbanterr");
+		else if(rnd < 0.45)
+			sprintf(bot_skin,"female/venus");
+		else if(rnd < 0.5)
+			sprintf(bot_skin,"sydney/sydney");
+		else if(rnd < 0.55)
+			sprintf(bot_skin,"male/cajin");
+		else if(rnd < 0.6)
+			sprintf(bot_skin,"male/commando");
+		else if(rnd < 0.65)
+			sprintf(bot_skin,"male/grunt");
+		else if(rnd < 0.7)
+			sprintf(bot_skin,"male/mclaine");
+		else if(rnd < 0.75)
+			sprintf(bot_skin,"male/robber");
+		else if(rnd < 0.8)
+			sprintf(bot_skin,"male/snowcamo");
+		else if(rnd < 0.85)
+			sprintf(bot_skin,"terror/swat");
+		else if(rnd < 0.9)
+			sprintf(bot_skin,"terror/jungleterr");
+		else if(rnd < 0.95)
+			sprintf(bot_skin,"sas/saspolice");
+		else 
+			sprintf(bot_skin,"sas/sasuc");
+		
+		// } else if (!ltk_classic->value) {
+		// 		// Find skins at random and use them
+		// 	char *modelnames[8] = {"male", "female", "actionmale", "aqmarine", "terror", "sas", "messiah", "sydney"};
+		// 	int n = sizeof(modelnames) / sizeof(modelnames[0]);
+		// 	int indexmodel, indexskin;
+		// 	// Get a random seed
+		// 	srand(time(NULL));
+		// 	indexmodel = rand() % n;
 
-			char *chosenmodel = modelnames[indexmodel];
+		// 	char *chosenmodel = modelnames[indexmodel];
 
-			// Add logic here to randomly select a skin based on the model
+		// 	// Add logic here to randomly select a skin based on the model
 
-			// Scan all skins in model-name based directory
-			// such as actionmale/
-			// and populate an array
+		// 	// Scan all skins in model-name based directory
+		// 	// such as actionmale/
+		// 	// and populate an array
 			
-			//gi.dprintf("I chose model %s with skin %s\n", chosenmodel, chosenskin);
-			// Assign static skin for now until VFS is available via GetExtendedGameAPI()
-			sprintf(bot_skin, "%s/%s", "male", "robber");
+		// 	//gi.dprintf("I chose model %s with skin %s\n", chosenmodel, chosenskin);
+		// 	// Assign static skin for now until VFS is available via GetExtendedGameAPI()
+		// 	sprintf(bot_skin, "%s/%s", "male", "robber");
 
-		} else {
-			strcpy(bot_skin,skin);
-		}
+		// } else {
+
+		strcpy(bot_skin,skin);
 	}
 
 	// initialise userinfo
@@ -768,22 +770,6 @@ void attract_mode_bot_check(void)
     }
 
 	int tgt_bot_count = (int)attract_mode_botcount->value;
-
-	// Gets the players per team if teamplay is enabled
-	if (teamplay->value) {
-		for (i = 0; i < game.maxclients; i++){
-			if (!g_edicts[i + 1].inuse)
-				continue;
-			if (game.clients[i].resp.team == TEAM1)
-				team1++;
-			else if (game.clients[i].resp.team == TEAM2)
-				team2++;
-			else if (game.clients[i].resp.team == TEAM3)
-				team3++;
-		}
-	}
-
-
 	real_player_count = (num_players - game.bot_count);
 
 	// Debug area, uncomment for gratiuitous amounts of spam
