@@ -756,17 +756,22 @@ void attract_mode_bot_check(void)
 	int team2 = 0;
 	int team3 = 0;
 	int i, real_player_count;
-	int maxclientsminus1 = (int)(maxclients->value - 1);
-	int mode2mccheck = (int)(maxclients->value - 2);
+	int maxclientsminus2 = (int)(maxclients->value - 2);
 
 	ACEIT_RebuildPlayerList();
 	// Some sanity checking before we proceed
 
 	// Cannot have the attract_mode_botcount at a value of N-2 of the maxclients
-	if ((attract_mode->value == 2) && (attract_mode_botcount->value >= mode2mccheck))
+	if ((attract_mode->value == 2) && (attract_mode_botcount->value >= maxclientsminus2))
 	{
-		gi.dprintf( "attract_mode is 2, attract_mode_botcount is %d, maxclients is too low, forcing it to 0\n", attract_mode_botcount->value);
-		gi.cvar_forceset("attract_mode_botcount", "0");
+		// If maxclients is 10 or more, set the botcount value to 6, else disable attract mode.  Increase your maxclients!
+		if(maxclients->value >= 10){
+			gi.dprintf( "attract_mode is 2, attract_mode_botcount is %d, maxclients is too low at %d, forcing it to default (6)\n", (int)attract_mode_botcount->value, (int)maxclients->value);
+			gi.cvar_forceset("attract_mode_botcount", "6");
+		} else {
+			gi.dprintf( "attract_mode is 2, attract_mode_botcount is %d, maxclients is too low at %d, disabling attract_mode\n", (int)attract_mode_botcount->value, (int)maxclients->value);
+			gi.cvar_forceset("attract_mode", "0");
+		}
     }
 
 	int tgt_bot_count = (int)attract_mode_botcount->value;
@@ -777,6 +782,9 @@ void attract_mode_bot_check(void)
 	// 	gi.dprintf("Team 1: %d - Team 2: %d, - Team 3: %d\n", team1, team2, team3);
 	// }
 	//gi.dprintf("tgt_bot_count is %d, real_player_count is %d, num_players is %d, game.bot_count is %d\n", tgt_bot_count, real_player_count, num_players, game.bot_count);
+	// End debug area
+
+
 
 	// Bot Maintenance
 	/* Logic is as follows:
@@ -814,8 +822,8 @@ void attract_mode_bot_check(void)
 
 		//gi.dprintf("I'm removing a bot because %d - %d > %d", tgt_bot_count, real_player_count, game.bot_count);
 		ACESP_RemoveBot("");
-	} else if ((num_players == maxclientsminus1) && (attract_mode->value == 2)) {
-		// This removes 1 bot once we are at maxclients - 1 so we have room for a real player
+	} else if ((num_players == maxclientsminus2) && (attract_mode->value == 2)) {
+		// This removes 1 bot once we are at maxclients - 2 so we have room for a real player
 
 		gi.dprintf("I'm removing a bot because num_players = %d and maxclients is %d", num_players, game.maxclients);
 		ACESP_RemoveBot("");
