@@ -505,46 +505,43 @@ void ACESP_SetName(edict_t *bot, char *name, char *skin, char *team)
 	char bot_skin[MAX_INFO_STRING];
 	char bot_name[MAX_INFO_STRING];
 
-	// Set the name for the bot.
-	// name
-	if( (!name) || !strlen(name) ){
+	if( (!name) || !strlen(name) )
+	{
 		// RiEvEr - new code to get random bot names
 		LTKsetBotName(bot_name);
-	} else {
-		strcpy(bot_name,name);
 	}
+	else
+		strcpy(bot_name,name);
 
 	// skin
 	if( (!skin) || !strlen(skin) )
 	{
-		//Not working yet
-		//if(ltk_classic->value){
-			// randomly choose skin 
+		// randomly choose skin 
 		rnd = random();
 		if(rnd  < 0.05)
 			sprintf(bot_skin,"male/bluebeard");
 		else if(rnd < 0.1)
-			sprintf(bot_skin,"female/brianna");
+			sprintf(bot_skin,"female/leeloop");
 		else if(rnd < 0.15)
 			sprintf(bot_skin,"male/blues");
 		else if(rnd < 0.2)
-			sprintf(bot_skin,"female/ensign");
+			sprintf(bot_skin,"female/sarah_ohconnor");
 		else if(rnd < 0.25)
-			sprintf(bot_skin,"female/jezebel");
+			sprintf(bot_skin,"actionmale/chucky");
 		else if(rnd < 0.3)
-			sprintf(bot_skin,"female/jungle");
+			sprintf(bot_skin,"actionmale/axef");
 		else if(rnd < 0.35)
 			sprintf(bot_skin,"sas/sasurban");
 		else if(rnd < 0.4)
 			sprintf(bot_skin,"terror/urbanterr");
 		else if(rnd < 0.45)
-			sprintf(bot_skin,"female/venus");
+			sprintf(bot_skin,"aqmarine/urban");
 		else if(rnd < 0.5)
 			sprintf(bot_skin,"sydney/sydney");
 		else if(rnd < 0.55)
 			sprintf(bot_skin,"male/cajin");
 		else if(rnd < 0.6)
-			sprintf(bot_skin,"male/commando");
+			sprintf(bot_skin,"aqmarine/desert");
 		else if(rnd < 0.65)
 			sprintf(bot_skin,"male/grunt");
 		else if(rnd < 0.7)
@@ -561,32 +558,9 @@ void ACESP_SetName(edict_t *bot, char *name, char *skin, char *team)
 			sprintf(bot_skin,"sas/saspolice");
 		else 
 			sprintf(bot_skin,"sas/sasuc");
-		
-		// } else if (!ltk_classic->value) {
-		// 		// Find skins at random and use them
-		// 	char *modelnames[8] = {"male", "female", "actionmale", "aqmarine", "terror", "sas", "messiah", "sydney"};
-		// 	int n = sizeof(modelnames) / sizeof(modelnames[0]);
-		// 	int indexmodel, indexskin;
-		// 	// Get a random seed
-		// 	srand(time(NULL));
-		// 	indexmodel = rand() % n;
-
-		// 	char *chosenmodel = modelnames[indexmodel];
-
-		// 	// Add logic here to randomly select a skin based on the model
-
-		// 	// Scan all skins in model-name based directory
-		// 	// such as actionmale/
-		// 	// and populate an array
-			
-		// 	//gi.dprintf("I chose model %s with skin %s\n", chosenmodel, chosenskin);
-		// 	// Assign static skin for now until VFS is available via GetExtendedGameAPI()
-		// 	sprintf(bot_skin, "%s/%s", "male", "robber");
-
-		// } else {
-
-		strcpy(bot_skin,skin);
 	}
+	else
+		strcpy(bot_skin,skin);
 
 	// initialise userinfo
 	memset (userinfo, 0, sizeof(userinfo));
@@ -688,7 +662,6 @@ edict_t *ACESP_SpawnBot( char *team_str, char *name, char *skin, char *userinfo 
 				LTK_Chat( bot, myplayer[rand()%counter], DBC_WELCOME);
 		}
 	}	
-	
 	return bot;
 }
 
@@ -752,10 +725,7 @@ void ACESP_RemoveBot(char *name)
 
 void attract_mode_bot_check(void)
 {
-	int team1 = 0;
-	int team2 = 0;
-	int team3 = 0;
-	int i, real_player_count;
+	int real_player_count;
 	int maxclientsminus2 = (int)(maxclients->value - 2);
 
 	ACEIT_RebuildPlayerList();
@@ -811,7 +781,7 @@ void attract_mode_bot_check(void)
 	  Then remove a bot only if we're near the maxclients number
 	 
 	*/
-
+	
 	if (tgt_bot_count - real_player_count == game.bot_count) {
 		return;
 	} else if (tgt_bot_count - real_player_count > game.bot_count) {
@@ -828,6 +798,7 @@ void attract_mode_bot_check(void)
 		gi.dprintf("I'm removing a bot because num_players = %d and maxclients is %d", num_players, game.maxclients);
 		ACESP_RemoveBot("");
 	}
+	
 }
 
 //====================================

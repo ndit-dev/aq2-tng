@@ -2780,6 +2780,11 @@ void ClientBeginDeathmatch(edict_t * ent)
     	ACEIT_RebuildPlayerList();
 #if USE_AQTION
 		StatBotCheck();
+		#if USE_AQTION
+			if(attract_mode->value){
+				attract_mode_bot_check();
+		}
+	#endif
 #endif
 #endif
 
@@ -3172,6 +3177,12 @@ void ClientDisconnect(edict_t * ent)
 	ACEIT_RebuildPlayerList();
 #if USE_AQTION
 	StatBotCheck();
+
+	#if USE_AQTION
+		if(attract_mode->value){
+			attract_mode_bot_check();
+		}
+	#endif
 #endif
 #endif
 }
