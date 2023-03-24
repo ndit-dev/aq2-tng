@@ -423,7 +423,7 @@ void ACESP_Respawn (edict_t *self)
 {
 	respawn( self );
 	
-	if( random() < 0.10)
+	if( random() < 0.05)
 	{
 		// Store current enemies available
 		int		i, counter = 0;
@@ -725,7 +725,6 @@ void ACESP_RemoveBot(char *name)
 
 void attract_mode_bot_check(void)
 {
-	int real_player_count;
 	int maxclientsminus2 = (int)(maxclients->value - 2);
 
 	ACEIT_RebuildPlayerList();
@@ -745,7 +744,7 @@ void attract_mode_bot_check(void)
     }
 
 	int tgt_bot_count = (int)attract_mode_botcount->value;
-	real_player_count = (num_players - game.bot_count);
+	int real_player_count = (num_players - game.bot_count);
 
 	// Debug area, uncomment for gratiuitous amounts of spam
 	// if (teamplay->value){
