@@ -619,13 +619,18 @@ edict_t *ACESP_SpawnBot( char *team_str, char *name, char *skin, char *userinfo 
 		team_str = LocalTeamNames[ team ];
 	}
 
-	if(am->value && am_team->value){
+	if((Q_stricmp(am->string, "1") == 0) && am_team->value){
 		team = (int)am_team->value;
 		if ((!use_3teams->value) && (team >= TEAM3)){
 			gi.dprintf("Warning: am_team was %d, but use_3teams is not enabled!  Bots will default to team 1.\n", team);
 			gi.cvar_forceset("am_team", "1");
 			team = 1;
 		}
+	}
+
+	if((Q_stricmp(am->string, "1") == 0) && (am_team->value) && !teamplay->value){
+		// am_team set but not teamplay
+		team = 0;
 	}
 	
 	ACESP_PutClientInServer( bot, true, team );

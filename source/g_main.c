@@ -497,11 +497,11 @@ cvar_t *g_spawn_items;
 
 // 2023
 cvar_t *use_killcounts;  // Display kill counts in console to clients on frag
-cvar_t *am;
-cvar_t *am_newnames;
-cvar_t *am_botcount;
-cvar_t *am_delay;
-cvar_t *am_team;
+cvar_t *am;  // Attract mode toggle
+cvar_t *am_newnames;  // Attract mode new names, use new LTK bot names
+cvar_t *am_botcount;  // Attract mode botcount, how many bots at minimum at all times
+cvar_t *am_delay;  // Attract mode delay, unused at the moment
+cvar_t *am_team;  // Attract mode team, which team do you want the bots to join
 
 #ifdef AQTION_EXTENSION
 cvar_t *use_newirvision;
