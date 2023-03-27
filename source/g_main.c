@@ -497,11 +497,11 @@ cvar_t *g_spawn_items;
 
 // 2023
 cvar_t *use_killcounts;  // Display kill counts in console to clients on frag
-cvar_t *attract_mode;
-cvar_t *attract_mode_newnames;
-cvar_t *attract_mode_botcount;
-cvar_t *attract_mode_delay;
-cvar_t *attract_mode_team;
+cvar_t *am;
+cvar_t *am_newnames;
+cvar_t *am_botcount;
+cvar_t *am_delay;
+cvar_t *am_team;
 
 #ifdef AQTION_EXTENSION
 cvar_t *use_newirvision;

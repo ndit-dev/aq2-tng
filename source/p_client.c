@@ -2781,7 +2781,7 @@ void ClientBeginDeathmatch(edict_t * ent)
 #if USE_AQTION
 		StatBotCheck();
 		#if USE_AQTION
-			if(attract_mode->value){
+			if(am->value){
 				attract_mode_bot_check();
 		}
 	#endif
@@ -2819,7 +2819,7 @@ void ClientBeginDeathmatch(edict_t * ent)
 		PrintMOTD(ent);
 	}
 
-	if(attract_mode->value && game.bot_count > 0){
+	if(am->value && game.bot_count > 0){
 		char msg[128];
 		Com_sprintf(msg, sizeof(msg), "This server contains BOTS for you to play with until real players join up!  Enjoy!");
 		gi.centerprintf(ent, msg);
@@ -3179,7 +3179,7 @@ void ClientDisconnect(edict_t * ent)
 	StatBotCheck();
 
 	#if USE_AQTION
-		if(attract_mode->value){
+		if(am->value){
 			attract_mode_bot_check();
 		}
 	#endif

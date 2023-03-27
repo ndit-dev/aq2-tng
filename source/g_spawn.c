@@ -1260,7 +1260,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	ACEND_LoadNodes();
 	
 	// Normal operations, load LTK bots as normal
-	if (!attract_mode->value) {
+	if (!am->value) {
 		ACESP_LoadBotConfig();
 	} else {
 		// Reset bot count, load initial bots
