@@ -112,8 +112,9 @@ void LTK_Chat (edict_t *bot, edict_t *object, int speech)
         char final[150];
         char *text = NULL;
 
-        if ((!object) || (!object->client))
-                return;
+        if ((!object) || (!object->client)) {
+			return;
+		}
 
 		if(!ltk_classic->value){
 			if (speech == DBC_WELCOME) {

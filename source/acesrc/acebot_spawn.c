@@ -182,7 +182,7 @@ if (ltk_loadbots->value){
 			strcat(filename, ltk_botfile->string);
 			strcat(filename, ".cfg");
 	#endif
-
+			gi.dprintf("Botfile: %s\n", filename);
 			// No bot file available, get out of here!
 			if((pIn = fopen(filename, "rb" )) == NULL) {
 				gi.dprintf("WARNING: No file containing bot data was found, no bots loaded.\n");
@@ -335,7 +335,7 @@ edict_t *ACESP_SpawnBotFromConfig( char *inString )
 	Info_SetValueForKey( userinfo, "gender", gender );
 	
 	// Only spawn from config if attract mode is disabled
-	if (!am->value) {
+	if (Q_stricmp(am->string, "0") == 0) {
 		bot = ACESP_SpawnBot( team_str, name, modelskin, userinfo );
 	} else {
 		gi.dprintf("Warning: attract mode is enabled, I am not spawning bots from config.\n");
@@ -601,15 +601,10 @@ edict_t *ACESP_SpawnBot( char *team_str, char *name, char *skin, char *userinfo 
 	
 	// To allow bots to respawn
 	if( ! userinfo ) {
-		if (ltk_classic->value) {
-			// Classic naming method
-			ACESP_SetName( bot, name, skin, team_str );  // includes ClientConnect
-		} else if (!ltk_classic->value) {
-			// TODO: New naming method
-			ACESP_SetName( bot, name, skin, team_str );
-		} else {
-			ClientConnect( bot, userinfo );
-		}
+		// Classic naming method
+		ACESP_SetName( bot, name, skin, team_str );  // includes ClientConnect
+	} else {
+		ClientConnect( bot, userinfo );
 	}
 	
 	ClientBeginDeathmatch( bot );
@@ -726,6 +721,7 @@ void ACESP_RemoveBot(char *name)
 void attract_mode_bot_check(void)
 {
 	int maxclientsminus2 = (int)(maxclients->value - 2);
+	int adjustment = 0;
 
 	ACEIT_RebuildPlayerList();
 	// Some sanity checking before we proceed
@@ -739,7 +735,7 @@ void attract_mode_bot_check(void)
 			gi.cvar_forceset("am_botcount", "6");
 		} else {
 			gi.dprintf( "am is 2, am_botcount is %d, maxclients is too low at %d, reducing bot count\n", (int)am_botcount->value, (int)maxclients->value);
-			int adjustment = (maxclientsminus2 / 2);
+			adjustment = (maxclientsminus2 / 2);
 			gi.cvar_forceset("am_botcount", TOSTRING(adjustment));
 		}
     }
