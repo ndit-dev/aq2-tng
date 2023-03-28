@@ -445,6 +445,9 @@ int calc_zoom_comp(edict_t * ent)
 		idle_weapon_frames = 4;
 	} else if ((clping > (pingfloor * 3))){
 		idle_weapon_frames = 3;
+	} else {
+		// Somehow clping wasn't calculated correctly, default to be safe
+		idle_weapon_frames = default_idle_frames;
 	}
 
 	return idle_weapon_frames;
