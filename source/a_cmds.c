@@ -477,7 +477,7 @@ void _SetSniper(edict_t * ent, int zoom)
 	int clping = ent->client->ping;
 	int default_idle_frames = 6;
 	int idle_weapon_frames = 0;
-	float calc_idle_weapon_frames = (clping / 100);
+	float calc_idle_weapon_frames = (clping / 80);
 
 	if (calc_idle_weapon_frames > 1) {
 		idle_weapon_frames = (default_idle_frames - round(calc_idle_weapon_frames));
