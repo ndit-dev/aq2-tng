@@ -429,19 +429,25 @@ int calc_zoom_comp(edict_t * ent)
 {
 // Determine client ping to indicate how quickly we zoom from 0x to 1x
 	int default_idle_frames = 6;
+	int pingfloor = 80;
 	int clping = ent->client->ping;
-	int idle_weapon_frames = default_idle_frames;
-	int calc_idle_weapon_frames = floor(clping / 80);
 
-	if (calc_idle_weapon_frames > 1) {
-		idle_weapon_frames = (default_idle_frames - calc_idle_weapon_frames);
-	} 
-	if (idle_weapon_frames < 1) {
-		// Never go below 1 frame
-		idle_weapon_frames = 1;
+	int idle_weapon_frames = 0;
+	int calc_idle_weapon_frames = round(clping / pingfloor);
+
+	gi.dprintf("%s ping is %i\n", ent->client->pers.netname, clping);
+
+	// No compensation if player ping is less than pingfloor
+	// For every tier of pingfloor you reduce your frames by 1
+	if (clping < pingfloor){
+		idle_weapon_frames = default_idle_frames;
+	} else if ((clping > pingfloor) && (clping < (pingfloor * 2))){
+		idle_weapon_frames = 5;
+	} else if ((clping > (pingfloor * 2)) && (clping < (pingfloor * 3))){
+		idle_weapon_frames = 4;
+	} else if ((clping > (pingfloor * 3)) && (clping < (pingfloor * 4))){
+		idle_weapon_frames = 3;
 	}
-	gi.dprintf("%s has %dms ping, their idle frames for zoom in is %d, calculated from %d\n", 
-		ent->client->pers.netname, ent->client->ping, idle_weapon_frames, calc_idle_weapon_frames);
 
 	return idle_weapon_frames;
 }
@@ -501,7 +507,7 @@ void _SetSniper(edict_t * ent, int zoom)
 		if(zoom_comp->value) {
 			ent->client->idle_weapon = calc_zoom_comp(ent);
 		} else {
-			ent->client->idle_weapon = default_idle_frames;
+			ent->client->idle_weapon = 6;
 		}
 		ent->client->ps.gunframe = 22;
 	}
