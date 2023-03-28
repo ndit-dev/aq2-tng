@@ -439,11 +439,11 @@ int calc_zoom_comp(edict_t * ent)
 	// For every tier of pingfloor you reduce your frames by 1
 	if (clping < pingfloor){
 		idle_weapon_frames = default_idle_frames;
-	} else if ((clping > pingfloor) && (clping < (pingfloor * 2))){
+	} else if ((clping > pingfloor) && (clping <= (pingfloor * 2))){
 		idle_weapon_frames = 5;
-	} else if ((clping > (pingfloor * 2)) && (clping < (pingfloor * 3))){
+	} else if ((clping > (pingfloor * 2)) && (clping <= (pingfloor * 3))){
 		idle_weapon_frames = 4;
-	} else if ((clping > (pingfloor * 3)) && (clping < (pingfloor * 4))){
+	} else if ((clping > (pingfloor * 3))){
 		idle_weapon_frames = 3;
 	}
 
