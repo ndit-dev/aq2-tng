@@ -428,8 +428,7 @@ void Cmd_Reload_f(edict_t * ent)
 int calc_zoom_comp(edict_t * ent)
 {
 // Determine client ping to indicate how quickly we zoom from 0x to 1x
-	#define default_idle_frames 6
-
+	int default_idle_frames = 6;
 	int clping = ent->client->ping;
 	int idle_weapon_frames = default_idle_frames;
 	int calc_idle_weapon_frames = floor(clping / 80);
@@ -443,7 +442,6 @@ int calc_zoom_comp(edict_t * ent)
 	}
 	gi.dprintf("%s has %dms ping, their idle frames for zoom in is %d, calculated from %d\n", 
 		ent->client->pers.netname, ent->client->ping, idle_weapon_frames, calc_idle_weapon_frames);
-
 
 	return idle_weapon_frames;
 }
