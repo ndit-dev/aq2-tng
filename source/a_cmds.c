@@ -474,23 +474,29 @@ void _SetSniper(edict_t * ent, int zoom)
 	//show the model if switching to 1x
 
 	// Determine client ping to indicate how quickly we zoom from 0x to 1x
+	#define default_idle_frames 6
 	int clping = ent->client->ping;
-	int default_idle_frames = 6;
 	int idle_weapon_frames = 0;
-	double calc_idle_weapon_frames = floor(clping / 80);
+	int calc_idle_weapon_frames = floor(clping / 80);
 
 	if (calc_idle_weapon_frames > 1) {
 		idle_weapon_frames = (default_idle_frames - calc_idle_weapon_frames);
 	} else {
 		idle_weapon_frames = default_idle_frames;
 	}
-	gi.dprintf("%s has %dms ping, their idle frames for zoom in is %d, calculated from %d\n", 
-	ent->client->pers.netname, ent->client->ping, default_idle_frames, calc_idle_weapon_frames);
 
 	if (oldmode == SNIPER_1X && ent->client->weaponstate != WEAPON_RELOADING) {
 		//do idleness stuff when switching from 1x, see function below
 		ent->client->weaponstate = WEAPON_BUSY;
-		ent->client->idle_weapon = idle_weapon_frames;
+		if(zoom_comp->value) {
+			ent->client->idle_weapon = idle_weapon_frames;
+		} else {
+			ent->client->idle_weapon = default_idle_frames;
+		}
+
+		gi.dprintf("%s has %dms ping, their idle frames for zoom in is %d, calculated from %d\n", 
+			ent->client->pers.netname, ent->client->ping, idle_weapon_frames, calc_idle_weapon_frames);
+
 		ent->client->ps.gunframe = 22;
 	}
 }
