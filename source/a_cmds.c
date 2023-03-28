@@ -435,11 +435,9 @@ int calc_zoom_comp(edict_t * ent)
 	int calc_idle_weapon_frames = floor(clping / 80);
 
 	if (calc_idle_weapon_frames > 1) {
-		gi.dprintf("Why am I firing?   %i\n", calc_idle_weapon_frames);
 		idle_weapon_frames = (default_idle_frames - calc_idle_weapon_frames);
 	} 
 	if (idle_weapon_frames < 1) {
-		gi.dprintf("Why am I firing?   %i\n", idle_weapon_frames);
 		// Never go below 1 frame
 		idle_weapon_frames = 1;
 	}
