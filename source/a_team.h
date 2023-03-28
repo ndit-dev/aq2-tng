@@ -98,7 +98,7 @@ void NS_SetupTeamSpawnPoints ();
 
 typedef struct spawn_distances_s
 {
-   distance;
+  float distance;
   edict_t *s;
 }
 spawn_distances_t;
