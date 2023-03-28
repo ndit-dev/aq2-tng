@@ -617,6 +617,10 @@ Features
   g_spawn_items [0/1] - server cvar, set to "1" to allow for item/ammo/weapon spawns in games that you choose your starting weapon,
   for example, dm_choose, teamplay, etc.  Forced set to "0" for matchmode.  Set "0" for normal play.
 
+* Zoom Compensation
+  zoom_comp [0/1] - server cvar, set to "1" to compensate zoom delay based on ping.  Every 80ms ping reduces 1 frame, 
+  minimum of 1 frame.  Default is "0", do not compensate
+
 --------------------------------------------------------------------------------------------------------------------
 Contact Information
   If you wish to contact the TNG team, to report a bug, suggest a new feature, or offer JBravo your
