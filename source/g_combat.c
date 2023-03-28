@@ -541,7 +541,7 @@ T_Damage (edict_t * targ, edict_t * inflictor, edict_t * attacker, vec3_t dir,
 						if(attacker->client->resp.streakHS % 3 == 0)
 						{
 							if (use_rewards->value) {
-								Announce_Reward(attacker, IMPRESSIVE);
+								Announce_Reward(attacker, ACCURACY);
 							}
 						}
 					}
