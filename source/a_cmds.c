@@ -435,8 +435,6 @@ int calc_zoom_comp(edict_t * ent)
 	int idle_weapon_frames = 0;
 	int calc_idle_weapon_frames = round(clping / pingfloor);
 
-	gi.dprintf("%s ping is %i\n", ent->client->pers.netname, clping);
-
 	// No compensation if player ping is less than pingfloor
 	// For every tier of pingfloor you reduce your frames by 1
 	if (clping < pingfloor){
