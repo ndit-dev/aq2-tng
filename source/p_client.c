@@ -2821,7 +2821,7 @@ void ClientBeginDeathmatch(edict_t * ent)
 
 	if(am->value && game.bot_count > 0){
 		char msg[128];
-		Com_sprintf(msg, sizeof(msg), "This server contains BOTS for you to play with until real players join up!  Enjoy!");
+		Com_sprintf(msg, sizeof(msg), "** This server contains BOTS for you to play with until real players join up!  Enjoy! **");
 		gi.centerprintf(ent, msg);
 	}
 
