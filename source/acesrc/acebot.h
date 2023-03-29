@@ -220,6 +220,7 @@ void     ClientUserinfoChanged (edict_t *ent, char *userinfo);
 void     CopyToBodyQue (edict_t *ent);
 qboolean ClientConnect (edict_t *ent, char *userinfo);
 void     Use_Plat (edict_t *ent, edict_t *other, edict_t *activator);
+void 	 hurt_touch (edict_t * self, edict_t * other, cplane_t * plane, csurface_t * surf);
 
 // acebot_ai.c protos
 void     ACEAI_Think (edict_t *self);
