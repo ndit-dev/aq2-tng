@@ -818,23 +818,20 @@ char	*names4[NUMNAMES] = {
 qboolean	nameused[NUMNAMES][NUMNAMES];
 
 //====================================
-// AQ2World Staff Names -- come shoot at us!
-// Find time to implement this!  Or better yet, 
-// load names from a file rather than this array?
+// AQ2World Staff Names -- come shoot at our bots!
+// TODO: Find time to implement this better
 //====================================
-#define AQ2WTEAM	11
-#define AQ2WFULLNAME	AQ2WTEAM*2
-char	*aq2names1[AQ2WTEAM] = {
-	"bAron", "darksaint", "FragBait", "matic", "JukS", "TgT", "dmc", "dox", "KaniZ", "keffo", "QuimBy"
-	};
-char	*aq2names2[AQ2WTEAM] = {
-	"Rezet", "Royce", "vrol", "mikota", "Reki", "ReKTeK", "Ralle", "Tech", "dmc", "Raptor007", "Ferrick"
-	};
-char	*aq2tags[AQ2WTEAM] = {
-	"[BOT]", "<ai>", ".beep.", ">ROBOT<", "/iNhUmAn/", "^bZZZv,", "-machin3-", ")anDroiD)", "-b0rg_", "*r0b0t*", " FaK3:"
+#define AQ2WTEAMSIZE	22
+char	*aq2names[AQ2WTEAMSIZE] = {
+	"[BOT]bAron", "[BOT]darksaint", "[BOT]FragBait",
+	"[BOT]matic", "[BOT]JukS", "[BOT]TgT", "[BOT]dmc",
+	"[BOT]dox", "[BOT]KaniZ", "[BOT]keffo", "[BOT]QuimBy"
+	"<ai>Rezet", "<ai>Royce", "<ai>vrol", "<ai>mikota",
+	"<ai>Reki", "<ai>ReKTeK", "<ai>Ralle", "<ai>Tech",
+	"<ai>dmc", "<ai>Raptor007", "<ai>Ferrick"
 	};
 
-qboolean	adminnameused[AQ2WTEAM][AQ2WFULLNAME];
+qboolean	adminnameused[AQ2WTEAMSIZE];
 // END AQ2World Staff Names //
 
 void	LTKsetBotNameNew(void)
@@ -854,7 +851,7 @@ void	LTKsetBotName( char	*bot_name )
 	if(!am->value){
 		randomnames = NUMNAMES;
 	} else {
-		randomnames = AQ2WTEAM;
+		randomnames = AQ2WTEAMSIZE;
 	}
 
 	while(1) {
@@ -865,7 +862,7 @@ void	LTKsetBotName( char	*bot_name )
 					break;
 				}
 			} else {
-				if (!adminnameused[part1][part2]) {
+				if (!adminnameused[part1]) {
 					break;
 				}
 			}
@@ -875,7 +872,7 @@ void	LTKsetBotName( char	*bot_name )
 	if (!am_newnames->value) {
 		nameused[part1][part2] = true;
 	} else {
-		adminnameused[part1][part2] = true;
+		adminnameused[part1] = true;
 	}
 	// Now put the name together
 
@@ -892,16 +889,8 @@ void	LTKsetBotName( char	*bot_name )
 			strcat( bot_name, names4[part2]);
 		}
 	} else { // New AQ2World Team names
-		if( random() < 0.5 )
-		{
-			strcpy( bot_name, aq2names1[part1]);
-			strcat( bot_name, aq2tags[part2]);
-		}
-		else
-		{
-			strcpy( bot_name, aq2tags[part1]);
-			strcat( bot_name, aq2names2[part2]);
-		}
+		gi.dprintf("Name chosen: %s", aq2names[part1]);
+		strcpy( bot_name, aq2names[part1]);
 	}
 }
 
