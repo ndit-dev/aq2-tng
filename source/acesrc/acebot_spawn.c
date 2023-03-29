@@ -889,7 +889,6 @@ void	LTKsetBotName( char	*bot_name )
 			strcat( bot_name, names4[part2]);
 		}
 	} else { // New AQ2World Team names
-		gi.dprintf("Name chosen: %s", aq2names[part1]);
 		strcpy( bot_name, aq2names[part1]);
 	}
 }
