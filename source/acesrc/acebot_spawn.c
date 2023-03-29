@@ -821,7 +821,7 @@ qboolean	nameused[NUMNAMES][NUMNAMES];
 // AQ2World Staff Names -- come shoot at our bots!
 // TODO: Find time to implement this better
 //====================================
-#define AQ2WTEAMSIZE	22
+#define AQ2WTEAMSIZE	21
 char	*aq2names[AQ2WTEAMSIZE] = {
 	"[BOT]bAron", "[BOT]darksaint", "[BOT]FragBait",
 	"[BOT]matic", "[BOT]JukS", "[BOT]TgT", "[BOT]dmc",
@@ -851,6 +851,10 @@ void	LTKsetBotName( char	*bot_name )
 	if(!am->value){
 		randomnames = NUMNAMES;
 	} else {
+		// Free up previously used names to be resued
+		for(int i = 0; i < AQ2WTEAMSIZE; i++){
+			adminnameused[i] = false;
+		}
 		randomnames = AQ2WTEAMSIZE;
 	}
 
@@ -889,7 +893,7 @@ void	LTKsetBotName( char	*bot_name )
 			strcat( bot_name, names4[part2]);
 		}
 	} else { // New AQ2World Team names
+		//gi.dprintf("I chose %s because %i\n", aq2names[part1], part1);
 		strcpy( bot_name, aq2names[part1]);
 	}
 }
-
