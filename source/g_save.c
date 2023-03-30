@@ -571,6 +571,7 @@ void InitGame( void )
 
 	// 2023
 	use_killcounts = gi.cvar("use_killcounts", "1", 0);
+	zoom_comp = gi.cvar("zoom_comp", "0", 0);
 
 	// new AQtion Extension cvars
 #ifdef AQTION_EXTENSION

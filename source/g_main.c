@@ -496,6 +496,7 @@ cvar_t *g_spawn_items;
 
 // 2023
 cvar_t *use_killcounts;  // Display kill counts in console to clients on frag
+cvar_t *zoom_comp; // Compensates zoom-in frames with ping (high ping = fewer frames)
 
 #ifdef AQTION_EXTENSION
 cvar_t *use_newirvision;

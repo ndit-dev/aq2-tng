@@ -1166,6 +1166,7 @@ extern cvar_t *e_enhancedSlippers;
 
 // 2023
 extern cvar_t *use_killcounts;
+extern cvar_t *zoom_comp;
 
 #ifdef AQTION_EXTENSION
 extern int (*engine_Client_GetVersion)(edict_t *ent);
