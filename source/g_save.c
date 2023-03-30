@@ -576,6 +576,7 @@ void InitGame( void )
 	am_botcount = gi.cvar("am_botcount", "6", CVAR_SERVERINFO);
 	am_delay = gi.cvar("am_delay", "30", 0);
 	am_team = gi.cvar("am_team", "0", 0);
+	zoom_comp = gi.cvar("zoom_comp", "0", 0);
 
 	// new AQtion Extension cvars
 #ifdef AQTION_EXTENSION

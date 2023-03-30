@@ -1172,6 +1172,7 @@ extern cvar_t *am_newnames;
 extern cvar_t *am_botcount;
 extern cvar_t *am_delay;
 extern cvar_t *am_team;
+extern cvar_t *zoom_comp;
 
 #ifdef AQTION_EXTENSION
 extern int (*engine_Client_GetVersion)(edict_t *ent);
@@ -1516,6 +1517,7 @@ void ClientFixLegs(edict_t *ent);
 void ClientUserinfoChanged(edict_t* ent, char* userinfo);
 void ClientDisconnect(edict_t* ent);
 void CopyToBodyQue(edict_t* ent);
+void Announce_Reward(edict_t *ent, int rewardType);
 
 //p_weapon.c
 void Weapon_Generic( edict_t * ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
