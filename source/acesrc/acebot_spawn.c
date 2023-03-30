@@ -843,7 +843,7 @@ char	*aq2names[] = {
 	"_NME_Freud", "_NME_slicer", "_NME_JBravo", "_NME_Elviz"
 	};
 
-qboolean	adminnameused[sizeof(aq2names)];
+qboolean	adminnameused[AQ2WTEAMSIZE];
 // END AQ2World Staff Names //
 
 void	LTKsetBotNameNew(void)
