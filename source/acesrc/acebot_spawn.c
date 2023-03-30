@@ -889,7 +889,10 @@ void	LTKsetBotName( char	*bot_name )
 	// Mark that name as used
 	if (!am_newnames->value) {
 		nameused[part1][part2] = true;
-	} 
+	}
+	// Intentionally not marking new names as used as
+	// we run out of names after a few iterations
+	// Will fix this some day?
 	
 	// Now put the name together
 
@@ -906,7 +909,6 @@ void	LTKsetBotName( char	*bot_name )
 			strcat( bot_name, names4[part2]);
 		}
 	} else { // New AQ2World Team names
-		//gi.dprintf("I chose %s because %i\n", aq2names[part1], part1);
 		strcpy( bot_name, aq2names[part1]);
 	}
 }
