@@ -190,13 +190,16 @@ Features
   llsound [0/1] - When on (1), Low Lag Sounds will be used.
   Note: This functionality has been enhanced for AQtion, if this is disabled (0) then all weapon sounds will
   retain standard functionality and all clients will be forced to use the same sound file (mk23fire.wav, for example).
-  If this is enabled (1), clients can adjust which sound file is played per weapon, based on the following cvars:
+  If this is enabled (1), clients can adjust which sound file is played per weapon, based on the following Q2Pro cvars:
     * cl_mk23_sound
     * cl_mp5_sound
     * cl_m4_sound
     * cl_m3_sound
     * cl_hc_sound
     * cl_ssg_sound
+  If llsound is 1, but these values are not set (default 0) they will play the gun sound that corresponds to the 0 index 
+  name value of the sound file, such as `mk23fire0.wav` or `cannon_fire0.wav`.  Players who do not use AQtion or the most
+  recent versions of Q2Pro will not benefit from this change.
 
 * Announcer
   The announcer that says "Lights, Camera, Action!" has his vocabulary increased by several words, announcing
@@ -206,7 +209,9 @@ Features
   Commands:
   use_warnings [0/1] - When on (1), it will play all warnings such as "3 minutes left" and "Team X Wins".
   use_rewards [0/1] - When on (1), it will play the sounds on rewards such as "Impressive".
-  
+  use_killcounts [0/1] - When on (1), server will announce kill counts.  `0` is no kill counts printed, `1` prints for all modes.  
+  Kill streaks reset every round ( see WonGame() ).  The printing of these kill streaks does not affect use_rewards.
+
 * Kevlar Helmet
   A new item, the Kevlar Helmet acts like the Kevlar Vest does, only it protects the head of the player wearing
   it. To disable it, use item banning.
