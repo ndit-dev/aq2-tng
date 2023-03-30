@@ -2762,6 +2762,11 @@ void ClientBeginDeathmatch(edict_t * ent)
     	ACEIT_RebuildPlayerList();
 #if USE_AQTION
 		StatBotCheck();
+		#if USE_AQTION
+			if(am->value){
+				attract_mode_bot_check();
+		}
+	#endif
 #endif
 #endif
 
@@ -2794,6 +2799,12 @@ void ClientBeginDeathmatch(edict_t * ent)
 			IRC_printf(IRC_T_SERVER, "%n became a spectator", ent->client->pers.netname);
 		}
 		PrintMOTD(ent);
+	}
+
+	if(am->value && game.bot_count > 0){
+		char msg[128];
+		Com_sprintf(msg, sizeof(msg), "** This server contains BOTS for you to play with until real players join up!  Enjoy! **");
+		gi.centerprintf(ent, msg);
 	}
 
 	ent->client->resp.motd_refreshes = 1;
@@ -3148,6 +3159,12 @@ void ClientDisconnect(edict_t * ent)
 	ACEIT_RebuildPlayerList();
 #if USE_AQTION
 	StatBotCheck();
+
+	#if USE_AQTION
+		if(am->value){
+			attract_mode_bot_check();
+		}
+	#endif
 #endif
 #endif
 }

@@ -571,6 +571,11 @@ void InitGame( void )
 
 	// 2023
 	use_killcounts = gi.cvar("use_killcounts", "1", 0);
+	am = gi.cvar("am", "0", CVAR_SERVERINFO);
+	am_newnames = gi.cvar("am_newnames", "1", 0);
+	am_botcount = gi.cvar("am_botcount", "6", CVAR_SERVERINFO);
+	am_delay = gi.cvar("am_delay", "30", 0);
+	am_team = gi.cvar("am_team", "0", 0);
 	zoom_comp = gi.cvar("zoom_comp", "0", 0);
 
 	// new AQtion Extension cvars
@@ -594,8 +599,9 @@ void InitGame( void )
 	ltk_showpath = gi.cvar( "ltk_showpath", "0", 0 );
 	ltk_chat = gi.cvar( "ltk_chat", "1", 0 );
 	ltk_routing = gi.cvar( "ltk_routing", "0", 0 );
-	ltk_botfile = gi.cvar( "ltk_botfile", "botdata.cfg", 0);
+	ltk_botfile = gi.cvar( "ltk_botfile", "botdata", 0);
 	ltk_loadbots = gi.cvar( "ltk_loadbots", "1", 0);
+	ltk_classic = gi.cvar( "ltk_classic", "1", 0);
 #endif
 
 	// items

@@ -740,6 +740,7 @@ typedef struct
   int gamemodeflags;
   int roundNum;
   qboolean ai_ent_found;
+  int bot_count;
 }
 game_locals_t;
 
@@ -1166,6 +1167,11 @@ extern cvar_t *e_enhancedSlippers;
 
 // 2023
 extern cvar_t *use_killcounts;
+extern cvar_t *am;
+extern cvar_t *am_newnames;
+extern cvar_t *am_botcount;
+extern cvar_t *am_delay;
+extern cvar_t *am_team;
 extern cvar_t *zoom_comp;
 
 #ifdef AQTION_EXTENSION
@@ -2101,7 +2107,7 @@ struct edict_s
 
 	qboolean is_bot; 
 	qboolean is_jumping; 
-	qboolean is_triggering; 
+	qboolean is_triggering;
 	 
 	// For movement 
 	vec3_t move_vector;  

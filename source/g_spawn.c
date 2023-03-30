@@ -1258,7 +1258,16 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	// Reload nodes and any persistent bots.
 	ACEND_InitNodes();
 	ACEND_LoadNodes();
-	ACESP_LoadBotConfig();
+	
+	// Normal operations, load LTK bots as normal
+	if (Q_stricmp(am->string, "0") == 0) {
+		ACESP_LoadBotConfig();
+	} else {
+		// Reset bot count, load initial bots
+		game.bot_count = 0;
+		attract_mode_bot_check();
+	}
+
 #endif
 }
 
