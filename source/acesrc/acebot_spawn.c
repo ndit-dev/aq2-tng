@@ -821,17 +821,29 @@ qboolean	nameused[NUMNAMES][NUMNAMES];
 // AQ2World Staff Names -- come shoot at our bots!
 // TODO: Find time to implement this better
 //====================================
-#define AQ2WTEAMSIZE	21
-char	*aq2names[AQ2WTEAMSIZE] = {
+#define AQ2WTEAMSIZE	46
+char	*aq2names[] = {
 	"[BOT]bAron", "[BOT]darksaint", "[BOT]FragBait",
 	"[BOT]matic", "[BOT]JukS", "[BOT]TgT", "[BOT]dmc",
 	"[BOT]dox", "[BOT]KaniZ", "[BOT]keffo", "[BOT]QuimBy"
+	
 	"<ai>Rezet", "<ai>Royce", "<ai>vrol", "<ai>mikota",
 	"<ai>Reki", "<ai>ReKTeK", "<ai>Ralle", "<ai>Tech",
-	"<ai>dmc", "<ai>Raptor007", "<ai>Ferrick"
+
+	"-ROBO-JukS", "-ROBO-Nevi", "-ROBO-topdeck",
+	"-ROBO-dmc", "-ROBO-Raptor007", "-ROBO-Ferrick",
+
+	"Igor[ROCK].bot", "Suislide.bot", "Bartender.bot",
+	"Fex.bot", "Shagg.bot", "Black Angel.bot", "Rookie.bot",
+
+	"Fireblade>beep", "Cail>beep", "Gooseman>beep", "Ace12GA>beep",
+	"BlackMonk>beep", "hal9k>beep", "Fool Killer>beep", "Inghaw>beep",
+
+	"_NME_GreyDeath", "_NME_Ellusion", "_NME_Deathwatch", 
+	"_NME_Freud", "_NME_slicer", "_NME_JBravo", "_NME_Elviz"
 	};
 
-qboolean	adminnameused[AQ2WTEAMSIZE];
+qboolean	adminnameused[sizeof(aq2names)];
 // END AQ2World Staff Names //
 
 void	LTKsetBotNameNew(void)
@@ -851,10 +863,12 @@ void	LTKsetBotName( char	*bot_name )
 	if(!am->value){
 		randomnames = NUMNAMES;
 	} else {
-		// Free up previously used names to be resued
-		for(int i = 0; i < AQ2WTEAMSIZE; i++){
-			adminnameused[i] = false;
-		}
+		// /* TODO: Free up previously used names to be reused.
+		//    This may cause duplicates in-game though.
+		//    Fix this at some point.  Otherwise the game
+		//    runs out of valid values and will softlock
+		//    when generating LTK bots.
+
 		randomnames = AQ2WTEAMSIZE;
 	}
 
@@ -875,9 +889,8 @@ void	LTKsetBotName( char	*bot_name )
 	// Mark that name as used
 	if (!am_newnames->value) {
 		nameused[part1][part2] = true;
-	} else {
-		adminnameused[part1] = true;
-	}
+	} 
+	
 	// Now put the name together
 
 	// Old names, for the classic feel
