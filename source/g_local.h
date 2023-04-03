@@ -583,6 +583,10 @@ bind 6 "use Sniper Rifle"
 #define HELM_NAME    "Kevlar Helmet"
 #define LASER_NAME   "Lasersight"
 
+#define C_KIT_NAME	 "Commando Kit"
+#define S_KIT_NAME	 "Stealth Kit"
+#define A_KIT_NAME	 "Assassin Kit"
+
 #define NO_NUM					0
 
 #define MK23_NUM				1
@@ -613,7 +617,11 @@ bind 6 "use Sniper Rifle"
 
 #define GRAPPLE_NUM				23
 
-#define ITEM_MAX_NUM			24
+#define C_KIT_NUM				24
+#define S_KIT_NUM				25
+#define A_KIT_NUM				26
+
+#define ITEM_MAX_NUM			27
 
 #define WEAPON_COUNT			9
 #define ITEM_COUNT				6
@@ -1173,6 +1181,7 @@ extern cvar_t *am_botcount;
 extern cvar_t *am_delay;
 extern cvar_t *am_team;
 extern cvar_t *zoom_comp;
+extern cvar_t *item_kit_mode;
 
 #ifdef AQTION_EXTENSION
 extern int (*engine_Client_GetVersion)(edict_t *ent);
@@ -1314,6 +1323,7 @@ void ChangeWeapon (edict_t * ent);
 void PrecacheItems( void );
 void SpawnItem (edict_t * ent, gitem_t * item);
 void Think_Weapon (edict_t * ent);
+void AddItem(edict_t *ent, gitem_t *item);
 qboolean Add_Ammo (edict_t * ent, gitem_t * item, int count);
 void Touch_Item (edict_t * ent, edict_t * other, cplane_t * plane,
 		 csurface_t * surf);
@@ -1632,6 +1642,8 @@ typedef struct
 	int irvision;			// ir on or off (only matters if player has ir device, currently bandolier)
 
 	ignorelist_t ignorelist;
+	gitem_t *chosenItem2;		// Support for item kit mode
+
 }
 client_persistant_t;
 

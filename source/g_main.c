@@ -503,6 +503,7 @@ cvar_t *am_botcount;  // Attract mode botcount, how many bots at minimum at all 
 cvar_t *am_delay;  // Attract mode delay, unused at the moment
 cvar_t *am_team;  // Attract mode team, which team do you want the bots to join
 cvar_t *zoom_comp; // Compensates zoom-in frames with ping (high ping = fewer frames)
+cvar_t *item_kit_mode;  // Toggles item kit mode
 
 #ifdef AQTION_EXTENSION
 cvar_t *use_newirvision;

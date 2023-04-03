@@ -1070,6 +1070,9 @@ void Cmd_Choose_f(edict_t * ent)
 		}
 		ent->client->pers.chosenItem = GET_ITEM(itemNum);
 		break;
+	case C_KIT_NUM:
+	case S_KIT_NUM:
+	case A_KIT_NUM:
 	default:
 		gi.cprintf(ent, PRINT_HIGH, "Invalid weapon or item choice.\n");
 		return;
@@ -1081,7 +1084,25 @@ void Cmd_Choose_f(edict_t * ent)
 	item = ent->client->pers.chosenItem;
 	itmText = (item && item->pickup_name) ? item->pickup_name : "NONE";
 
-	gi.cprintf(ent, PRINT_HIGH, "Weapon selected: %s\nItem selected: %s\n", wpnText, itmText );
+	if (item_kit_mode->value) {
+		if (itemNum == C_KIT_NUM){
+			itmText = "Commando Kit (Bandolier + Kevlar Helmet)";
+		} else if (itemNum == A_KIT_NUM){
+			itmText = "Assassin Kit (Laser Sight + Silencer)";
+		} else if (itemNum == S_KIT_NUM){
+			if (e_enhancedSlippers->value){
+				itmText = "Stealth Kit (Enhanced Stealth Slippers + Silencer)";
+			} else {
+				itmText = "Stealth Kit (Stealth Slippers + Silencer)";
+			}
+		} else {
+			// How did you pick a kit not on the list?
+			itmText = "NONE";
+		}
+		gi.cprintf(ent, PRINT_HIGH, "Weapon selected: %s\nItem kit selected: %s\n", wpnText, itmText );
+	} else {
+		gi.cprintf(ent, PRINT_HIGH, "Weapon selected: %s\nItem selected: %s\n", wpnText, itmText );
+	}
 }
 
 // AQ:TNG - JBravo adding tkok

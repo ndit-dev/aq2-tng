@@ -2146,8 +2146,16 @@ void EquipClient(edict_t * ent)
 	if (client->pers.chosenItem) {
 		memset(&etemp, 0, sizeof(etemp));
 		etemp.item = client->pers.chosenItem;
+			if (item_kit_mode->value && client->pers.chosenItem2){
+				etemp.item = client->pers.chosenItem2;
+			}
 		Pickup_Special(&etemp, ent);
 	}
+	// if (item_kit_mode->value && client->pers.chosenItem2){
+	// 	memset(&etemp, 0, sizeof(etemp));
+	// 	etemp.item = client->pers.chosenItem2;
+	// 	Pickup_Special(&etemp, ent);
+	// }
 }
 
 // Igor[Rock] start

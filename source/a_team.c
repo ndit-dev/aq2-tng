@@ -491,11 +491,34 @@ void LeaveTeams (edict_t * ent, pmenu_t * p)
 	OpenJoinMenu(ent);
 }
 
+void ItemKitEquip(edict_t * ent, int item1, int item2)
+{
+	edict_t etemp;
+	int i;
+	gitem_t *it;
+
+	for (i = 0; i < game.num_items; i++) {
+		it = itemlist + i;
+		if (it->typeNum != item1 || it->typeNum != item2)
+			continue;
+
+		etemp.item = it;
+
+		if (ent->client->unique_item_total >= unique_items->value)
+			ent->client->unique_item_total = unique_items->value - 1;
+		Pickup_Special(&etemp, ent);
+	}
+}
+
 void SelectWeapon2(edict_t *ent, pmenu_t *p)
 {
 	ent->client->pers.chosenWeapon = GET_ITEM(MP5_NUM);
 	PMenu_Close(ent);
-	OpenItemMenu(ent);
+	if(!item_kit_mode->value){
+		OpenItemMenu(ent);
+	} else {
+		OpenItemKitMenu(ent);
+	}
 	unicastSound(ent, gi.soundindex("weapons/mp5slide.wav"), 1.0);
 }
 
@@ -503,7 +526,11 @@ void SelectWeapon3(edict_t *ent, pmenu_t *p)
 {
 	ent->client->pers.chosenWeapon = GET_ITEM(M3_NUM);
 	PMenu_Close(ent);
-	OpenItemMenu(ent);
+	if(!item_kit_mode->value){
+		OpenItemMenu(ent);
+	} else {
+		OpenItemKitMenu(ent);
+	}
 	unicastSound(ent, gi.soundindex("weapons/m3in.wav"), 1.0);
 }
 
@@ -511,7 +538,11 @@ void SelectWeapon4(edict_t *ent, pmenu_t *p)
 {
 	ent->client->pers.chosenWeapon = GET_ITEM(HC_NUM);
 	PMenu_Close(ent);
-	OpenItemMenu(ent);
+	if(!item_kit_mode->value){
+		OpenItemMenu(ent);
+	} else {
+		OpenItemKitMenu(ent);
+	}
 	unicastSound(ent, gi.soundindex("weapons/cclose.wav"), 1.0);
 }
 
@@ -519,7 +550,11 @@ void SelectWeapon5(edict_t *ent, pmenu_t *p)
 {
 	ent->client->pers.chosenWeapon = GET_ITEM(SNIPER_NUM);
 	PMenu_Close(ent);
-	OpenItemMenu(ent);
+	if(!item_kit_mode->value){
+		OpenItemMenu(ent);
+	} else {
+		OpenItemKitMenu(ent);
+	}
 	unicastSound(ent, gi.soundindex("weapons/ssgbolt.wav"), 1.0);
 }
 
@@ -527,7 +562,11 @@ void SelectWeapon6(edict_t *ent, pmenu_t *p)
 {
 	ent->client->pers.chosenWeapon = GET_ITEM(M4_NUM);
 	PMenu_Close(ent);
-	OpenItemMenu(ent);
+	if(!item_kit_mode->value){
+		OpenItemMenu(ent);
+	} else {
+		OpenItemKitMenu(ent);
+	}
 	unicastSound(ent, gi.soundindex("weapons/m4a1slide.wav"), 1.0);
 }
 
@@ -535,7 +574,11 @@ void SelectWeapon0(edict_t *ent, pmenu_t *p)
 {
 	ent->client->pers.chosenWeapon = GET_ITEM(KNIFE_NUM);
 	PMenu_Close(ent);
-	OpenItemMenu(ent);
+	if(!item_kit_mode->value){
+		OpenItemMenu(ent);
+	} else {
+		OpenItemKitMenu(ent);
+	}
 	unicastSound(ent, gi.soundindex("weapons/swish.wav"), 1.0);
 }
 
@@ -543,7 +586,11 @@ void SelectWeapon9(edict_t *ent, pmenu_t *p)
 {
 	ent->client->pers.chosenWeapon = GET_ITEM(DUAL_NUM);
 	PMenu_Close(ent);
-	OpenItemMenu(ent);
+	if(!item_kit_mode->value){
+		OpenItemMenu(ent);
+	} else {
+		OpenItemKitMenu(ent);
+	}
 	unicastSound(ent, gi.soundindex("weapons/mk23slide.wav"), 1.0);
 }
 
@@ -587,6 +634,45 @@ void SelectItem6(edict_t *ent, pmenu_t *p)
 	ent->client->pers.chosenItem = GET_ITEM(HELM_NUM);
 	PMenu_Close(ent);
 	unicastSound(ent, gi.soundindex("misc/veston.wav"), 1.0);
+}
+
+// Commando kit
+void SelectKit1(edict_t *ent, pmenu_t *p)
+{
+
+	ent->client->pers.chosenItem = GET_ITEM(BAND_NUM);
+	ent->client->pers.chosenItem2= GET_ITEM(HELM_NUM);
+
+	ItemKitEquip(ent, BAND_NUM, HELM_NUM);
+
+	PMenu_Close(ent);
+	unicastSound(ent, gi.soundindex("misc/veston.wav"), 1.0);
+}
+
+// Stealth kit
+void SelectKit2(edict_t *ent, pmenu_t *p)
+{
+
+	ent->client->pers.chosenItem = GET_ITEM(SLIP_NUM);
+	ent->client->pers.chosenItem2= GET_ITEM(SIL_NUM);
+
+	ItemKitEquip(ent, SLIP_NUM, SIL_NUM);
+
+	PMenu_Close(ent);
+	unicastSound(ent, gi.soundindex("misc/screw.wav"), 1.0);
+}
+
+// Assassin kit
+void SelectKit3(edict_t *ent, pmenu_t *p)
+{
+
+	ent->client->pers.chosenItem = GET_ITEM(LASER_NUM);
+	ent->client->pers.chosenItem2= GET_ITEM(SIL_NUM);
+
+	ItemKitEquip(ent, LASER_NUM, SIL_NUM);
+
+	PMenu_Close(ent);
+	unicastSound(ent, gi.soundindex("misc/lasersight.wav"), 1.0);
 }
 
 // newrand returns n, where 0 >= n < top
@@ -859,7 +945,7 @@ pmenu_t weapmenu[] = {
   {"Return to Main Menu", PMENU_ALIGN_LEFT, NULL, CreditsReturnToMain},
   {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
   //AQ2:TNG END
-  {"Use [ and ] to move cursor", PMENU_ALIGN_LEFT, NULL, NULL},
+  {"Use arrows to move cursor", PMENU_ALIGN_LEFT, NULL, NULL},
   {"ENTER to select", PMENU_ALIGN_LEFT, NULL, NULL},
   {"TAB to exit menu", PMENU_ALIGN_LEFT, NULL, NULL},
   {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
@@ -882,7 +968,26 @@ pmenu_t itemmenu[] = {
   {"Random Item", PMENU_ALIGN_LEFT, NULL, SelectRandomItem},
   //AQ2:TNG end adding itm_flags
   {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
-  {"Use [ and ] to move cursor", PMENU_ALIGN_LEFT, NULL, NULL},
+  {"Use arrows to move cursor", PMENU_ALIGN_LEFT, NULL, NULL},
+  {"ENTER to select", PMENU_ALIGN_LEFT, NULL, NULL},
+  {"TAB to exit menu", PMENU_ALIGN_LEFT, NULL, NULL},
+  {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
+  {"v" VERSION, PMENU_ALIGN_RIGHT, NULL, NULL},
+};
+
+pmenu_t itemkitmenu[] = {
+  {"*" TNG_TITLE, PMENU_ALIGN_CENTER, NULL, NULL},
+  {"\x9D\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9F", PMENU_ALIGN_CENTER, NULL, NULL},
+  {"Select your Item", PMENU_ALIGN_CENTER, NULL, NULL},
+  {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
+  //AQ2:TNG Igor adding itm_flags
+  {NULL, PMENU_ALIGN_LEFT, NULL, NULL},	// "Kevlar Vest", SelectItem1
+  {NULL, PMENU_ALIGN_LEFT, NULL, NULL},	// "Commando Kit", SelectKit1
+  {NULL, PMENU_ALIGN_LEFT, NULL, NULL},	// "Stealth Kit", SelectKit2
+  {NULL, PMENU_ALIGN_LEFT, NULL, NULL},	// "Assassin Kit", SelectKit3
+  //AQ2:TNG end adding itm_flags
+  {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
+  {"Use arrows to move cursor", PMENU_ALIGN_LEFT, NULL, NULL},
   {"ENTER to select", PMENU_ALIGN_LEFT, NULL, NULL},
   {"TAB to exit menu", PMENU_ALIGN_LEFT, NULL, NULL},
   {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
@@ -901,7 +1006,7 @@ pmenu_t randmenu[] = {
   {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
   {"Return to Main Menu", PMENU_ALIGN_LEFT, NULL, CreditsReturnToMain},
   {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
-  {"Use [ and ] to move cursor", PMENU_ALIGN_LEFT, NULL, NULL},
+  {"Use arrows to move cursor", PMENU_ALIGN_LEFT, NULL, NULL},
   {"ENTER to select", PMENU_ALIGN_LEFT, NULL, NULL},
   {"TAB to exit menu", PMENU_ALIGN_LEFT, NULL, NULL},
   {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
@@ -936,7 +1041,7 @@ pmenu_t joinmenu[] = {
   {"MOTD", PMENU_ALIGN_LEFT, NULL, ReprintMOTD},
   {"Credits", PMENU_ALIGN_LEFT, NULL, CreditsMenu},
   {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
-  {"Use [ and ] to move cursor", PMENU_ALIGN_LEFT, NULL, NULL},
+  {"Use arrows to move cursor", PMENU_ALIGN_LEFT, NULL, NULL},
   {"ENTER to select", PMENU_ALIGN_LEFT, NULL, NULL},
   {"TAB to exit menu", PMENU_ALIGN_LEFT, NULL, NULL},
   {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
@@ -1304,7 +1409,16 @@ char *menu_itemnames[ITEM_MAX_NUM] = {
 	KEV_NAME,
 	"Laser Sight",
 	HELM_NAME,
-	""
+	"",
+};
+
+char *menu_itemkitnames[6] = {
+	"",
+	KEV_NAME,
+	C_KIT_NAME,
+	S_KIT_NAME,
+	A_KIT_NAME,
+	"",
 };
 
 typedef struct menuentry_s
@@ -1349,6 +1463,40 @@ void OpenItemMenu (edict_t * ent)
 			PMenu_Open(ent, itemmenu, 4, sizeof(itemmenu) / sizeof(pmenu_t));
 			return;
 		}
+	}
+
+	PMenu_Close(ent);
+}
+
+void OpenItemKitMenu (edict_t * ent)
+{
+	menuentry_t *kitmenuEntry, kit_menu_items[4] = {
+		{ KEV_NUM, SelectItem1 },
+		{ C_KIT_NUM, SelectKit1 },
+		{ S_KIT_NUM, SelectKit2 },
+		{ A_KIT_NUM, SelectKit3 },
+		};
+	int i, count, pos = 4;
+
+	count = sizeof( kit_menu_items ) / sizeof( kit_menu_items[0] );
+
+	for (kitmenuEntry = kit_menu_items, i = 0; i < count; i++, kitmenuEntry++) {\
+		itemkitmenu[pos].text = menu_itemkitnames[kitmenuEntry->itemNum];
+		gi.dprintf("%s\n", itemkitmenu[pos].text);
+		itemkitmenu[pos].SelectFunc = kitmenuEntry->SelectFunc;
+		pos++;
+	}
+
+	if ( pos > 4 )
+	{
+		for (; pos < 4; pos++)
+		{
+			itemkitmenu[pos].text = NULL;
+			itemkitmenu[pos].SelectFunc = NULL;
+		}
+
+		PMenu_Open(ent, itemkitmenu, 4, sizeof(itemkitmenu) / sizeof(pmenu_t));
+		return;
 	}
 
 	PMenu_Close(ent);
@@ -1399,7 +1547,11 @@ void OpenWeaponMenu (edict_t * ent)
 		}
 	}
 
-	OpenItemMenu(ent);
+	if(!item_kit_mode->value){
+		OpenItemMenu(ent);
+	} else {
+		OpenItemKitMenu(ent);
+	}
 }
 
 // AQ2:TNG Deathwatch - Updated this for the new menu
