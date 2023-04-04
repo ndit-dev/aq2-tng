@@ -399,8 +399,6 @@ void Add_Frag(edict_t * ent, int mod)
 		ent->client->resp.gunstats[mod].kills++;
 	}
 
-	ent->client->resp.score++;	// just 1 normal kill
-
 	if (IS_ALIVE(ent))
 	{
 		ent->client->resp.streakKills++;
@@ -416,6 +414,10 @@ void Add_Frag(edict_t * ent, int mod)
 			Announce_Reward(ent, EXCELLENT);
 		}
 	}
+
+	// Regular frag for teamplay/matchmode
+	if (teamplay->value && teamdm->value != 2)
+		ent->client->resp.score++;	// just 1 normal kill
 
 	// Increment team score if TeamDM is enabled
 	if(teamdm->value)
