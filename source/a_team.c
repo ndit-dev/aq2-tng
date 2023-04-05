@@ -491,51 +491,6 @@ void LeaveTeams (edict_t * ent, pmenu_t * p)
 	OpenJoinMenu(ent);
 }
 
-void ItemKitEquip(edict_t * ent, int item1, int item2)
-{
-	edict_t etemp;
-	int i;
-	gitem_t *it;
-
-	it = itemlist + item1;
-	it = it + item2;
-
-	gi.dprintf("Item %i\n", item1);
-	gi.dprintf("Item %i\n", item2);
-
-	etemp.item = it;
-
-	if (ent->client->unique_item_total >= unique_items->value)
-		ent->client->unique_item_total = unique_items->value - 1;
-	Pickup_Special(&etemp, ent);
-
-
-}
-
-// void ItemKitEquip(edict_t * ent, int item1, int item2)
-// {
-// 	edict_t etemp;
-// 	int i;
-// 	gitem_t *it;
-
-// 	for (i = 0; i < game.num_items; i++) {
-// 		it = itemlist + i;
-// 		if (it->typeNum != item1 || it->typeNum != item2)
-// 			continue;
-
-// 		//etemp.item = it;
-
-// 		if (ent->client->unique_item_total >= unique_items->value)
-// 			ent->client->unique_item_total = unique_items->value - 1;
-		
-// 		AddItem(ent, it);
-// 		if(!(ent->spawnflags & (DROPPED_ITEM | DROPPED_PLAYER_ITEM)) && item_respawnmode->value)
-// 			SetRespawn (ent, item_respawn->value);
-
-// 		//Pickup_Special(&etemp, ent);
-// 	}
-// }
-
 void SelectWeapon2(edict_t *ent, pmenu_t *p)
 {
 	ent->client->pers.chosenWeapon = GET_ITEM(MP5_NUM);
@@ -665,11 +620,8 @@ void SelectItem6(edict_t *ent, pmenu_t *p)
 // Commando kit
 void SelectKit1(edict_t *ent, pmenu_t *p)
 {
-
 	ent->client->pers.chosenItem = GET_ITEM(BAND_NUM);
-	ent->client->pers.chosenItem2= GET_ITEM(HELM_NUM);
-
-	ItemKitEquip(ent, BAND_NUM, HELM_NUM);
+	ent->client->pers.chosenItem2 = GET_ITEM(HELM_NUM);
 
 	PMenu_Close(ent);
 	unicastSound(ent, gi.soundindex("misc/veston.wav"), 1.0);
@@ -678,11 +630,8 @@ void SelectKit1(edict_t *ent, pmenu_t *p)
 // Stealth kit
 void SelectKit2(edict_t *ent, pmenu_t *p)
 {
-
 	ent->client->pers.chosenItem = GET_ITEM(SLIP_NUM);
 	ent->client->pers.chosenItem2= GET_ITEM(SIL_NUM);
-
-	ItemKitEquip(ent, SLIP_NUM, SIL_NUM);
 
 	PMenu_Close(ent);
 	unicastSound(ent, gi.soundindex("misc/screw.wav"), 1.0);
@@ -691,11 +640,8 @@ void SelectKit2(edict_t *ent, pmenu_t *p)
 // Assassin kit
 void SelectKit3(edict_t *ent, pmenu_t *p)
 {
-
 	ent->client->pers.chosenItem = GET_ITEM(LASER_NUM);
 	ent->client->pers.chosenItem2= GET_ITEM(SIL_NUM);
-
-	ItemKitEquip(ent, LASER_NUM, SIL_NUM);
 
 	PMenu_Close(ent);
 	unicastSound(ent, gi.soundindex("misc/lasersight.wav"), 1.0);
@@ -734,7 +680,11 @@ void SelectRandomWeapon(edict_t *ent, pmenu_t *p)
 	unicastSound(ent, gi.soundindex(selected_weapon.sound), 1.0);
 	gi.centerprintf(ent, "You selected %s", selected_weapon.name);
 	PMenu_Close(ent);
-	OpenItemMenu(ent);
+	if(!item_kit_mode->value){
+		OpenItemMenu(ent);
+	} else {
+		OpenItemKitMenu(ent);
+	}
 }
 
 void SelectRandomItem(edict_t *ent, pmenu_t *p)
@@ -1007,10 +957,10 @@ pmenu_t itemkitmenu[] = {
   {"Select your Item", PMENU_ALIGN_CENTER, NULL, NULL},
   {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
   //AQ2:TNG Igor adding itm_flags
-  {NULL, PMENU_ALIGN_LEFT, NULL, NULL},	// "Kevlar Vest", SelectItem1
-  {NULL, PMENU_ALIGN_LEFT, NULL, NULL},	// "Commando Kit", SelectKit1
-  {NULL, PMENU_ALIGN_LEFT, NULL, NULL},	// "Stealth Kit", SelectKit2
-  {NULL, PMENU_ALIGN_LEFT, NULL, NULL},	// "Assassin Kit", SelectKit3
+  {KEV_NAME, PMENU_ALIGN_LEFT, NULL, SelectItem1},	// "Kevlar Vest", SelectItem1
+  {C_KIT_NAME, PMENU_ALIGN_LEFT, NULL, SelectKit1},	// "Commando Kit", SelectKit1
+  {S_KIT_NAME, PMENU_ALIGN_LEFT, NULL, SelectKit2},	// "Stealth Kit", SelectKit2
+  {A_KIT_NAME, PMENU_ALIGN_LEFT, NULL, SelectKit3},	// "Assassin Kit", SelectKit3
   //AQ2:TNG end adding itm_flags
   {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
   {"Use arrows to move cursor", PMENU_ALIGN_LEFT, NULL, NULL},
@@ -1436,11 +1386,7 @@ char *menu_itemnames[ITEM_MAX_NUM] = {
 	"Laser Sight",
 	HELM_NAME,
 	"",
-};
 
-char *menu_itemkitnames[6] = {
-	"",
-	KEV_NAME,
 	C_KIT_NAME,
 	S_KIT_NAME,
 	A_KIT_NAME,
@@ -1506,9 +1452,8 @@ void OpenItemKitMenu (edict_t * ent)
 
 	count = sizeof( kit_menu_items ) / sizeof( kit_menu_items[0] );
 
-	for (kitmenuEntry = kit_menu_items, i = 0; i < count; i++, kitmenuEntry++) {\
-		itemkitmenu[pos].text = menu_itemkitnames[kitmenuEntry->itemNum];
-		gi.dprintf("%s\n", itemkitmenu[pos].text);
+	for (kitmenuEntry = kit_menu_items, i = 0; i < count; i++, kitmenuEntry++) {
+		itemkitmenu[pos].text = menu_itemnames[kitmenuEntry->itemNum];
 		itemkitmenu[pos].SelectFunc = kitmenuEntry->SelectFunc;
 		pos++;
 	}

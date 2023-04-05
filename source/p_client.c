@@ -2145,19 +2145,15 @@ void EquipClient(edict_t * ent)
 		break;
 	}
 
+	memset(&etemp, 0, sizeof(etemp));
 	if (client->pers.chosenItem) {
-		memset(&etemp, 0, sizeof(etemp));
 		etemp.item = client->pers.chosenItem;
-			if (item_kit_mode->value && client->pers.chosenItem2){
-				etemp.item = client->pers.chosenItem2;
-			}
 		Pickup_Special(&etemp, ent);
 	}
-	// if (item_kit_mode->value && client->pers.chosenItem2){
-	// 	memset(&etemp, 0, sizeof(etemp));
-	// 	etemp.item = client->pers.chosenItem2;
-	// 	Pickup_Special(&etemp, ent);
-	// }
+	if (item_kit_mode->value && client->pers.chosenItem2){
+		client->inventory[ITEM_INDEX(GET_ITEM(client->pers.chosenItem2->typeNum))] = 1;
+	}
+
 }
 
 // Igor[Rock] start
@@ -2684,12 +2680,8 @@ void PutClientInServer(edict_t * ent)
 	}
 
 	// items up here so that the bandolier will change equipclient below
-	if (allitem->value) {
+	if (allitem->value)
 		AllItems(ent);
-	} else if (item_kit_mode->value) {
-		ItemKitEquip(ent, ent->client->pers.chosenItem->typeNum, ent->client->pers.chosenItem2->typeNum);
-	}
-
 
 	if (gameSettings & GS_WEAPONCHOOSE)
 		EquipClient(ent);
