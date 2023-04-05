@@ -1319,7 +1319,7 @@ void TossItemsOnDeath(edict_t * ent)
 	int i;
 
 	// don't bother dropping stuff when allweapons/items is active
-	if (allitem->value) {
+	if (allitem->value || item_kit_mode->value) {
 		// remove the lasersight because then the observer might have it
 		item = GET_ITEM(LASER_NUM);
 		ent->client->inventory[ITEM_INDEX(item)] = 0;
@@ -2684,8 +2684,12 @@ void PutClientInServer(edict_t * ent)
 	}
 
 	// items up here so that the bandolier will change equipclient below
-	if (allitem->value)
+	if (allitem->value) {
 		AllItems(ent);
+	} else if (item_kit_mode->value) {
+		ItemKitEquip(ent, ent->client->pers.chosenItem->typeNum, ent->client->pers.chosenItem2->typeNum);
+	}
+
 
 	if (gameSettings & GS_WEAPONCHOOSE)
 		EquipClient(ent);

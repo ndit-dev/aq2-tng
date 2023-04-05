@@ -497,18 +497,44 @@ void ItemKitEquip(edict_t * ent, int item1, int item2)
 	int i;
 	gitem_t *it;
 
-	for (i = 0; i < game.num_items; i++) {
-		it = itemlist + i;
-		if (it->typeNum != item1 || it->typeNum != item2)
-			continue;
+	it = itemlist + item1;
+	it = it + item2;
 
-		etemp.item = it;
+	gi.dprintf("Item %i\n", item1);
+	gi.dprintf("Item %i\n", item2);
 
-		if (ent->client->unique_item_total >= unique_items->value)
-			ent->client->unique_item_total = unique_items->value - 1;
-		Pickup_Special(&etemp, ent);
-	}
+	etemp.item = it;
+
+	if (ent->client->unique_item_total >= unique_items->value)
+		ent->client->unique_item_total = unique_items->value - 1;
+	Pickup_Special(&etemp, ent);
+
+
 }
+
+// void ItemKitEquip(edict_t * ent, int item1, int item2)
+// {
+// 	edict_t etemp;
+// 	int i;
+// 	gitem_t *it;
+
+// 	for (i = 0; i < game.num_items; i++) {
+// 		it = itemlist + i;
+// 		if (it->typeNum != item1 || it->typeNum != item2)
+// 			continue;
+
+// 		//etemp.item = it;
+
+// 		if (ent->client->unique_item_total >= unique_items->value)
+// 			ent->client->unique_item_total = unique_items->value - 1;
+		
+// 		AddItem(ent, it);
+// 		if(!(ent->spawnflags & (DROPPED_ITEM | DROPPED_PLAYER_ITEM)) && item_respawnmode->value)
+// 			SetRespawn (ent, item_respawn->value);
+
+// 		//Pickup_Special(&etemp, ent);
+// 	}
+// }
 
 void SelectWeapon2(edict_t *ent, pmenu_t *p)
 {
@@ -1489,7 +1515,7 @@ void OpenItemKitMenu (edict_t * ent)
 
 	if ( pos > 4 )
 	{
-		for (; pos < 4; pos++)
+		for (; pos < 10; pos++)
 		{
 			itemkitmenu[pos].text = NULL;
 			itemkitmenu[pos].SelectFunc = NULL;
