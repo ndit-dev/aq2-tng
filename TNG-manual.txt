@@ -647,6 +647,12 @@ Features
   zoom_comp [0/1] - server cvar, set to "1" to compensate zoom delay based on ping.  Every 80ms ping reduces 1 frame, 
   minimum of 1 frame.  Default is "0", do not compensate
 
+* Warmup
+  warmup [#] - server cvar, set in seconds, minimum is 15, 20 is common.  This is the amount of time in seconds after both captains ready up that warmups will continue until the first round begins.
+  Set to 0 to disable warmup entirely.
+  warmup_bots [#] - server cvar, set in number of bots to add.  This adds this many bots to the warmup phase of matchmode.
+  Set to '0' to disable warmup_bots, suggested value for usage is '4' to '6'.
+
 --------------------------------------------------------------------------------------------------------------------
 Contact Information
   If you wish to contact the TNG team, to report a bug, suggest a new feature, or offer JBravo your
