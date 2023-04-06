@@ -82,7 +82,7 @@ void ACEAI_Think (edict_t *self)
 	self->movetarget = NULL;
 
 	// Force respawn if during warmup mode
-	if (self->deadflag == DEAD_DEAD && (warmup))
+	if (self->deadflag == DEAD_DEAD && (in_warmup))
 	{
 		self->client->buttons = 0;
 		ucmd.buttons = BUTTON_ATTACK;
