@@ -541,6 +541,7 @@ void InitGame( void )
 	jump = gi.cvar ("jump", "0", /*CVAR_SERVERINFO|*/ CVAR_LATCH); // jumping mod -- removed from serverinfo 2022
 
 	warmup = gi.cvar( "warmup", "0", CVAR_LATCH );
+	warmup_bots = gi.cvar( "warmup_bots", "0", CVAR_LATCH );
 	round_begin = gi.cvar( "round_begin", "15", 0 );
 	spectator_hud = gi.cvar( "spectator_hud", "1", CVAR_LATCH );
 
@@ -574,6 +575,9 @@ void InitGame( void )
 	am = gi.cvar("am", "0", CVAR_SERVERINFO);
 	am_newnames = gi.cvar("am_newnames", "1", 0);
 	am_botcount = gi.cvar("am_botcount", "6", CVAR_SERVERINFO);
+	if (am_botcount->value < 0){
+        gi.cvar_forceset("am_botcount", "0");
+	}
 	am_delay = gi.cvar("am_delay", "30", 0);
 	am_team = gi.cvar("am_team", "0", 0);
 	zoom_comp = gi.cvar("zoom_comp", "0", 0);

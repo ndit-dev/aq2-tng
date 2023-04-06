@@ -394,7 +394,7 @@ void ACESP_HoldSpawn(edict_t *self)
 void ACESP_PutClientInServer( edict_t *bot, qboolean respawn, int team )
 {
 	bot->is_bot = true;
-	
+
 	// Use 'think' to pass the value of respawn to PutClientInServer.
 	if( ! respawn )
 	{
@@ -730,6 +730,9 @@ void attract_mode_bot_check(void)
 
 	ACEIT_RebuildPlayerList();
 	// Some sanity checking before we proceed
+	if (am_botcount->value < 0){
+        gi.cvar_forceset("am_botcount", "0");
+	}
 
 	// Cannot have the am_botcount at a value of N-2 of the maxclients
 	if ((am->value == 2) && (am_botcount->value >= maxclientsminus2))
