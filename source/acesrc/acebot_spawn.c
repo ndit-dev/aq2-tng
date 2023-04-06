@@ -733,6 +733,12 @@ void attract_mode_bot_check(void)
 	if (am_botcount->value < 0){
         gi.cvar_forceset("am_botcount", "0");
 	}
+	if (am_botcount->value >= maxclients->value) {
+		gi.cvar_forceset("am_botcount", va("%d", maxclientsminus2));
+		if (warmup_bots->value){
+			gi.cvar_forceset("warmup_bots", va("%d", maxclientsminus2));
+		}
+	}
 
 	// Cannot have the am_botcount at a value of N-2 of the maxclients
 	if ((am->value == 2) && (am_botcount->value >= maxclientsminus2))

@@ -1888,11 +1888,13 @@ void RunWarmup ()
 			gi.centerprintf(ent, "WARMUP");
 		}
 	}
+	#ifdef USE_AQTION
 	if (warmup_bots->value){
 		gi.cvar_forceset("am", "1");
-		gi.cvar_forceset("am_botcount", "7");
+		gi.cvar_forceset("am_botcount", warmup_bots->string);
 		attract_mode_bot_check();
 	}
+	#endif
 }
 
 void StartRound ()
@@ -2323,7 +2325,7 @@ int CheckTeamRules (void)
 				gi.soundindex ("world/10_0.wav"), 1.0, ATTN_NONE, 0.0);
 
 				#ifdef USE_AQTION
-				//Cleanup and remove all bots
+				// Cleanup and remove all bots, it's go time!
 				if (warmup_bots->value){
 					gi.cvar_forceset("am", "0");
 					gi.cvar_forceset("am_botcount", "0");

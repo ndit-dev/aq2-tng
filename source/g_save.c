@@ -576,7 +576,7 @@ void InitGame( void )
 	am_newnames = gi.cvar("am_newnames", "1", 0);
 	am_botcount = gi.cvar("am_botcount", "6", CVAR_SERVERINFO);
 	if (am_botcount->value < 0){
-        gi.cvar_forceset("am_botcount", "0");
+    	gi.cvar_forceset("am_botcount", "0");
 	}
 	am_delay = gi.cvar("am_delay", "30", 0);
 	am_team = gi.cvar("am_team", "0", 0);
