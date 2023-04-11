@@ -170,21 +170,17 @@ Features
   with the following:
 
   MK23 Pistol: 
-    sound/weapons/blastf1a.wav 
+    sound/weapons/mk23fire.wav 
   Handcannon: 
-    sound/weapons/sshotf1b.wav
-  MP5 Submachinegun (Give all of them the same sound):
-    sound/weapons/machgf1b.wav
-    sound/weapons/machgf2b.wav
-    sound/weapons/machgf3b.wav
-    sound/weapons/machgf4b.wav
-    sound/weapons/machgf5b.wav
+    sound/weapons/cannon_fire.wav
+  MP5 Submachinegun:
+    sound/weapons/mp5fire.wav
   SSG-3000 Sniper Rifle: 
-    sound/weapons/hyprbf1a.wav
+    sound/weapons/ssgfire.wav
   M4 Assault Rifle: 
-    sound/weapons/rocklf1a.wav
-    sound/weapons/rocklr1b.wav
-  (use an 'empty' sound for rock1r1b.wav as it's only played once together with the other wav file)
+    sound/weapons/m4a1fire.wav
+  M3 Super Shotgun
+    sound/weapons/shotgf1b.wav
 
   Commands:
   llsound [0/1] - When on (1), Low Lag Sounds will be used.
