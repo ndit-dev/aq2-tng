@@ -583,9 +583,13 @@ bind 6 "use Sniper Rifle"
 #define HELM_NAME    "Kevlar Helmet"
 #define LASER_NAME   "Lasersight"
 
-#define C_KIT_NAME	 "Commando Kit (Bandolier + Helm)"
-#define S_KIT_NAME	 "Stealth Kit (Slippers + Silencer)"
-#define A_KIT_NAME	 "Assassin Kit (Laser Sight + Silencer)"
+#define C_KIT_NAME	 "Commando Kit"
+#define S_KIT_NAME	 "Stealth Kit"
+#define A_KIT_NAME	 "Assassin Kit"
+
+#define C_KIT_NAME_FULL	 "Commando Kit (Bandolier + Helm)"
+#define S_KIT_NAME_FULL	 "Stealth Kit (Slippers + Silencer)"
+#define A_KIT_NAME_FULL	 "Assassin Kit (Laser + Silencer)"
 
 #define NO_NUM					0
 
@@ -623,6 +627,8 @@ bind 6 "use Sniper Rifle"
 #define S_KIT_NUM				26
 #define A_KIT_NUM				27
 
+#define KIT_MAX_NUM				28
+
 #define WEAPON_COUNT			9
 #define ITEM_COUNT				6
 #define AMMO_COUNT				5
@@ -633,8 +639,8 @@ bind 6 "use Sniper Rifle"
 #define ITEM_MAX				ITEM_FIRST+ITEM_COUNT
 #define AMMO_FIRST				ITEM_MAX
 #define AMMO_MAX				AMMO_FIRST+AMMO_COUNT
-#define KIT_FIRST				C_KIT_NUM-1
-#define KIT_MAX					A_KIT_NUM+1
+#define KIT_FIRST				C_KIT_NUM
+#define KIT_MAX					KIT_MAX_NUM
 
 //AQ2:TNG - Igor adding wp_flags/itm_flags
 #define STRINGIFY(x) #x

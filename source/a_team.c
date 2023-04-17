@@ -1373,7 +1373,7 @@ void ReturnToMain (edict_t * ent, pmenu_t * p)
 	OpenJoinMenu (ent);
 }
 
-char *menu_itemnames[KIT_MAX] = {
+char *menu_itemnames[KIT_MAX_NUM] = {
 	"",
 	MK23_NAME,
 	MP5_NAME,
@@ -1384,7 +1384,6 @@ char *menu_itemnames[KIT_MAX] = {
 	"Akimbo Pistols",
 	"Combat Knives",
 	GRENADE_NAME,
-
 	SIL_NAME,
 	SLIP_NAME,
 	BAND_NAME,
@@ -1400,9 +1399,9 @@ char *menu_itemnames[KIT_MAX] = {
 	"",
 	"",
 	"",
-	C_KIT_NAME,
-	S_KIT_NAME,
-	A_KIT_NAME,
+	C_KIT_NAME_FULL,
+	S_KIT_NAME_FULL,
+	A_KIT_NAME_FULL,
 };
 
 
