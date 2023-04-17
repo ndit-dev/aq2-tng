@@ -316,8 +316,6 @@ qboolean Pickup_ItemPack (edict_t * ent, edict_t * other)
 //zucc pickup function for special items
 qboolean Pickup_Special (edict_t * ent, edict_t * other)
 {
-
-	
 	if (other->client->unique_item_total >= unique_items->value)
 		return false;
 

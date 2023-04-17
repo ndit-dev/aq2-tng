@@ -578,6 +578,10 @@ void SelectWeapon9(edict_t *ent, pmenu_t *p)
 void SelectItem1(edict_t *ent, pmenu_t *p)
 {
 	ent->client->pers.chosenItem = GET_ITEM(KEV_NUM);
+	if(item_kit_mode->value){
+		// This is so it clears the chosenItem2 if a previous kit was chosen
+		ent->client->pers.chosenItem2 = NULL;
+	}
 	PMenu_Close(ent);
 	unicastSound(ent, gi.soundindex("misc/veston.wav"), 1.0);
 }

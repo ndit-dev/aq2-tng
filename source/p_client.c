@@ -1319,7 +1319,7 @@ void TossItemsOnDeath(edict_t * ent)
 	int i;
 
 	// don't bother dropping stuff when allweapons/items is active
-	if (allitem->value || item_kit_mode->value) {
+	if (allitem->value) {
 		// remove the lasersight because then the observer might have it
 		item = GET_ITEM(LASER_NUM);
 		ent->client->inventory[ITEM_INDEX(item)] = 0;
@@ -2151,7 +2151,8 @@ void EquipClient(edict_t * ent)
 		Pickup_Special(&etemp, ent);
 	}
 	if (item_kit_mode->value && client->pers.chosenItem2){
-		client->inventory[ITEM_INDEX(GET_ITEM(client->pers.chosenItem2->typeNum))] = 1;
+		client->inventory[ITEM_INDEX(client->pers.chosenItem2)] = 1;
+		client->unique_item_total++;
 	}
 
 }
