@@ -458,6 +458,7 @@ cvar_t *radio_repeat_time;
 cvar_t *use_classic;		// Used to reset spread/gren strength to 1.52
 
 cvar_t *warmup;
+cvar_t *warmup_bots;
 cvar_t *round_begin;
 cvar_t *spectator_hud;
 
