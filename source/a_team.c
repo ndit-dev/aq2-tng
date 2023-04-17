@@ -957,10 +957,10 @@ pmenu_t itemkitmenu[] = {
   {"Select your Item", PMENU_ALIGN_CENTER, NULL, NULL},
   {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
   //AQ2:TNG Igor adding itm_flags
-  {KEV_NAME, PMENU_ALIGN_LEFT, NULL, SelectItem1},	// "Kevlar Vest", SelectItem1
-  {C_KIT_NAME, PMENU_ALIGN_LEFT, NULL, SelectKit1},	// "Commando Kit", SelectKit1
-  {S_KIT_NAME, PMENU_ALIGN_LEFT, NULL, SelectKit2},	// "Stealth Kit", SelectKit2
-  {A_KIT_NAME, PMENU_ALIGN_LEFT, NULL, SelectKit3},	// "Assassin Kit", SelectKit3
+  {KEV_NAME, PMENU_ALIGN_LEFT, NULL, NULL},	// "Kevlar Vest", SelectItem1
+  {C_KIT_NAME, PMENU_ALIGN_LEFT, NULL, NULL},	// "Commando Kit", SelectKit1
+  {S_KIT_NAME, PMENU_ALIGN_LEFT, NULL, NULL},	// "Stealth Kit", SelectKit2
+  {A_KIT_NAME, PMENU_ALIGN_LEFT, NULL, NULL},	// "Assassin Kit", SelectKit3
   //AQ2:TNG end adding itm_flags
   {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
   {"Use arrows to move cursor", PMENU_ALIGN_LEFT, NULL, NULL},
@@ -1373,7 +1373,7 @@ void ReturnToMain (edict_t * ent, pmenu_t * p)
 	OpenJoinMenu (ent);
 }
 
-char *menu_itemnames[ITEM_MAX_NUM] = {
+char *menu_itemnames[KIT_MAX] = {
 	"",
 	MK23_NAME,
 	MP5_NAME,
@@ -1392,12 +1392,19 @@ char *menu_itemnames[ITEM_MAX_NUM] = {
 	"Laser Sight",
 	HELM_NAME,
 	"",
-
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
 	C_KIT_NAME,
 	S_KIT_NAME,
 	A_KIT_NAME,
-	"",
 };
+
 
 typedef struct menuentry_s
 {
@@ -1448,11 +1455,11 @@ void OpenItemMenu (edict_t * ent)
 
 void OpenItemKitMenu (edict_t * ent)
 {
-	menuentry_t *kitmenuEntry, kit_menu_items[4] = {
+	menuentry_t *kitmenuEntry, kit_menu_items[] = {
 		{ KEV_NUM, SelectItem1 },
 		{ C_KIT_NUM, SelectKit1 },
 		{ S_KIT_NUM, SelectKit2 },
-		{ A_KIT_NUM, SelectKit3 },
+		{ A_KIT_NUM, SelectKit3 }
 		};
 	int i, count, pos = 4;
 
