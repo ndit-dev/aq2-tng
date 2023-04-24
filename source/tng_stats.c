@@ -694,17 +694,18 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 				chosenItem = KEV_NUM;
 			} else {
 				// Commando Kit
-				if (attacker->client->pers.chosenItem == BAND_NUM &&
-					attacker->client->pers.chosenItem2 == HELM_NUM ) {
+				if (attacker->client->pers.chosenItem->typeNum == BAND_NUM &&
+					attacker->client->pers.chosenItem2->typeNum == HELM_NUM ) {
 						chosenItem = C_KIT_NUM;
 				// Stealth Kit
-				} else if (attacker->client->pers.chosenItem == SLIP_NUM &&
-						attacker->client->pers.chosenItem2 == SIL_NUM ) {
+				} else if (attacker->client->pers.chosenItem->typeNum == SLIP_NUM &&
+						attacker->client->pers.chosenItem2->typeNum == SIL_NUM ) {
 						chosenItem = S_KIT_NUM;
 				// Assassin Kit
-				} else if (attacker->client->pers.chosenItem == LASER_NUM &&
-						attacker->client->pers.chosenItem2 == SIL_NUM ) {
+				} else if (attacker->client->pers.chosenItem->typeNum == LASER_NUM &&
+						attacker->client->pers.chosenItem2->typeNum == SIL_NUM ) {
 						chosenItem = A_KIT_NUM;	
+				}
 			}
 		}
 
