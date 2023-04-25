@@ -583,6 +583,14 @@ bind 6 "use Sniper Rifle"
 #define HELM_NAME    "Kevlar Helmet"
 #define LASER_NAME   "Lasersight"
 
+#define C_KIT_NAME	 "Commando Kit"
+#define S_KIT_NAME	 "Stealth Kit"
+#define A_KIT_NAME	 "Assassin Kit"
+
+#define C_KIT_NAME_FULL	 "Commando Kit (Bandolier + Helm)"
+#define S_KIT_NAME_FULL	 "Stealth Kit (Slippers + Silencer)"
+#define A_KIT_NAME_FULL	 "Assassin Kit (Laser + Silencer)"
+
 #define NO_NUM					0
 
 #define MK23_NUM				1
@@ -615,15 +623,24 @@ bind 6 "use Sniper Rifle"
 
 #define ITEM_MAX_NUM			24
 
+#define C_KIT_NUM				25
+#define S_KIT_NUM				26
+#define A_KIT_NUM				27
+
+#define KIT_MAX_NUM				28
+
 #define WEAPON_COUNT			9
 #define ITEM_COUNT				6
 #define AMMO_COUNT				5
+#define KIT_COUNT               3
 #define WEAPON_FIRST			1
 #define WEAPON_MAX				WEAPON_FIRST+WEAPON_COUNT
 #define ITEM_FIRST				WEAPON_MAX
 #define ITEM_MAX				ITEM_FIRST+ITEM_COUNT
 #define AMMO_FIRST				ITEM_MAX
 #define AMMO_MAX				AMMO_FIRST+AMMO_COUNT
+#define KIT_FIRST				C_KIT_NUM
+#define KIT_MAX					KIT_MAX_NUM
 
 //AQ2:TNG - Igor adding wp_flags/itm_flags
 #define STRINGIFY(x) #x
@@ -1174,6 +1191,7 @@ extern cvar_t *am_botcount;
 extern cvar_t *am_delay;
 extern cvar_t *am_team;
 extern cvar_t *zoom_comp;
+extern cvar_t *item_kit_mode;
 
 #ifdef AQTION_EXTENSION
 extern int (*engine_Client_GetVersion)(edict_t *ent);
@@ -1315,6 +1333,7 @@ void ChangeWeapon (edict_t * ent);
 void PrecacheItems( void );
 void SpawnItem (edict_t * ent, gitem_t * item);
 void Think_Weapon (edict_t * ent);
+void AddItem(edict_t *ent, gitem_t *item);
 qboolean Add_Ammo (edict_t * ent, gitem_t * item, int count);
 void Touch_Item (edict_t * ent, edict_t * other, cplane_t * plane,
 		 csurface_t * surf);
@@ -1633,6 +1652,8 @@ typedef struct
 	int irvision;			// ir on or off (only matters if player has ir device, currently bandolier)
 
 	ignorelist_t ignorelist;
+	gitem_t *chosenItem2;		// Support for item kit mode
+
 }
 client_persistant_t;
 

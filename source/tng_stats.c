@@ -607,6 +607,7 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 {
 	int mod;
 	int loc;
+	int chosenItem;
 	int gametime = 0;
 	int roundNum;
 	int eventtime;
@@ -685,6 +686,29 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 		sprintf(vloc, "%5.0f,%5.0f,%5.0f", self->s.origin[0], self->s.origin[1], self->s.origin[2]);
 		sprintf(kloc, "%5.0f,%5.0f,%5.0f", attacker->s.origin[0], attacker->s.origin[1], attacker->s.origin[2]);
 
+		// Item identifier, taking item kit mode into account
+		if (!item_kit_mode->value) {
+			chosenItem = attacker->client->pers.chosenItem->typeNum;
+		} else {
+			if (attacker->client->pers.chosenItem->typeNum == KEV_NUM) {
+				chosenItem = KEV_NUM;
+			} else {
+				// Commando Kit
+				if (attacker->client->pers.chosenItem->typeNum == BAND_NUM &&
+					attacker->client->pers.chosenItem2->typeNum == HELM_NUM ) {
+						chosenItem = C_KIT_NUM;
+				// Stealth Kit
+				} else if (attacker->client->pers.chosenItem->typeNum == SLIP_NUM &&
+						attacker->client->pers.chosenItem2->typeNum == SIL_NUM ) {
+						chosenItem = S_KIT_NUM;
+				// Assassin Kit
+				} else if (attacker->client->pers.chosenItem->typeNum == LASER_NUM &&
+						attacker->client->pers.chosenItem2->typeNum == SIL_NUM ) {
+						chosenItem = A_KIT_NUM;	
+				}
+			}
+		}
+
 		Com_sprintf(
 			msg, sizeof(msg),
 			"{\"frag\":{\"sid\":\"%s\",\"mid\":\"%s\",\"v\":\"%s\",\"vn\":\"%s\",\"vi\":\"%s\",\"vt\":%i,\"vl\":%i,\"k\":\"%s\",\"kn\":\"%s\",\"ki\":\"%s\",\"kt\":%i,\"kl\":%i,\"w\":%i,\"i\":%i,\"l\":%i,\"ks\":%i,\"gm\":%i,\"gmf\":%i,\"ttk\":%d,\"t\":%d,\"gt\":%d,\"m\":\"%s\",\"r\":%i,\"vd\":\"%s\",\"kd\":\"%s\",\"vloc\":\"%s\",\"kloc\":\"%s\"}}\n",
@@ -701,7 +725,7 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 			kt,
 			kl,
 			mod,
-			attacker->client->pers.chosenItem->typeNum,
+			chosenItem,
 			loc,
 			attacker->client->resp.streakKills + 1,
 			Gamemode(),

@@ -581,6 +581,7 @@ void InitGame( void )
 	am_delay = gi.cvar("am_delay", "30", 0);
 	am_team = gi.cvar("am_team", "0", 0);
 	zoom_comp = gi.cvar("zoom_comp", "0", 0);
+	item_kit_mode = gi.cvar("item_kit_mode", "0", CVAR_LATCH);
 
 	// new AQtion Extension cvars
 #ifdef AQTION_EXTENSION

@@ -2145,11 +2145,16 @@ void EquipClient(edict_t * ent)
 		break;
 	}
 
+	memset(&etemp, 0, sizeof(etemp));
 	if (client->pers.chosenItem) {
-		memset(&etemp, 0, sizeof(etemp));
 		etemp.item = client->pers.chosenItem;
 		Pickup_Special(&etemp, ent);
 	}
+	if (item_kit_mode->value && client->pers.chosenItem2){
+		client->inventory[ITEM_INDEX(client->pers.chosenItem2)] = 1;
+		client->unique_item_total++;
+	}
+
 }
 
 // Igor[Rock] start
