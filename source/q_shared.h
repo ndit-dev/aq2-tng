@@ -1229,6 +1229,7 @@ temp_event_t;
 #define STAT_FRAGS                      14
 #define STAT_FLASHES                    15	// cleared each frame, 1 = health, 2 = armor
 
+
 //zucc need some new ones
 #define STAT_CLIP_ICON                  16
 #define STAT_CLIP                       17
@@ -1256,7 +1257,9 @@ temp_event_t;
 #define STAT_TEAM1_HEADER               30
 #define STAT_TEAM2_HEADER               31
 
-#define MAX_STATS                       32
+#define STAT_KILLSTREAK                 32
+
+#define MAX_STATS                       33
 
 
 // dmflags->value flags
