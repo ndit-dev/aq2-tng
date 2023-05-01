@@ -402,6 +402,7 @@ void Add_Frag(edict_t * ent, int mod)
 	if (IS_ALIVE(ent))
 	{
 		ent->client->resp.streakKills++;
+		ent->client->resp.roundStreakKills++;
 		if (ent->client->resp.streakKills > ent->client->resp.streakKillsHighest)
 			ent->client->resp.streakKillsHighest = ent->client->resp.streakKills;
 
@@ -481,6 +482,11 @@ void Add_Frag(edict_t * ent, int mod)
 
 	// Announce kill streak to player if use_killcounts is enabled on server
 	if (use_killcounts->value) {
+		// Report only killstreak during that round
+		if(ent->client->resp.roundStreakKills)
+			gi.cprintf(ent, PRINT_HIGH, "Kill count: %d\n", ent->client->resp.roundStreakKills);
+	} else {
+		// Report total killstreak across previous rounds
 		if(ent->client->resp.streakKills)
 			gi.cprintf(ent, PRINT_HIGH, "Kill count: %d\n", ent->client->resp.streakKills);
 	}
@@ -494,6 +500,7 @@ void Subtract_Frag(edict_t * ent)
 	ent->client->resp.kills--;
 	ent->client->resp.score--;
 	ent->client->resp.streakKills = 0;
+	ent->client->resp.roundStreakKills = 0;
 	if(teamdm->value)
 		teams[ent->client->resp.team].score--;
 }
@@ -506,6 +513,7 @@ void Add_Death( edict_t *ent, qboolean end_streak )
 	ent->client->resp.deaths ++;
 	if( end_streak )
 		ent->client->resp.streakKills = 0;
+		ent->client->resp.roundStreakKills = 0;
 }
 
 // FRIENDLY FIRE functions
