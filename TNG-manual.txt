@@ -193,8 +193,8 @@ Features
     * cl_m3_sound
     * cl_hc_sound
     * cl_ssg_sound
-  If llsound is 1, but these values are not set (default 0) they will play the gun sound that corresponds to the 0 index 
-  name value of the sound file, such as `mk23fire0.wav` or `cannon_fire0.wav`.  Players who do not use AQtion or the most
+  If llsound is 1, but these values are not set (default 0) they will play the gun sound that corresponds to the non-numbered 
+  name value of the sound file, such as `mk23fire.wav` or `cannon_fire.wav`.  Players who do not use AQtion or the most
   recent versions of Q2Pro will not benefit from this change.
 
 * Announcer
