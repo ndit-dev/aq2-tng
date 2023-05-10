@@ -1715,6 +1715,7 @@ typedef struct
   int shotsTotal;					//Total number of shots
   int hitsTotal;					//Total number of hits
   int streakKills;					//Kills in a row
+  int roundStreakKills;				//Kills in a row in that round
   int streakHS;						//Headshots in a Row
   int streakKillsHighest;			//Highest kills in a row
   int streakHSHighest;				//Highest headshots in a Row
