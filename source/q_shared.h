@@ -1257,9 +1257,7 @@ temp_event_t;
 #define STAT_TEAM1_HEADER               30
 #define STAT_TEAM2_HEADER               31
 
-#define STAT_KILLSTREAK                 32
-
-#define MAX_STATS                       33
+#define MAX_STATS                       32
 
 
 // dmflags->value flags
