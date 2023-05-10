@@ -1229,7 +1229,6 @@ temp_event_t;
 #define STAT_FRAGS                      14
 #define STAT_FLASHES                    15	// cleared each frame, 1 = health, 2 = armor
 
-
 //zucc need some new ones
 #define STAT_CLIP_ICON                  16
 #define STAT_CLIP                       17
