@@ -3560,6 +3560,14 @@ void ClientBeginServerFrame(edict_t * ent)
 	if (sv_antilag->value) // if sv_antilag is enabled, we want to track our player position for later reference
 		antilag_update(ent);
 
+	//PaTMaN's jmod
+	if(jump->value) {
+		if ((client->resp.toggle_lca) && (client->pers.spectator))
+			client->resp.toggle_lca = 0;
+		else if (client->resp.toggle_lca)
+			Cmd_PMLCA_f(ent);
+	}
+
 #ifdef AQTION_EXTENSION
 	// resync pm_timestamp so all limps are roughly synchronous, to try to maintain original behavior
 	unsigned short world_timestamp = (int)(level.time * 1000) % 60000;

@@ -1307,12 +1307,6 @@ extern field_t fields[];
 extern gitem_t itemlist[];
 
 //
-// a_team.c
-//
-void JumpStartLCA(edict_t *ent);
-void JumpContinueLCA(edict_t *ent);
-
-//
 // g_cmds.c
 //
 qboolean FloodCheck(edict_t *ent);
@@ -1753,6 +1747,13 @@ typedef struct
   int	hud_type;
 #endif
 
+  //PaTMaN's jmod
+  int			toggle_lca;
+  int			puppetdemo_state;
+  qboolean		puppetdemo_pause;
+  int			puppetdemo_frame;
+  int			puppetdemo_subframe;
+  int			puppetdemo_speed;
   //char skin[MAX_SKINLEN];
 }
 client_respawn_t;
@@ -1960,6 +1961,9 @@ struct gclient_s
 
 	// used for extrapolation
 	usercmd_t	cmd_last;
+
+	// jmod
+	edict_t		*puppet;
 
 	// visiblity mask
 	unsigned int dimension_observe;

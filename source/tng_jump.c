@@ -112,50 +112,291 @@ void Cmd_Jmod_f (edict_t *ent)
 		Cmd_Reset_f(ent);
 		return;
 	}
-	else if(Q_stricmp(cmd, "clear") == 0)
+	else if(Q_stricmp(cmd, "clear") == 0 || Q_stricmp(cmd, "rhs") == 0)
 	{
 		Cmd_Clear_f(ent);
+		return;
+	}
+	else if(Q_stricmp(cmd, "goto") == 0)
+	{
+		Cmd_Goto_f(ent);
+		return;
+	}
+	else if(Q_stricmp(cmd, "spawnp") == 0)
+	{
+		Cmd_GotoP_f(ent);
+		return;
+	}
+	else if(Q_stricmp(cmd, "spawnc") == 0)
+	{
+		Cmd_GotoPC_f(ent);
+		return;
+	}
+	else if(Q_stricmp(cmd, "lca") == 0)
+	{
+		Cmd_PMLCA_f(ent);
 		return;
 	}
 
 	gi.cprintf(ent, PRINT_HIGH, "Unknown jmod command\n");
 }
 
-void Cmd_LCA_f(edict_t *ent)
+edict_t *SelectClosestDeathmatchSpawnPoint (void)
 {
-	// This only works in jump mode
-	if (!jump->value)
-		return;
+	edict_t *bestspot;
+	float   bestdistance, bestplayerdistance;
+	edict_t *spot;
 
-	JumpStartLCA(ent);
+	spot = NULL;
+	bestspot = NULL;
+	bestdistance = -1;
+	while ((spot = G_Find (spot, FOFS(classname), "info_player_deathmatch")) != NULL)
+	{
+			bestplayerdistance = PlayersRangeFromSpot (spot);
+			if ((bestplayerdistance < bestdistance) || (bestdistance < 0))
+			{
+					bestspot = spot;
+					bestdistance = bestplayerdistance;
+			}
+	}
+	return bestspot;
 }
 
-void Cmd_Spawn_f(edict_t *ent)
+void Cmd_PMLCA_f(edict_t *ent)
 {
-	int nArg, argVal;
-
-	if (!jump->value) // Spawn is only usable in jump mode
+	if (ent->client->pers.spectator)
+	{
+		gi.cprintf(ent,PRINT_HIGH,"This command cannot be used by spectators\n");
+		ent->client->resp.toggle_lca = 0;
 		return;
-
-	nArg = atoi(gi.args());
-	gi.dprintf("arg count: %i\n", nArg);
-	if (nArg == 0) {
-		// Spawn at a random spawnpoint if no args
-		PutClientInServer(ent);
-	} else if (nArg > 1){
-		// Too many arguments
-		gi.cprintf(ent, PRINT_HIGH, "Spawn only takes zero arguments (random spawn) or 1 argument (specific spawnpoint)\n");
-		return;
-	} else {
-		gi.cprintf(ent, PRINT_HIGH, "Not implemented\n");
-		return;
-		// Verify arg is an integer (0 or higher), and verify that it's within the bounds of the spawn point count for the map
-		// Q_strncpyz(args, gi.args(), sizeof(args));
-		// argVal = atoi(args);
-		// if (argVal >= 0) { // This checks that the value is an int 0 or higher
-		// 	SelectDeathmatchSpawnPoint();
-		// }
 	}
+
+	if (!ent->client->resp.toggle_lca)
+	{
+		gi.centerprintf (ent,"LIGHTS...\n");
+		gi.sound(ent, CHAN_VOICE, gi.soundindex("atl/lights.wav"), 1, ATTN_STATIC, 0);
+		ent->client->resp.toggle_lca = 41;
+	}
+	else if (ent->client->resp.toggle_lca == 21)
+	{
+		gi.centerprintf (ent,"CAMERA...\n");
+		gi.sound(ent, CHAN_VOICE, gi.soundindex("atl/camera.wav"), 1, ATTN_STATIC, 0);
+	}
+    else if (ent->client->resp.toggle_lca == 1)
+	{
+		gi.centerprintf (ent,"ACTION!\n");
+		gi.sound(ent, CHAN_VOICE, gi.soundindex("atl/action.wav"), 1, ATTN_STATIC, 0);
+	}
+	ent->client->resp.toggle_lca--;
+}
+
+edict_t *PMSelectSpawnPoint (int number)
+{
+        edict_t *spot;
+        int             count = 0;
+        int             selection;
+
+        spot = NULL;
+        while ((spot = G_Find (spot, FOFS(classname), "info_player_deathmatch")) != NULL)
+                count++;
+
+        if (!count)
+                return NULL;
+
+		//if random was selected, pick one
+		if (number == 0)
+	        selection = rand() % count + 1;
+		else
+		{
+			//if person wanted tele 7 but only 5 found, set to 5
+			if (number > count)
+				number = count;
+			//if person input a negative, set to 0
+			else if (number < 0)
+				number = 0;
+			selection = number;
+		}
+
+		spot = NULL;
+		do
+		{
+			spot = G_Find (spot, FOFS(classname), "info_player_deathmatch");
+			selection--;
+		} while (selection > 0);
+
+        return spot;
+}
+
+void Cmd_Goto_f (edict_t *ent)
+{
+	int 		i;
+	char		*s, *token;
+	vec3_t		teleport_goto;
+
+	if (!ent->deadflag && !ent->client->pers.spectator)
+	{
+		if (gi.argc() == 4)
+		{
+			s = strdup(gi.args());
+
+			i=0;
+			token = strtok( s, " " );
+
+			while( token != NULL )
+			{
+				teleport_goto[i] = 0;
+				teleport_goto[i] = atoi(token);
+				token = strtok( NULL, " " );
+				i++;
+			}
+			teleport_goto[2] -= ent->viewheight;
+
+			ent->client->jumping = 0;
+			ent->movetype = MOVETYPE_NOCLIP;
+
+			gi.unlinkentity (ent);
+
+			VectorCopy (teleport_goto, ent->s.origin);
+			VectorCopy (teleport_goto, ent->s.old_origin);
+
+			// clear the velocity and hold them in place briefly
+			VectorClear (ent->velocity);
+
+			ent->client->ps.pmove.pm_time = 160>>3;		// hold time
+
+			// draw the teleport splash on the player
+			ent->s.event = EV_PLAYER_TELEPORT;
+
+			VectorClear (ent->s.angles);
+			VectorClear (ent->client->ps.viewangles);
+			VectorClear (ent->client->v_angle);
+
+			gi.linkentity (ent);
+			
+			ent->movetype = MOVETYPE_WALK;
+		}
+		else
+			gi.cprintf(ent,PRINT_HIGH,"Wrong syntax: goto <#> <#> <#>\n");
+	}
+	else
+		gi.cprintf(ent,PRINT_HIGH,"This command cannot be used by spectators\n");
+	
+}
+
+void Cmd_GotoP_f (edict_t *ent)
+{
+	vec3_t		teleport_goto, angles;
+	edict_t 	*spot = NULL;
+	char 		*buffer="\0";
+
+	if (!ent->deadflag && !ent->client->pers.spectator)
+	{
+		int i;
+		if (gi.argc() > 1)
+		{
+			buffer = strtok(gi.args()," ");
+			spot = PMSelectSpawnPoint(atoi(buffer));
+		}
+		else
+			spot = PMSelectSpawnPoint(0);
+
+        VectorCopy (spot->s.origin, teleport_goto);
+        teleport_goto[2] += 9;
+        VectorCopy (spot->s.angles, angles);
+
+		ent->client->jumping = 0;
+		ent->movetype = MOVETYPE_NOCLIP;
+		gi.unlinkentity (ent);
+		
+		VectorCopy (teleport_goto, ent->s.origin);
+		VectorCopy (teleport_goto, ent->s.old_origin);
+		
+		// clear the velocity and hold them in place briefly
+		VectorClear (ent->velocity);
+		
+		ent->client->ps.pmove.pm_time = 160>>3;		// hold time
+		//ent->client->ps.pmove.pm_flags |= PMF_TIME_TELEPORT;
+		
+		// draw the teleport splash on the player
+		ent->s.event = EV_PLAYER_TELEPORT;
+		
+		VectorClear (ent->s.angles);
+		VectorClear (ent->client->ps.viewangles);
+		VectorClear (ent->client->v_angle);
+
+		VectorCopy(angles,ent->s.angles);
+		VectorCopy(ent->s.angles,ent->client->v_angle);
+
+		for (i=0;i<2;i++)
+			ent->client->ps.pmove.delta_angles[i] = ANGLE2SHORT(ent->client->v_angle[i] - ent->client->resp.cmd_angles[i]);
+		if (ent->client->pers.spectator)
+			ent->solid = SOLID_BBOX;
+		else
+			ent->solid = SOLID_TRIGGER;
+		
+		ent->deadflag = DEAD_NO;
+
+		gi.linkentity (ent);
+
+		ent->movetype = MOVETYPE_WALK;
+	}
+	else
+		gi.cprintf(ent,PRINT_HIGH,"This command cannot be used by spectators\n");
+}
+
+void Cmd_GotoPC_f (edict_t *ent)
+{
+	vec3_t		teleport_goto, angles;
+	edict_t 	*spot = NULL;
+
+	if (!ent->deadflag && !ent->client->pers.spectator)
+	{
+		int i;
+		spot = SelectClosestDeathmatchSpawnPoint();
+
+        VectorCopy (spot->s.origin, teleport_goto);
+        teleport_goto[2] += 9;
+        VectorCopy (spot->s.angles, angles);
+
+		ent->client->jumping = 0;
+		ent->movetype = MOVETYPE_NOCLIP;
+		gi.unlinkentity (ent);
+
+		VectorCopy (teleport_goto, ent->s.origin);
+		VectorCopy (teleport_goto, ent->s.old_origin);
+
+		// clear the velocity and hold them in place briefly
+		VectorClear (ent->velocity);
+
+		ent->client->ps.pmove.pm_time = 160>>3;		// hold time
+		//ent->client->ps.pmove.pm_flags |= PMF_TIME_TELEPORT;
+		
+		// draw the teleport splash on the player
+		ent->s.event = EV_PLAYER_TELEPORT;
+		
+		VectorClear (ent->s.angles);
+		VectorClear (ent->client->ps.viewangles);
+		VectorClear (ent->client->v_angle);
+
+		VectorCopy(angles,ent->s.angles);
+		VectorCopy(ent->s.angles,ent->client->v_angle);
+
+		for (i=0;i<2;i++)
+			ent->client->ps.pmove.delta_angles[i] = ANGLE2SHORT(ent->client->v_angle[i] - ent->client->resp.cmd_angles[i]);
+		
+		if (ent->client->pers.spectator)
+			ent->solid = SOLID_BBOX;
+		else
+			ent->solid = SOLID_TRIGGER;
+		
+		ent->deadflag = DEAD_NO;
+		
+		gi.linkentity (ent);
+		
+		ent->movetype = MOVETYPE_WALK;
+	}
+	else
+		gi.cprintf(ent,PRINT_HIGH,"This command cannot be used by spectators\n");
 }
 
 void Cmd_Clear_f(edict_t *ent)
@@ -256,3 +497,108 @@ void Cmd_Recall_f (edict_t *ent)
 
 	ent->movetype = MOVETYPE_WALK;
 }
+
+// void Puppet_Spawn (edict_t *self,qboolean skip,qboolean nomsg)
+// {
+// 	edict_t *puppet = NULL;	
+
+// 	if (!skip)
+// 	{
+// 		if (self->client->pers.spectator)
+// 		{
+// 			if (self->client->puppet)
+// 			{
+// 				G_FreeEdict(self->client->puppet);
+// 				self->client->puppet = NULL;
+// 				self->client->resp.puppetdemo_state = PUPPET_NEW_NOTHING;
+// 				return; //avoid the message if they just went spec
+// 			}
+// 			if (!nomsg)
+// 				gi.cprintf(self,PRINT_HIGH,"This command cannot be used to spawn a puppet when spectating\n");
+// 			return;
+// 		}
+// 	}
+
+// 	if (self->client->puppet)
+// 	{  
+// 		G_FreeEdict(self->client->puppet);
+// 		self->client->puppet = NULL;
+
+// 		if (self->client->resp.puppetdemo_state == PUPPET_NEW_RECORDING)
+// 			self->client->resp.puppetdemo_pup_recorded = false;
+// 		else
+// 			self->client->resp.puppetdemo_state = PUPPET_NEW_NOTHING;
+// 		if (!nomsg)
+// 			gi.centerprintf (self,"Puppet removed\n");
+// 		return;
+// 	}
+
+// 	puppet = G_Spawn ();
+// 	puppet->classname = "puppet";
+// 	puppet->classnum = 0;
+// 	puppet->takedamage = DAMAGE_AIM;
+// 	puppet->movetype = MOVETYPE_TOSS;
+	
+// 	puppet->solid = SOLID_TRIGGER;
+// 	puppet->deadflag = DEAD_NO;
+// 	puppet->clipmask = (CONTENTS_SOLID|CONTENTS_PLAYERCLIP|CONTENTS_WINDOW);
+
+// 	if (self->client->pers.spectator)
+// 	{
+// 		puppet->model = "players/male/tris.md2";
+// 		puppet->s.modelindex = 255;
+// 		puppet->s.modelindex2 = 255;
+// 		puppet->s.skinnum = 256;
+// 	}
+// 	else
+// 	{
+// 		puppet->model = self->model;
+// 		puppet->s.modelindex = 255;
+// 		puppet->s.modelindex2 = self->s.modelindex2;
+// 		puppet->s.skinnum |= self->s.skinnum;
+// 	}
+
+// 	// if (self->client->resp.wmodes & OS_PUPPET_TRANS)
+// 	// 	puppet->s.renderfx |= RF_TRANSLUCENT;
+// 	// else
+// 	puppet->s.renderfx = 0;
+	   
+// 	puppet->think = Puppet_Think;
+// 	puppet->nextthink = level.time + .1;
+// 	puppet->owner = world;
+// 	puppet->owner = self;
+// 	puppet->viewheight = 22;
+// 	VectorSet (puppet->mins, -16, -16, -24);
+// 	VectorSet (puppet->maxs, 16, 16, 32);
+
+// 	if (self->movetype == MOVETYPE_NOCLIP)
+// 	{
+// 		puppet->maxs[2] = 32;
+// 		puppet->s.frame = 0;
+// 	}
+// 	else
+// 	{
+// 		puppet->maxs[2] = self->maxs[2];
+// 		puppet->s.frame = self->s.frame;
+// 	}
+
+// 	if (!self->client->pers.spectator)
+// 	{
+// 		VectorCopy(self->s.origin,puppet->s.origin);
+// 		puppet->s.angles[1] = self->s.angles[1];
+// 	}
+
+// 	VectorClear (puppet->velocity);
+
+// 	puppet->movetarget = NULL;
+
+// 	self->client->puppet = puppet;
+// 	self->client->resp.puppetdemo_pause = false;
+// 	self->client->resp.puppetdemo_frame = 0;
+
+// 	gi.linkentity(puppet);
+// 	AddToTransparentList(puppet);
+
+// 	if (!nomsg)
+// 		gi.centerprintf (self,"Puppet created\n");
+// }

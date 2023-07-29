@@ -1937,10 +1937,9 @@ static cmdList_t commandList[] =
 	{ "voteconfig", Cmd_Voteconfig_f, 0 },
 	{ "configlist", Cmd_Configlist_f, 0 },
 	{ "votescramble", Cmd_Votescramble_f, 0 },
-	// JumpMod
-	{ "jmod", Cmd_Jmod_f, 0 },
-	{ "lca", Cmd_LCA_f, 0},
-	{ "spawn", Cmd_Spawn_f, 0}
+	// JumpMod / jmod -- all commands are prefaced with 'jmod' ex: 'jmod spawnc'
+	{ "jmod", Cmd_Jmod_f, 0 }
+
 };
 
 #define MAX_COMMAND_HASH 64

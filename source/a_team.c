@@ -2056,27 +2056,6 @@ static void StartLCA(void)
 	SpawnPlayers();
 }
 
-void JumpContinueLCA(edict_t *ent)
-{
-	gi.dprintf("lca: %i\n", lights_camera_action);
-
-	if (lights_camera_action == 23){
-		gi.cprintf(ent, PRINT_HIGH, "CAMERA...");
-		gi.sound(ent, CHAN_VOICE, level.snd_camera, 1.0, ATTN_NONE, 0.0);
-	} else if (lights_camera_action == 3) {
-		gi.cprintf(ent, PRINT_HIGH, "ACTION!");
-		gi.sound(ent, CHAN_VOICE, level.snd_action, 1.0, ATTN_NONE, 0.0);
-	}
-	lights_camera_action--;
-}
-
-void JumpStartLCA(edict_t *ent)
-{
-	gi.cprintf(ent, PRINT_HIGH, "LIGHTS...");
-	gi.sound(ent, CHAN_VOICE, level.snd_lights, 1.0, ATTN_NONE, 0.0);
-	lights_camera_action = 43;	// TempFile changed from 41
-}
-
 // FindOverlap: Find the first (or next) overlapping player for ent.
 edict_t *FindOverlap (edict_t * ent, edict_t * last_overlap)
 {
