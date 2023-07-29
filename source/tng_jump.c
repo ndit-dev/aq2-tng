@@ -127,7 +127,7 @@ void Cmd_LCA_f(edict_t *ent)
 	if (!jump->value)
 		return;
 
-	JumpStartLCA();
+	JumpStartLCA(ent);
 }
 
 void Cmd_Spawn_f(edict_t *ent)

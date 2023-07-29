@@ -1174,6 +1174,11 @@ void G_RunFrame (void)
 
 		// see if it is time to end a deathmatch
 		CheckDMRules ();
+
+		// For Jump mode LCA
+		if(jump->value) {
+			JumpContinueLCA(ent);
+		}
 	}
 
 	CheckNeedPass ();

@@ -1309,7 +1309,8 @@ extern gitem_t itemlist[];
 //
 // a_team.c
 //
-void JumpStartLCA(void);
+void JumpStartLCA(edict_t *ent);
+void JumpContinueLCA(edict_t *ent);
 
 //
 // g_cmds.c
