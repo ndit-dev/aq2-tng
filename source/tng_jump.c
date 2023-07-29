@@ -198,16 +198,15 @@ edict_t *PMSelectSpawnPoint (int number)
 
         spot = NULL;
         while ((spot = G_Find (spot, FOFS(classname), "info_player_deathmatch")) != NULL)
-                count++;
+			count++;
 
         if (!count)
-                return NULL;
+			return NULL;
 
 		//if random was selected, pick one
-		if (number == 0)
+		if (number == 0) {
 	        selection = rand() % count + 1;
-		else
-		{
+		} else {
 			//if person wanted tele 7 but only 5 found, set to 5
 			if (number > count)
 				number = count;

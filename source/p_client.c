@@ -511,9 +511,10 @@ void Add_Death( edict_t *ent, qboolean end_streak )
 		return;
 
 	ent->client->resp.deaths ++;
-	if( end_streak )
+	if( end_streak ) {
 		ent->client->resp.streakKills = 0;
 		ent->client->resp.roundStreakKills = 0;
+	}
 }
 
 // FRIENDLY FIRE functions
