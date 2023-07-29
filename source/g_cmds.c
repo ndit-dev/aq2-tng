@@ -742,12 +742,6 @@ static void Cmd_Noclip_f (edict_t * ent)
 {
 	char *msg;
 
-	// Allows noclip in jump mode, but none others
-	if (!sv_cheats->value && !jump->value) {
-		gi.cprintf(ent, PRINT_HIGH, "You must run the server with '+set cheats 1' to enable this command.\n");
-		return;
-	}
-
 	if (ent->movetype == MOVETYPE_NOCLIP)
 	{
 		ent->movetype = MOVETYPE_WALK;
