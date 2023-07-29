@@ -139,7 +139,7 @@ void Cmd_Jmod_f (edict_t *ent)
 	}
 	else if(Q_stricmp(cmd, "noclip") == 0)
 	{
-		Cmd_PMNoclip_f(ent);
+		Cmd_Noclip_f(ent);
 		return;
 	}
 
@@ -500,24 +500,6 @@ void Cmd_Recall_f (edict_t *ent)
 	gi.multicast (ent->s.origin, MULTICAST_PVS);
 
 	ent->movetype = MOVETYPE_WALK;
-}
-
-static void Cmd_PMNoclip_f (edict_t * ent)
-{
-	char *msg;
-
-	if (ent->movetype == MOVETYPE_NOCLIP)
-	{
-		ent->movetype = MOVETYPE_WALK;
-		msg = "noclip OFF\n";
-	}
-	else
-	{
-		ent->movetype = MOVETYPE_NOCLIP;
-		msg = "noclip ON\n";
-	}
-
-	gi.cprintf (ent, PRINT_HIGH, msg);
 }
 
 // void Puppet_Spawn (edict_t *self,qboolean skip,qboolean nomsg)
