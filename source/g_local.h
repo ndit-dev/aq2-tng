@@ -2241,6 +2241,7 @@ void Cmd_TKOk (edict_t * ent);	// AQ:TNG - JBravo adding tkok
 void Cmd_FF_f( edict_t *ent );
 void Cmd_Time (edict_t * ent);	// AQ:TNG - JBravo adding time
 void Cmd_Roundtimeleft_f(edict_t *ent); // AQ:TNG - DW added roundtimeleft
+void Cmd_Noclip_f(edict_t *ent);
 void DropSpecialWeapon (edict_t * ent);
 void ReadySpecialWeapon (edict_t * ent);
 void DropSpecialItem (edict_t * ent);

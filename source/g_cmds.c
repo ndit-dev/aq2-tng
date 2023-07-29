@@ -738,7 +738,7 @@ Cmd_Noclip_f
 argv(0) noclip
 ==================
 */
-static void Cmd_Noclip_f (edict_t * ent)
+void Cmd_Noclip_f (edict_t * ent)
 {
 	char *msg;
 
