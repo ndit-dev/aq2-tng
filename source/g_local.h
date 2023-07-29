@@ -1307,6 +1307,11 @@ extern field_t fields[];
 extern gitem_t itemlist[];
 
 //
+// a_team.c
+//
+void JumpStartLCA(void);
+
+//
 // g_cmds.c
 //
 qboolean FloodCheck(edict_t *ent);

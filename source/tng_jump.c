@@ -121,6 +121,43 @@ void Cmd_Jmod_f (edict_t *ent)
 	gi.cprintf(ent, PRINT_HIGH, "Unknown jmod command\n");
 }
 
+void Cmd_LCA_f(edict_t *ent)
+{
+	// This only works in jump mode
+	if (!jump->value)
+		return;
+
+	JumpStartLCA();
+}
+
+void Cmd_Spawn_f(edict_t *ent)
+{
+	int nArg, argVal;
+
+	if (!jump->value) // Spawn is only usable in jump mode
+		return;
+
+	nArg = atoi(gi.args());
+	gi.dprintf("arg count: %i\n", nArg);
+	if (nArg == 0) {
+		// Spawn at a random spawnpoint if no args
+		PutClientInServer(ent);
+	} else if (nArg > 1){
+		// Too many arguments
+		gi.cprintf(ent, PRINT_HIGH, "Spawn only takes zero arguments (random spawn) or 1 argument (specific spawnpoint)\n");
+		return;
+	} else {
+		gi.cprintf(ent, PRINT_HIGH, "Not implemented\n");
+		return;
+		// Verify arg is an integer (0 or higher), and verify that it's within the bounds of the spawn point count for the map
+		// Q_strncpyz(args, gi.args(), sizeof(args));
+		// argVal = atoi(args);
+		// if (argVal >= 0) { // This checks that the value is an int 0 or higher
+		// 	SelectDeathmatchSpawnPoint();
+		// }
+	}
+}
+
 void Cmd_Clear_f(edict_t *ent)
 {
 	ent->client->resp.jmp_highspeed = 0;

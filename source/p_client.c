@@ -1762,11 +1762,12 @@ void SelectSpawnPoint(edict_t * ent, vec3_t origin, vec3_t angles)
 		spot = SelectCTFSpawnPoint(ent);
 	else if (dom->value)
 		spot = SelectDeathmatchSpawnPoint();
-	else if (!(gameSettings & GS_DEATHMATCH) && ent->client->resp.team && !in_warmup) {
+	else if (!(gameSettings & GS_DEATHMATCH) && ent->client->resp.team && !in_warmup)
 		spot = SelectTeamplaySpawnPoint(ent);
-	} else {
+	else if (jump->value)
+		spot = SelectRandomDeathmatchSpawnPoint();
+	else
 		spot = SelectDeathmatchSpawnPoint();
-	}
 
 	// find a single player start spot
 	if (!spot) {

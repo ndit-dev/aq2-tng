@@ -742,6 +742,12 @@ static void Cmd_Noclip_f (edict_t * ent)
 {
 	char *msg;
 
+	// Allows noclip in jump mode, but none others
+	if (!sv_cheats->value && !jump->value) {
+		gi.cprintf(ent, PRINT_HIGH, "You must run the server with '+set cheats 1' to enable this command.\n");
+		return;
+	}
+
 	if (ent->movetype == MOVETYPE_NOCLIP)
 	{
 		ent->movetype = MOVETYPE_WALK;
@@ -1932,7 +1938,9 @@ static cmdList_t commandList[] =
 	{ "configlist", Cmd_Configlist_f, 0 },
 	{ "votescramble", Cmd_Votescramble_f, 0 },
 	// JumpMod
-	{ "jmod", Cmd_Jmod_f, 0 }
+	{ "jmod", Cmd_Jmod_f, 0 },
+	{ "lca", Cmd_LCA_f, 0},
+	{ "spawn", Cmd_Spawn_f, 0}
 };
 
 #define MAX_COMMAND_HASH 64
@@ -1997,7 +2005,10 @@ void ClientCommand (edict_t * ent)
 	hash = Cmd_HashValue( text ) & (MAX_COMMAND_HASH - 1);
 	for (cmd = commandHash[hash]; cmd; cmd = cmd->hashNext) {
 		if (!Q_stricmp( text, cmd->name )) {
-			if ((cmd->flags & CMDF_CHEAT) && !sv_cheats->value) {
+
+			if (!Q_stricmp(cmd->name, "noclip") && jump->value) {
+				// Enable noclip in jumpmode without cheats enabled
+			} else if ((cmd->flags & CMDF_CHEAT) && !sv_cheats->value) {
 				gi.cprintf(ent, PRINT_HIGH, "You must run the server with '+set cheats 1' to enable this command.\n");
 				return;
 			}
