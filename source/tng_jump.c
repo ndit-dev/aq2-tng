@@ -185,14 +185,14 @@ void Cmd_PMLCA_f(edict_t *ent)
 	{
 		gi.centerprintf (ent,"LIGHTS...\n");
 		gi.sound(ent, CHAN_VOICE, gi.soundindex("atl/lights.wav"), 1, ATTN_STATIC, 0);
-		ent->client->resp.toggle_lca = 41;
+		ent->client->resp.toggle_lca = 43;
 	}
-	else if (ent->client->resp.toggle_lca == 21)
+	else if (ent->client->resp.toggle_lca == 23)
 	{
 		gi.centerprintf (ent,"CAMERA...\n");
 		gi.sound(ent, CHAN_VOICE, gi.soundindex("atl/camera.wav"), 1, ATTN_STATIC, 0);
 	}
-    else if (ent->client->resp.toggle_lca == 1)
+    else if (ent->client->resp.toggle_lca == 3)
 	{
 		gi.centerprintf (ent,"ACTION!\n");
 		gi.sound(ent, CHAN_VOICE, gi.soundindex("atl/action.wav"), 1, ATTN_STATIC, 0);
