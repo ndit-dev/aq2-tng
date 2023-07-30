@@ -279,6 +279,9 @@ void jmodTeleport (edict_t *ent, edict_t *spot)
 	gi.linkentity (ent);
 
 	ent->movetype = MOVETYPE_WALK;
+
+	// Run LCA right after spawn
+	Cmd_PMLCA_f(ent);
 }
 
 void Cmd_Goto_f (edict_t *ent)
