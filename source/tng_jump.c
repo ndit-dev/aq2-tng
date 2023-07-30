@@ -92,6 +92,11 @@ void Cmd_Jmod_f (edict_t *ent)
 		gi.cprintf(ent, PRINT_HIGH, " jmod recall - teleport back to saved point\n");
 		gi.cprintf(ent, PRINT_HIGH, " jmod reset - remove saved point\n");
 		gi.cprintf(ent, PRINT_HIGH, " jmod clear - reset stats\n");
+		gi.cprintf(ent, PRINT_HIGH, " jmod noclip - toggle noclip\n");
+		gi.cprintf(ent, PRINT_HIGH, " jmod spawnp <#> - teleport, optional spawnpoint \n");
+		gi.cprintf(ent, PRINT_HIGH, " jmod spawnc - teleport closest spawnpoint\n");
+		gi.cprintf(ent, PRINT_HIGH, " jmod goto <#> <#> <#> - teleport to x y z coordinates\n");
+		gi.cprintf(ent, PRINT_HIGH, " jmod lca - start Lights Camera Action\n");
 		return;
 	}
 
@@ -231,6 +236,53 @@ edict_t *PMSelectSpawnPoint (int number)
         return spot;
 }
 
+void jmodTeleport (edict_t *ent, edict_t *spot)
+{
+	vec3_t		teleport_goto, angles;
+	int			i;
+
+	gi.dprintf("I got this far too\n");
+	VectorCopy (spot->s.origin, teleport_goto);
+	teleport_goto[2] += 9;
+	VectorCopy (spot->s.angles, angles);
+
+	ent->client->jumping = 0;
+	ent->movetype = MOVETYPE_NOCLIP;
+	gi.unlinkentity (ent);
+
+	VectorCopy (teleport_goto, ent->s.origin);
+	VectorCopy (teleport_goto, ent->s.old_origin);
+
+	// clear the velocity and hold them in place briefly
+	VectorClear (ent->velocity);
+
+	ent->client->ps.pmove.pm_time = 160>>3;		// hold time
+	//ent->client->ps.pmove.pm_flags |= PMF_TIME_TELEPORT;
+
+	// draw the teleport splash on the player
+	ent->s.event = EV_PLAYER_TELEPORT;
+
+	VectorClear (ent->s.angles);
+	VectorClear (ent->client->ps.viewangles);
+	VectorClear (ent->client->v_angle);
+
+	VectorCopy(angles,ent->s.angles);
+	VectorCopy(ent->s.angles,ent->client->v_angle);
+
+	for (i=0;i<2;i++)
+		ent->client->ps.pmove.delta_angles[i] = ANGLE2SHORT(ent->client->v_angle[i] - ent->client->resp.cmd_angles[i]);
+	if (ent->client->pers.spectator)
+		ent->solid = SOLID_BBOX;
+	else
+		ent->solid = SOLID_TRIGGER;
+
+	ent->deadflag = DEAD_NO;
+
+	gi.linkentity (ent);
+
+	ent->movetype = MOVETYPE_WALK;
+}
+
 void Cmd_Goto_f (edict_t *ent)
 {
 	int 		i;
@@ -289,118 +341,34 @@ void Cmd_Goto_f (edict_t *ent)
 
 void Cmd_GotoP_f (edict_t *ent)
 {
-	vec3_t		teleport_goto, angles;
 	edict_t 	*spot = NULL;
 	char 		*buffer="\0";
 
-	if (!ent->deadflag && !ent->client->pers.spectator)
-	{
-		int i;
-		if (gi.argc() > 1)
-		{
-			buffer = strtok(gi.args()," ");
-			spot = PMSelectSpawnPoint(atoi(buffer));
-		}
-		else
-			spot = PMSelectSpawnPoint(0);
-
-        VectorCopy (spot->s.origin, teleport_goto);
-        teleport_goto[2] += 9;
-        VectorCopy (spot->s.angles, angles);
-
-		ent->client->jumping = 0;
-		ent->movetype = MOVETYPE_NOCLIP;
-		gi.unlinkentity (ent);
-		
-		VectorCopy (teleport_goto, ent->s.origin);
-		VectorCopy (teleport_goto, ent->s.old_origin);
-		
-		// clear the velocity and hold them in place briefly
-		VectorClear (ent->velocity);
-		
-		ent->client->ps.pmove.pm_time = 160>>3;		// hold time
-		//ent->client->ps.pmove.pm_flags |= PMF_TIME_TELEPORT;
-		
-		// draw the teleport splash on the player
-		ent->s.event = EV_PLAYER_TELEPORT;
-		
-		VectorClear (ent->s.angles);
-		VectorClear (ent->client->ps.viewangles);
-		VectorClear (ent->client->v_angle);
-
-		VectorCopy(angles,ent->s.angles);
-		VectorCopy(ent->s.angles,ent->client->v_angle);
-
-		for (i=0;i<2;i++)
-			ent->client->ps.pmove.delta_angles[i] = ANGLE2SHORT(ent->client->v_angle[i] - ent->client->resp.cmd_angles[i]);
-		if (ent->client->pers.spectator)
-			ent->solid = SOLID_BBOX;
-		else
-			ent->solid = SOLID_TRIGGER;
-		
-		ent->deadflag = DEAD_NO;
-
-		gi.linkentity (ent);
-
-		ent->movetype = MOVETYPE_WALK;
+	if (ent->deadflag || ent->client->pers.spectator) {
+		gi.cprintf(ent, PRINT_HIGH, "This command cannot be used by spectators\n");
+		return;
 	}
-	else
-		gi.cprintf(ent,PRINT_HIGH,"This command cannot be used by spectators\n");
+
+	if (gi.argc() > 1) {
+		buffer = strtok(gi.args()," ");
+		spot = PMSelectSpawnPoint(atoi(buffer));
+	} else {
+		spot = PMSelectSpawnPoint(0);
+	}
+	jmodTeleport(ent, spot);
 }
 
 void Cmd_GotoPC_f (edict_t *ent)
 {
-	vec3_t		teleport_goto, angles;
 	edict_t 	*spot = NULL;
 
-	if (!ent->deadflag && !ent->client->pers.spectator)
-	{
-		int i;
-		spot = SelectClosestDeathmatchSpawnPoint();
-
-        VectorCopy (spot->s.origin, teleport_goto);
-        teleport_goto[2] += 9;
-        VectorCopy (spot->s.angles, angles);
-
-		ent->client->jumping = 0;
-		ent->movetype = MOVETYPE_NOCLIP;
-		gi.unlinkentity (ent);
-
-		VectorCopy (teleport_goto, ent->s.origin);
-		VectorCopy (teleport_goto, ent->s.old_origin);
-
-		// clear the velocity and hold them in place briefly
-		VectorClear (ent->velocity);
-
-		ent->client->ps.pmove.pm_time = 160>>3;		// hold time
-		//ent->client->ps.pmove.pm_flags |= PMF_TIME_TELEPORT;
-		
-		// draw the teleport splash on the player
-		ent->s.event = EV_PLAYER_TELEPORT;
-		
-		VectorClear (ent->s.angles);
-		VectorClear (ent->client->ps.viewangles);
-		VectorClear (ent->client->v_angle);
-
-		VectorCopy(angles,ent->s.angles);
-		VectorCopy(ent->s.angles,ent->client->v_angle);
-
-		for (i=0;i<2;i++)
-			ent->client->ps.pmove.delta_angles[i] = ANGLE2SHORT(ent->client->v_angle[i] - ent->client->resp.cmd_angles[i]);
-		
-		if (ent->client->pers.spectator)
-			ent->solid = SOLID_BBOX;
-		else
-			ent->solid = SOLID_TRIGGER;
-		
-		ent->deadflag = DEAD_NO;
-		
-		gi.linkentity (ent);
-		
-		ent->movetype = MOVETYPE_WALK;
+	if (ent->deadflag || ent->client->pers.spectator) {
+		gi.cprintf(ent, PRINT_HIGH, "This command cannot be used by spectators\n");
+		return;
 	}
-	else
-		gi.cprintf(ent,PRINT_HIGH,"This command cannot be used by spectators\n");
+
+	spot = SelectClosestDeathmatchSpawnPoint();
+	jmodTeleport(ent, spot);
 }
 
 void Cmd_Clear_f(edict_t *ent)
