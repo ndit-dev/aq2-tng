@@ -1749,11 +1749,6 @@ typedef struct
 
   //PaTMaN's jmod
   int			toggle_lca;
-  int			puppetdemo_state;
-  qboolean		puppetdemo_pause;
-  int			puppetdemo_frame;
-  int			puppetdemo_subframe;
-  int			puppetdemo_speed;
   //char skin[MAX_SKINLEN];
 }
 client_respawn_t;
@@ -1961,9 +1956,6 @@ struct gclient_s
 
 	// used for extrapolation
 	usercmd_t	cmd_last;
-
-	// jmod
-	edict_t		*puppet;
 
 	// visiblity mask
 	unsigned int dimension_observe;
