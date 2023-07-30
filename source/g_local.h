@@ -1749,6 +1749,8 @@ typedef struct
 
   //PaTMaN's jmod
   int toggle_lca;
+  int toggles;
+
   //char skin[MAX_SKINLEN];
 }
 client_respawn_t;

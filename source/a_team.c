@@ -993,6 +993,72 @@ pmenu_t randmenu[] = {
   {"v" VERSION, PMENU_ALIGN_RIGHT, NULL, NULL},
 };
 
+/*
+PaTMaN's JMOD
+*/
+void ToggleLaser(edict_t *ent, pmenu_t *p)
+{
+	strcpy(gi.args(),"togglecode laser");
+	Cmd_Toggle_f(ent);
+}
+
+void ToggleSilencer(edict_t *ent, pmenu_t *p)
+{
+	strcpy(gi.args(),"togglecode silencer");
+	Cmd_Toggle_f(ent);
+}
+
+void ToggleSlippers(edict_t *ent, pmenu_t *p)
+{
+	strcpy(gi.args(),"togglecode slippers");
+	Cmd_Toggle_f(ent);
+}
+
+void ToggleVest(edict_t *ent, pmenu_t *p)
+{
+	strcpy(gi.args(),"togglecode vest");
+	Cmd_Toggle_f(ent);
+}
+
+void ToggleIR(edict_t *ent, pmenu_t *p)
+{
+	strcpy(gi.args(),"togglecode ir");
+	Cmd_Toggle_f(ent);
+}
+
+void ToggleHelmet(edict_t *ent, pmenu_t *p)
+{
+	strcpy(gi.args(),"togglecode helmet");
+	Cmd_Toggle_f(ent);
+}
+
+void ToggleHUDRangefinder(edict_t *ent, pmenu_t *p)
+{
+	strcpy(gi.args(),"togglecode range");
+	Cmd_Toggle_f(ent);
+}
+
+//PaTMaN - Item Menu
+pmenu_t pmitemmenu[] = {
+  {"*Item Menu                  (command binds)",		PMENU_ALIGN_LEFT,	NULL, NULL					},
+  { "-----------------------------------------------",	PMENU_ALIGN_LEFT,	NULL, NULL					},
+  { "Laser Sight                (tog laser)",			PMENU_ALIGN_LEFT,	NULL, ToggleLaser			},
+  { "Silencer                   (tog silencer)",		PMENU_ALIGN_LEFT,	NULL, ToggleSilencer		},
+  { "Slippers                   (tog slippers)",		PMENU_ALIGN_LEFT,	NULL, ToggleSlippers		},
+  { "Vest                       (tog vest)",			PMENU_ALIGN_LEFT,	NULL, ToggleVest			},
+  { "IR Vision                  (tog ir)",				PMENU_ALIGN_LEFT,	NULL, ToggleIR				},
+  { "Helmet                     (tog ir)",				PMENU_ALIGN_LEFT,	NULL, ToggleHelmet			},
+  { "Range Finder               (tog range)",			PMENU_ALIGN_LEFT,	NULL, ToggleHUDRangefinder	},
+};
+
+
+void OpenPMItemMenu(edict_t *ent)
+{
+	PMenu_Open(ent, pmitemmenu, 2, sizeof(pmitemmenu) / sizeof(pmenu_t));
+}
+
+//End PaTMaN's jmod add
+
 //AQ2:TNG - slicer
 void VotingMenu (edict_t * ent, pmenu_t * p)
 {

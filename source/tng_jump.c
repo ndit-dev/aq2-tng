@@ -80,8 +80,7 @@ void Cmd_Jmod_f (edict_t *ent)
 {
 	char *cmd = NULL;
 
-	if( ! jump->value )
-	{
+	if( ! jump->value ) {
 		gi.cprintf(ent, PRINT_HIGH, "The server does not have JumpMod enabled.\n");
 		return;
 	}
@@ -241,7 +240,6 @@ void jmodTeleport (edict_t *ent, edict_t *spot)
 	vec3_t		teleport_goto, angles;
 	int			i;
 
-	gi.dprintf("I got this far too\n");
 	VectorCopy (spot->s.origin, teleport_goto);
 	teleport_goto[2] += 9;
 	VectorCopy (spot->s.angles, angles);
@@ -468,4 +466,98 @@ void Cmd_Recall_f (edict_t *ent)
 	gi.multicast (ent->s.origin, MULTICAST_PVS);
 
 	ent->movetype = MOVETYPE_WALK;
+}
+
+//PaTMaN - New Toggle Command
+void Cmd_Toggle_f(edict_t *ent)
+{
+
+	char	*s;
+	char	ACT  [2][12] = { "Deactivated\0","Activated\0" };
+	char	ENA  [2][9]  = { "Disabled\0","Enabled\0" };
+	int		spec, val=0;
+
+	s = strtok(gi.args()," ");
+
+	if ((gi.argc() == 1) && (s == NULL))
+	{
+			gi.cprintf(ent,PRINT_HIGH,"Options to toggle: laser, vest, slippers, silencer, helmet, ir, range\n");
+			return;
+	}
+
+	if (!Q_stricmp(s,"togglecode"))
+		s = strtok(NULL," ");
+	else
+		s = strtok(gi.args()," ");
+
+	spec = ent->client->pers.spectator;
+
+	if ( Q_stricmp(s, "laser") == 0 )
+	{
+		if (spec) goto spec;
+		if (ent->client->resp.toggles & TG_LASER) ent->client->resp.toggles -= TG_LASER;
+		else { ent->client->resp.toggles += TG_LASER; val=1; SP_LaserSight(ent,NULL); }
+		gi.cprintf(ent, PRINT_HIGH, "Laser %s\n",ACT[val]);
+	}
+	else if ( Q_stricmp(s, "vest") == 0 )
+	{
+		if (spec) goto spec;
+		if (ent->client->resp.toggles & TG_VEST) ent->client->resp.toggles -= TG_VEST;
+		else { ent->client->resp.toggles += TG_VEST; val=1; }
+		gi.cprintf(ent, PRINT_HIGH, "Vest %s\n",ACT[val]);
+	}
+	else if ( Q_stricmp(s, "ir") == 0 )
+	{
+		if (ent->client->resp.toggles & TG_IR) ent->client->resp.toggles -= TG_IR;
+		else { ent->client->resp.toggles += TG_IR; val=1; }
+		gi.cprintf(ent, PRINT_HIGH, "IR Vision %s\n",ACT[val]);
+	}
+
+	else if ( Q_stricmp(s, "slippers") == 0 )
+	{
+		if (spec) goto spec;
+		if (ent->client->resp.toggles & TG_SLIPPERS) ent->client->resp.toggles -= TG_SLIPPERS;
+		else { ent->client->resp.toggles += TG_SLIPPERS; val=1; }
+		gi.cprintf(ent, PRINT_HIGH, "Slippers %s\n",ACT[val]);
+	}
+	else if ( Q_stricmp(s, "silencer") == 0 )
+	{
+		if (spec) goto spec;
+		if (ent->client->resp.toggles & TG_SILENCER) ent->client->resp.toggles -= TG_SILENCER;
+		else { ent->client->resp.toggles += TG_SILENCER; val=1; }
+		gi.cprintf(ent, PRINT_HIGH, "Silencer %s\n",ACT[val]);
+	}
+	else if ( Q_stricmp(s, "helmet") == 0 )
+	{
+		if (spec) goto spec;
+		if (ent->client->resp.toggles & TG_HELMET) ent->client->resp.toggles -= TG_HELMET;
+		else { ent->client->resp.toggles += TG_HELMET; val=1; }
+		gi.cprintf(ent, PRINT_HIGH, "Helmet %s\n",ACT[val]);
+	}
+	else if ( Q_stricmp(s, "kickable") == 0 )
+	{
+		if (spec) goto spec;
+		if (ent->client->resp.toggles & TG_KICKABLE)
+		{
+			ent->client->resp.toggles -= TG_KICKABLE;
+			gi.cprintf(ent,PRINT_HIGH, "You are now NOT KICKABLE\n");
+		}
+		else
+		{
+			ent->client->resp.toggles += TG_KICKABLE;
+			gi.cprintf(ent,PRINT_HIGH, "You are now KICKABLE\n");
+		}
+	}
+	else if ( Q_stricmp(s, "range") == 0 )
+	{
+		if (ent->client->resp.toggles & TG_HUD_RANGE) ent->client->resp.toggles -= TG_HUD_RANGE;
+		else { ent->client->resp.toggles += TG_HUD_RANGE; val=1; }
+		gi.cprintf(ent, PRINT_HIGH, "Range Finder %s\n",ENA[val]);
+		//ent->client->ps.stats[STAT_HUD_RANGEFINDER] = 0;
+	}
+	else
+		gi.cprintf(ent, PRINT_HIGH, "\"%s\" isn't a valid toggle option\n",s);
+	return;
+spec:
+	gi.cprintf(ent,PRINT_HIGH,"This command cannot be used by spectators\n");
 }

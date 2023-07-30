@@ -946,6 +946,12 @@ void Cmd_Inven_f (edict_t * ent)
 
 	cl->pers.menu_shown = true;
 
+	// PaTMaN's Jmod menu support
+	if (jump->value) {
+		OpenPMItemMenu (ent);
+		return;
+	}
+
 	if (teamplay->value && !ent->client->resp.team) {
 		OpenJoinMenu (ent);
 		return;
@@ -1815,6 +1821,7 @@ static void Cmd_CPSI_f (edict_t * ent)
 
 #define CMDF_CHEAT	1 //Need cheat to be enabled
 #define CMDF_PAUSE	2 //Cant use while pause
+#define CMDF_JMOD	3 //Needs jump mode enabled
 
 typedef struct cmdList_s
 {
@@ -1932,7 +1939,7 @@ static cmdList_t commandList[] =
 	{ "configlist", Cmd_Configlist_f, 0 },
 	{ "votescramble", Cmd_Votescramble_f, 0 },
 	// JumpMod / jmod -- all commands are prefaced with 'jmod' ex: 'jmod spawnc'
-	{ "jmod", Cmd_Jmod_f, 0 }
+	{ "jmod", Cmd_Jmod_f, 0 },
 
 };
 
@@ -1998,6 +2005,10 @@ void ClientCommand (edict_t * ent)
 	hash = Cmd_HashValue( text ) & (MAX_COMMAND_HASH - 1);
 	for (cmd = commandHash[hash]; cmd; cmd = cmd->hashNext) {
 		if (!Q_stricmp( text, cmd->name )) {
+			// if ((cmd->flags & CMDF_JMOD) && !jump->value) {
+			// 	gi.cprintf(ent, PRINT_HIGH, "You must run the server with '+set jump 1' to enable this command.\n");
+			// 	return;
+			// }
 
 			if ((cmd->flags & CMDF_CHEAT) && !sv_cheats->value) {
 				gi.cprintf(ent, PRINT_HIGH, "You must run the server with '+set cheats 1' to enable this command.\n");
@@ -2006,6 +2017,8 @@ void ClientCommand (edict_t * ent)
 
 			if ((cmd->flags & CMDF_PAUSE) && level.pauseFrames)
 				return;
+
+			
 
 			cmd->function( ent );
 			return;
