@@ -948,7 +948,8 @@ void Cmd_Inven_f (edict_t * ent)
 
 	// PaTMaN's Jmod menu support
 	if (jump->value) {
-		OpenPMItemMenu (ent);
+		// TODO: Disabling until toggles work
+		//OpenPMItemMenu (ent);
 		return;
 	}
 

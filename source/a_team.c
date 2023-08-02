@@ -998,45 +998,39 @@ PaTMaN's JMOD
 */
 void ToggleLaser(edict_t *ent, pmenu_t *p)
 {
-	strcpy(gi.args(),"togglecode laser");
-	Cmd_Toggle_f(ent);
+	Cmd_Toggle_f(ent, "laser");
 }
 
 void ToggleSilencer(edict_t *ent, pmenu_t *p)
 {
-	strcpy(gi.args(),"togglecode silencer");
-	Cmd_Toggle_f(ent);
+	//strcpy(gi.args(),"togglecode silencer");
+	Cmd_Toggle_f(ent, "silencer");
 }
 
 void ToggleSlippers(edict_t *ent, pmenu_t *p)
 {
-	strcpy(gi.args(),"togglecode slippers");
-	Cmd_Toggle_f(ent);
+	//strcpy(gi.args(),"togglecode slippers");
+	Cmd_Toggle_f(ent, "slippers");
 }
 
 void ToggleVest(edict_t *ent, pmenu_t *p)
 {
-	strcpy(gi.args(),"togglecode vest");
-	Cmd_Toggle_f(ent);
+	//strcpy(gi.args(),"togglecode vest");
+	Cmd_Toggle_f(ent, "vest");
 }
 
 void ToggleIR(edict_t *ent, pmenu_t *p)
 {
-	strcpy(gi.args(),"togglecode ir");
-	Cmd_Toggle_f(ent);
+	//strcpy(gi.args(),"togglecode ir");
+	Cmd_Toggle_f(ent, "ir");
 }
 
 void ToggleHelmet(edict_t *ent, pmenu_t *p)
 {
-	strcpy(gi.args(),"togglecode helmet");
-	Cmd_Toggle_f(ent);
+	//strcpy(gi.args(),"togglecode helmet");
+	Cmd_Toggle_f(ent, "helmet");
 }
 
-void ToggleHUDRangefinder(edict_t *ent, pmenu_t *p)
-{
-	strcpy(gi.args(),"togglecode range");
-	Cmd_Toggle_f(ent);
-}
 
 //PaTMaN - Item Menu
 pmenu_t pmitemmenu[] = {
@@ -1047,8 +1041,7 @@ pmenu_t pmitemmenu[] = {
   { "Slippers                   (tog slippers)",		PMENU_ALIGN_LEFT,	NULL, ToggleSlippers		},
   { "Vest                       (tog vest)",			PMENU_ALIGN_LEFT,	NULL, ToggleVest			},
   { "IR Vision                  (tog ir)",				PMENU_ALIGN_LEFT,	NULL, ToggleIR				},
-  { "Helmet                     (tog ir)",				PMENU_ALIGN_LEFT,	NULL, ToggleHelmet			},
-  { "Range Finder               (tog range)",			PMENU_ALIGN_LEFT,	NULL, ToggleHUDRangefinder	},
+  { "Helmet                     (tog helmet)",			PMENU_ALIGN_LEFT,	NULL, ToggleHelmet			},
 };
 
 

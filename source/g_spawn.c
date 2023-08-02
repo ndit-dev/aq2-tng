@@ -902,6 +902,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	gi.cvar_forceset(stat_logs->name, "0"); // Turn off stat logs for jump mode
 	gi.cvar_forceset(dm_choose->name, "0"); // Turn off dm_choose for jump mode
 	gi.cvar_forceset(uvtime->name, "0"); // Turn off uvtime in jump mode
+	gi.cvar_forceset(unique_items->name, "6"); // Enables holding all items at once, if toggled
 	//
 		if (teamplay->value)
 		{
