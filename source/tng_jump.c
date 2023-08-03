@@ -298,16 +298,12 @@ void Cmd_Goto_f (edict_t *ent)
 		// 5 = jmod goto x y z
 		if (gi.argc() == 5)
 		{
-			s = strdup(gi.args());
-
-			i=0;
-			token = strtok( s, " " );
-			while( token != NULL )
-			{
-				teleport_goto[i] = 0;
-				teleport_goto[i] = atoi(token);
-				token = strtok( NULL, " " );
-				i++;
+			// Verifying input
+			if (Q_stricmp(gi.argv(0), "jmod") == 0 && Q_stricmp(gi.argv(1), "goto") == 0){
+				// Hacky shit, set gi.argv(2) as teleport_goto[0], etc..:
+				for (i = 0; i < 3; i++){
+					teleport_goto[i] = atoi(gi.argv(i+2));
+				}
 			}
 			teleport_goto[2] -= ent->viewheight;
 
