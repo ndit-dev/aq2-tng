@@ -180,6 +180,8 @@ void Cmd_PMLCA_f(edict_t *ent)
 		return;
 	}
 
+	// Set this to 1 to prevent damage during LCA
+	lights_camera_action = 1;
 	if (!ent->client->resp.toggle_lca)
 	{
 		gi.centerprintf (ent,"LIGHTS...\n");
@@ -197,6 +199,8 @@ void Cmd_PMLCA_f(edict_t *ent)
 		gi.sound(ent, CHAN_VOICE, gi.soundindex("atl/action.wav"), 1, ATTN_STATIC, 0);
 	}
 	ent->client->resp.toggle_lca--;
+	// Set it back to 0 for normal damage to occur
+	lights_camera_action = 0;
 }
 
 edict_t *PMSelectSpawnPoint (int number)

@@ -716,8 +716,7 @@ void P_FallingDamage (edict_t * ent)
 
 		VectorSet (dir, 0, 0, 1);
 
-		if (jump->value && !ent->client->resp.toggle_lca)
-		{
+		if (jump->value && (!ent->client->resp.toggle_lca || lights_camera_action)) {
 			gi.cprintf(ent, PRINT_HIGH, "Fall Damage: %d\n", damage);
 			ent->client->resp.jmp_falldmglast = damage;
 		} else {

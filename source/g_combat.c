@@ -440,15 +440,12 @@ void T_Damage (edict_t * targ, edict_t * inflictor, edict_t * attacker, vec3_t d
 	if (targ != attacker && OnSameTeam( targ, attacker ))
 		friendlyFire = 1;
 
-	// PaTMaN's jmod/jump LCA invulnerable
-	if (jump->value && client->resp.toggle_lca)
-		return;
-
 	//FIREBLADE
 	if (mod != MOD_TELEFRAG)
 	{
-		if (lights_camera_action)
+		if (lights_camera_action) {
 			return;
+		}
 
 		if (client)
 		{
