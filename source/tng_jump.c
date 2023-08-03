@@ -150,7 +150,7 @@ void Cmd_Jmod_f (edict_t *ent)
 	}
 	else if(Q_stricmp(cmd, "lasersight") == 0)
 	{
-		PMLaserSight(ent, GET_ITEM(LASER_NUM));
+		PMLaserSight(ent);
 		return;
 	}
 	else if(Q_stricmp(cmd, "noclip") == 0)
