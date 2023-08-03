@@ -153,9 +153,9 @@ void Cmd_Jmod_f (edict_t *ent)
 		PMLaserSight(ent);
 		return;
 	}
-	else if(Q_stricmp(cmd, "noclip") == 0)
+	else if(Q_stricmp(cmd, "slippers") == 0)
 	{
-		Cmd_Noclip_f(ent);
+		PMStealthSlippers(ent);
 		return;
 	}
 

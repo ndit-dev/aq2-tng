@@ -1001,34 +1001,10 @@ void ToggleLaser(edict_t *ent, pmenu_t *p)
 	Cmd_Toggle_f(ent, "laser");
 }
 
-void ToggleSilencer(edict_t *ent, pmenu_t *p)
-{
-	//strcpy(gi.args(),"togglecode silencer");
-	Cmd_Toggle_f(ent, "silencer");
-}
-
 void ToggleSlippers(edict_t *ent, pmenu_t *p)
 {
 	//strcpy(gi.args(),"togglecode slippers");
 	Cmd_Toggle_f(ent, "slippers");
-}
-
-void ToggleVest(edict_t *ent, pmenu_t *p)
-{
-	//strcpy(gi.args(),"togglecode vest");
-	Cmd_Toggle_f(ent, "vest");
-}
-
-void ToggleIR(edict_t *ent, pmenu_t *p)
-{
-	//strcpy(gi.args(),"togglecode ir");
-	Cmd_Toggle_f(ent, "ir");
-}
-
-void ToggleHelmet(edict_t *ent, pmenu_t *p)
-{
-	//strcpy(gi.args(),"togglecode helmet");
-	Cmd_Toggle_f(ent, "helmet");
 }
 
 
