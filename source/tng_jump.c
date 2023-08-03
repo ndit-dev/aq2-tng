@@ -205,7 +205,7 @@ void Cmd_PMLCA_f(edict_t *ent)
 
 edict_t *PMSelectSpawnPoint (int number)
 {
-        edict_t *spot;
+        edict_t 		*spot;
         int             count = 0;
         int             selection;
 
@@ -259,7 +259,6 @@ void jmodTeleport (edict_t *ent, edict_t *spot)
 	VectorClear (ent->velocity);
 
 	ent->client->ps.pmove.pm_time = 160>>3;		// hold time
-	//ent->client->ps.pmove.pm_flags |= PMF_TIME_TELEPORT;
 
 	// draw the teleport splash on the player
 	ent->s.event = EV_PLAYER_TELEPORT;
@@ -296,13 +295,13 @@ void Cmd_Goto_f (edict_t *ent)
 
 	if (!ent->deadflag && !ent->client->pers.spectator)
 	{
-		if (gi.argc() == 4)
+		// 5 = jmod goto x y z
+		if (gi.argc() == 5)
 		{
 			s = strdup(gi.args());
 
 			i=0;
 			token = strtok( s, " " );
-
 			while( token != NULL )
 			{
 				teleport_goto[i] = 0;
@@ -314,7 +313,6 @@ void Cmd_Goto_f (edict_t *ent)
 
 			ent->client->jumping = 0;
 			ent->movetype = MOVETYPE_NOCLIP;
-
 			gi.unlinkentity (ent);
 
 			VectorCopy (teleport_goto, ent->s.origin);
@@ -331,6 +329,15 @@ void Cmd_Goto_f (edict_t *ent)
 			VectorClear (ent->s.angles);
 			VectorClear (ent->client->ps.viewangles);
 			VectorClear (ent->client->v_angle);
+
+			for (i=0;i<2;i++)
+				ent->client->ps.pmove.delta_angles[i] = ANGLE2SHORT(ent->client->v_angle[i] - ent->client->resp.cmd_angles[i]);
+			if (ent->client->pers.spectator)
+				ent->solid = SOLID_BBOX;
+			else
+				ent->solid = SOLID_TRIGGER;
+
+			ent->deadflag = DEAD_NO;
 
 			gi.linkentity (ent);
 			
@@ -354,8 +361,10 @@ void Cmd_GotoP_f (edict_t *ent)
 		return;
 	}
 
-	if (gi.argc() > 1) {
+	if (gi.argc() >= 3) {
 		buffer = strtok(gi.args()," ");
+		buffer = gi.argv(2);
+		gi.dprintf("User supplied %s\n", buffer);
 		spot = PMSelectSpawnPoint(atoi(buffer));
 	} else {
 		spot = PMSelectSpawnPoint(0);
