@@ -484,26 +484,32 @@ void PMLaserSight(edict_t *self, gitem_t *item)
 	vec3_t  start,forward,right,end;
 	edict_t *lasersight = self->client->lasersight;
 
-	AngleVectors (self->client->v_angle, forward, right, NULL);
+	if (lasersight) {  // laser is on
+		G_FreeEdict(lasersight);
+		self->client->lasersight = NULL;
+		return;
+	} else {
+		AngleVectors (self->client->v_angle, forward, right, NULL);
 
-	VectorSet(end,100 , 0, 0);
-	G_ProjectSource (self->s.origin, end, forward, right, start);
+		VectorSet(end,100 , 0, 0);
+		G_ProjectSource (self->s.origin, end, forward, right, start);
 
-	lasersight = G_Spawn();
-	self->client->lasersight = lasersight;
-	lasersight->owner = self;
-	lasersight->movetype = MOVETYPE_NOCLIP;
-	lasersight->solid = SOLID_NOT;
-	lasersight->classname = "lasersight";
-	lasersight->s.modelindex = level.model_lsight;
-	lasersight->s.renderfx = RF_TRANSLUCENT;
-	lasersight->ideal_yaw = self->viewheight;
-	lasersight->count = 0;
-	lasersight->think = LaserSightThink;
-	lasersight->nextthink = level.framenum + 1;
-	LaserSightThink( lasersight );
-	VectorCopy( lasersight->s.origin, lasersight->s.old_origin );
-	VectorCopy( lasersight->s.origin, lasersight->old_origin );
+		lasersight = G_Spawn();
+		self->client->lasersight = lasersight;
+		lasersight->owner = self;
+		lasersight->movetype = MOVETYPE_NOCLIP;
+		lasersight->solid = SOLID_NOT;
+		lasersight->classname = "lasersight";
+		lasersight->s.modelindex = level.model_lsight;
+		lasersight->s.renderfx = RF_TRANSLUCENT;
+		lasersight->ideal_yaw = self->viewheight;
+		lasersight->count = 0;
+		lasersight->think = LaserSightThink;
+		lasersight->nextthink = level.framenum + 1;
+		LaserSightThink( lasersight );
+		VectorCopy( lasersight->s.origin, lasersight->s.old_origin );
+		VectorCopy( lasersight->s.origin, lasersight->old_origin );
+	}
 }
 
 //PaTMaN - New Toggle Command
@@ -533,15 +539,28 @@ void Cmd_Toggle_f(edict_t *ent, char *toggle)
 	if ( Q_stricmp(toggle, "laser") == 0 )
 	{
 		if (spec) goto spec;
-		if (ent->client->resp.toggles & TG_LASER) ent->client->resp.toggles -= TG_LASER;
-		else { ent->client->resp.toggles += TG_LASER; val=1; PMLaserSight(ent, GET_ITEM(LASER_NUM)); }
+		if (ent->client->resp.toggles & TG_LASER) {
+			ent->client->resp.toggles -= TG_LASER;
+			PMLaserSight(ent, GET_ITEM(LASER_NUM)); 
+		} else { 
+			ent->client->resp.toggles += TG_LASER;
+			val=1;
+			PMLaserSight(ent, GET_ITEM(LASER_NUM)); 
+		}
 		gi.cprintf(ent, PRINT_HIGH, "Laser %s\n",ACT[val]);
 	}
 	else if ( Q_stricmp(toggle, "slippers") == 0 )
 	{
 		if (spec) goto spec;
-		if (ent->client->resp.toggles & TG_SLIPPERS) ent->client->resp.toggles -= TG_SLIPPERS;
-		else { ent->client->resp.toggles += TG_SLIPPERS; val=1; AddItem(ent, GET_ITEM(SLIP_NUM)); }
+		if (ent->client->resp.toggles & TG_SLIPPERS) {
+			ent->client->resp.toggles -= TG_SLIPPERS;
+			ent->client->inventory[ITEM_INDEX(GET_ITEM(SLIP_NUM))]--;
+		}
+		else { 
+			ent->client->resp.toggles += TG_SLIPPERS;
+			val=1;
+			AddItem(ent, GET_ITEM(SLIP_NUM));
+		}
 		gi.cprintf(ent, PRINT_HIGH, "Slippers %s\n",ACT[val]);
 	}
 	// else if ( Q_stricmp(s, "kickable") == 0 )

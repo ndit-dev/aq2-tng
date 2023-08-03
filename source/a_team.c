@@ -1037,11 +1037,11 @@ pmenu_t pmitemmenu[] = {
   {"*Item Menu                  (command binds)",		PMENU_ALIGN_LEFT,	NULL, NULL					},
   { "-----------------------------------------------",	PMENU_ALIGN_LEFT,	NULL, NULL					},
   { "Laser Sight                (tog laser)",			PMENU_ALIGN_LEFT,	NULL, ToggleLaser			},
-  { "Silencer                   (tog silencer)",		PMENU_ALIGN_LEFT,	NULL, ToggleSilencer		},
   { "Slippers                   (tog slippers)",		PMENU_ALIGN_LEFT,	NULL, ToggleSlippers		},
-  { "Vest                       (tog vest)",			PMENU_ALIGN_LEFT,	NULL, ToggleVest			},
-  { "IR Vision                  (tog ir)",				PMENU_ALIGN_LEFT,	NULL, ToggleIR				},
-  { "Helmet                     (tog helmet)",			PMENU_ALIGN_LEFT,	NULL, ToggleHelmet			},
+  { NULL,												PMENU_ALIGN_LEFT,	NULL, NULL					},
+  { "Respawn to Closest Spawn   (jmod spawnc)",			PMENU_ALIGN_LEFT,	NULL, Cmd_GotoPC_f   		},
+  { "Respawn to Random Spawn    (jmod spawnp)",			PMENU_ALIGN_LEFT,	NULL, Cmd_GotoP_f   		},
+
 };
 
 
