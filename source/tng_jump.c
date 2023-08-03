@@ -96,6 +96,8 @@ void Cmd_Jmod_f (edict_t *ent)
 		gi.cprintf(ent, PRINT_HIGH, " jmod spawnc - teleport closest spawnpoint\n");
 		gi.cprintf(ent, PRINT_HIGH, " jmod goto <#> <#> <#> - teleport to x y z coordinates\n");
 		gi.cprintf(ent, PRINT_HIGH, " jmod lca - start Lights Camera Action\n");
+		gi.cprintf(ent, PRINT_HIGH, " jmod lasersight - toggle lasersight\n");
+
 		return;
 	}
 
@@ -139,6 +141,16 @@ void Cmd_Jmod_f (edict_t *ent)
 	else if(Q_stricmp(cmd, "lca") == 0)
 	{
 		Cmd_PMLCA_f(ent);
+		return;
+	}
+	else if(Q_stricmp(cmd, "noclip") == 0)
+	{
+		Cmd_Noclip_f(ent);
+		return;
+	}
+	else if(Q_stricmp(cmd, "lasersight") == 0)
+	{
+		PMLaserSight(ent, GET_ITEM(LASER_NUM));
 		return;
 	}
 	else if(Q_stricmp(cmd, "noclip") == 0)
@@ -479,7 +491,7 @@ void Cmd_Recall_f (edict_t *ent)
 	ent->movetype = MOVETYPE_WALK;
 }
 
-void PMLaserSight(edict_t *self, gitem_t *item)
+void PMLaserSight(edict_t *self)
 {
 	vec3_t  start,forward,right,end;
 	edict_t *lasersight = self->client->lasersight;
@@ -512,6 +524,17 @@ void PMLaserSight(edict_t *self, gitem_t *item)
 	}
 }
 
+void PMStealthSlippers(edict_t *self)
+{
+	// Removes stealth slippers
+	if (self->client->inventory[ITEM_INDEX(GET_ITEM(SLIP_NUM))]) {
+		self->client->inventory[ITEM_INDEX(GET_ITEM(SLIP_NUM))]--;
+	} else {
+	// Adds stealth slippers
+		AddItem(self, GET_ITEM(SLIP_NUM));
+	}
+}
+
 //PaTMaN - New Toggle Command
 void Cmd_Toggle_f(edict_t *ent, char *toggle)
 {
@@ -541,11 +564,11 @@ void Cmd_Toggle_f(edict_t *ent, char *toggle)
 		if (spec) goto spec;
 		if (ent->client->resp.toggles & TG_LASER) {
 			ent->client->resp.toggles -= TG_LASER;
-			PMLaserSight(ent, GET_ITEM(LASER_NUM)); 
+			PMLaserSight(ent); 
 		} else { 
 			ent->client->resp.toggles += TG_LASER;
 			val=1;
-			PMLaserSight(ent, GET_ITEM(LASER_NUM)); 
+			PMLaserSight(ent); 
 		}
 		gi.cprintf(ent, PRINT_HIGH, "Laser %s\n",ACT[val]);
 	}
@@ -554,12 +577,14 @@ void Cmd_Toggle_f(edict_t *ent, char *toggle)
 		if (spec) goto spec;
 		if (ent->client->resp.toggles & TG_SLIPPERS) {
 			ent->client->resp.toggles -= TG_SLIPPERS;
-			ent->client->inventory[ITEM_INDEX(GET_ITEM(SLIP_NUM))]--;
+			PMStealthSlippers(ent);
+			//ent->client->inventory[ITEM_INDEX(GET_ITEM(SLIP_NUM))]--;
 		}
 		else { 
 			ent->client->resp.toggles += TG_SLIPPERS;
 			val=1;
-			AddItem(ent, GET_ITEM(SLIP_NUM));
+			PMStealthSlippers(ent);
+			//AddItem(ent, GET_ITEM(SLIP_NUM));
 		}
 		gi.cprintf(ent, PRINT_HIGH, "Slippers %s\n",ACT[val]);
 	}
