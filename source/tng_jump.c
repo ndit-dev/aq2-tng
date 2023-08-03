@@ -290,7 +290,6 @@ void jmodTeleport (edict_t *ent, edict_t *spot)
 void Cmd_Goto_f (edict_t *ent)
 {
 	int 		i;
-	char		*s, *token;
 	vec3_t		teleport_goto;
 
 	if (!ent->deadflag && !ent->client->pers.spectator)
