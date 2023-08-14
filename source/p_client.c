@@ -1766,7 +1766,7 @@ void SelectSpawnPoint(edict_t * ent, vec3_t origin, vec3_t angles)
 	else if (!(gameSettings & GS_DEATHMATCH) && ent->client->resp.team && !in_warmup)
 		spot = SelectTeamplaySpawnPoint(ent);
 	else if (jump->value)
-		spot = SelectRandomDeathmatchSpawnPoint();
+		spot = SelectFarthestDeathmatchSpawnPoint();
 	else
 		spot = SelectDeathmatchSpawnPoint();
 
