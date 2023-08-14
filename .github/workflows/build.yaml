@@ -115,22 +115,6 @@ jobs:
           ref: ${{ github.ref }}
           path: build
 
-      - uses: actions/checkout@v3
-        with:
-          repository: actionquake/distrib
-          path: config
-
-      - name: Get version info for tng
-        id: version
-        run: |
-          cp config/build/getversion.sh build/
-          cd build && bash -x getversion.sh tng >> versions
-
-      - name: Set shortversion
-        id: shortversion
-        working-directory: build
-        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
-
       - name: Build TNG (Linux 64-bit)
         working-directory: build/source
         run: make -j2 V=1 && mv gamex86_64.so ../gamex86_64.so
