@@ -136,6 +136,10 @@ ifdef NO_BOTS
 CFLAGS+=-DNO_BOTS
 endif
 
+## Use this to build on older glibc/gcc for older dedicated servers
+ifdef COMPAT
+CFLAGS+=-std=c99
+endif
 
 #############################################################################
 # SETUP AND BUILD
