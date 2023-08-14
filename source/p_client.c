@@ -719,7 +719,8 @@ void ClientObituary(edict_t * self, edict_t * inflictor, edict_t * attacker)
 
 	// Reki: Print killfeed to spectators who ask for easily parsable stuff
 	edict_t *other;
-	for (int j = 1; j <= game.maxclients; j++) {
+	int j;
+	for (j = 1; j <= game.maxclients; j++) {
 		other = &g_edicts[j];
 		if (!other->inuse || !other->client || !teamplay->value)
 			continue;
