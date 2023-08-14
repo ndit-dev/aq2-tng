@@ -98,7 +98,7 @@ jobs:
             build/gamex86_64.so
             build/versions
 
-  x86_compat_build_tng:
+  x86_lin_compat_build_tng:
     runs-on: [self-hosted, X64, compat]
     steps:
       - name: 'Cleanup build folder'
@@ -128,7 +128,6 @@ jobs:
           name: tng-lin-x86_64-compat
           path: |
             build/gamex86_64.so
-            build/versions
 
   arm64_build_tng:
     runs-on: [self-hosted, ARM64]

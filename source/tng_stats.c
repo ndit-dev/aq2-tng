@@ -557,7 +557,8 @@ Bot Check
 */
 void StatBotCheck(void)
 {
-    for (int i = 0; i < num_players; i++)
+	int i;
+    for (i = 0; i < num_players; i++)
     {
         if (players[i]->is_bot)
         {
@@ -638,7 +639,8 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
     if (gameSettings & GS_DEATHMATCH) // Only check if in DM
     {
         int oc = 0; // Opponent count
-        for (int i = 0; i < game.maxclients; i++)
+        int i;
+        for (i = 0; i < game.maxclients; i++)
         {
             // If player is connected and not spectating, add them as an opponent
             if (game.clients[i].pers.connected && game.clients[i].pers.spectator == false)
@@ -752,7 +754,8 @@ void LogWorldKill(edict_t *self)
     if (gameSettings & GS_DEATHMATCH) // Only check if in DM
     {
         int oc = 0; // Opponent count
-        for (int i = 0; i < game.maxclients; i++)
+        int i;
+        for (i = 0; i < game.maxclients; i++)
         {
             // If player is connected and not spectating, add them as an opponent
             if (game.clients[i].pers.connected && game.clients[i].pers.spectator == false)

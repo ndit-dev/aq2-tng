@@ -683,6 +683,8 @@ void SelectRandomItem(edict_t *ent, pmenu_t *p)
 
 void SelectRandomWeaponAndItem(edict_t *ent, pmenu_t *p)
 {
+	int i;
+	int rand = newrand(7);
 	// WEAPON
 	menu_list_weapon weapon_list[7] = {
 		{ .num = MP5_NUM, .sound = "weapons/mp5slide.wav", .name = MP5_NAME },
@@ -694,7 +696,6 @@ void SelectRandomWeaponAndItem(edict_t *ent, pmenu_t *p)
 		{ .num = DUAL_NUM, .sound = "weapons/mk23slide.wav", .name = DUAL_NAME }
 	};
 
-	int rand = newrand(7);
 	menu_list_weapon selected_weapon = weapon_list[rand];
 	// prevent picking current weapon
 	if (ent->client->pers.chosenWeapon) {
@@ -749,7 +750,7 @@ void SelectRandomWeaponAndItem(edict_t *ent, pmenu_t *p)
 		}
 	}
 
-	for (int i = 0; i < listCount; i++) {
+	for (i = 0; i < listCount; i++) {
 		gi.cprintf(ent, PRINT_HIGH, "%i %s\n", item_list[i].num, item_list[i].name);
 	}
 
