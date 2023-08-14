@@ -639,7 +639,7 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
     if (gameSettings & GS_DEATHMATCH) // Only check if in DM
     {
         int oc = 0; // Opponent count
-		int i;
+        int i;
         for (i = 0; i < game.maxclients; i++)
         {
             // If player is connected and not spectating, add them as an opponent
@@ -754,7 +754,7 @@ void LogWorldKill(edict_t *self)
     if (gameSettings & GS_DEATHMATCH) // Only check if in DM
     {
         int oc = 0; // Opponent count
-		int i;
+        int i;
         for (i = 0; i < game.maxclients; i++)
         {
             // If player is connected and not spectating, add them as an opponent
