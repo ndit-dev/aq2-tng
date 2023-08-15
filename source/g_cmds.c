@@ -1821,7 +1821,6 @@ static void Cmd_CPSI_f (edict_t * ent)
 
 #define CMDF_CHEAT	1 //Need cheat to be enabled
 #define CMDF_PAUSE	2 //Cant use while pause
-#define CMDF_JMOD	3 //Needs jump mode enabled
 
 typedef struct cmdList_s
 {
