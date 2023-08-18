@@ -353,17 +353,6 @@ static void FreeClientEdicts(gclient_t *client)
 void Announce_Reward(edict_t *ent, int rewardType){
 	char buf[256];
 
-	#ifdef USE_AQTION
-	char steamid[24];
-	char discordid[24];
-
-	// Gather stat-related info
-	if (stat_logs->value) {
-		Q_strncpyz(steamid, Info_ValueForKey(ent->client->pers.userinfo, "steamid"), sizeof(steamid));
-		Q_strncpyz(discordid, Info_ValueForKey(ent->client->pers.userinfo, "cl_discord_id"), sizeof(discordid));
-	}
-	#endif
-
 	if (rewardType == IMPRESSIVE) {
 		sprintf(buf, "IMPRESSIVE %s!", ent->client->pers.netname);
 		CenterPrintAll(buf);
@@ -378,8 +367,10 @@ void Announce_Reward(edict_t *ent, int rewardType){
 		gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD, gi.soundindex("tng/accuracy.wav"), 1.0, ATTN_NONE, 0.0);
 	}
 
+	#ifdef USE_AQTION
 	if (stat_logs->value)
-		LogAward(steamid, discordid, rewardType);
+		LogAward(ent, rewardType);
+	#endif
 }
 
 void Add_Frag(edict_t * ent, int mod)
@@ -3060,6 +3051,15 @@ qboolean ClientConnect(edict_t * ent, char *userinfo)
 
 	Q_strncpyz(ent->client->pers.ip, ipaddr_buf, sizeof(ent->client->pers.ip));
 	Q_strncpyz(ent->client->pers.userinfo, userinfo, sizeof(ent->client->pers.userinfo));
+
+	#ifdef USE_AQTION
+	value = Info_ValueForKey(userinfo, "steamid");
+	if (*value)
+		Q_strncpyz(ent->client->pers.steamid, value, sizeof(ent->client->pers.steamid));
+	value = Info_ValueForKey(userinfo, "discordid");
+	if (*value)
+		Q_strncpyz(ent->client->pers.discordid, value, sizeof(ent->client->pers.discordid));
+	#endif
 
 	if (game.serverfeatures & GMF_MVDSPEC) {
 		value = Info_ValueForKey(userinfo, "mvdspec");

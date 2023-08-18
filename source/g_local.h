@@ -1558,7 +1558,7 @@ void StatBotCheck(void);
 void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker);
 void LogWorldKill(edict_t *self);
 void LogMatch();
-void LogAward(char* steamid, char* discordid, int award);
+void LogAward(edict_t *ent, int award);
 void LogEndMatchStats();
 #endif
 
@@ -1653,6 +1653,11 @@ typedef struct
 
 	ignorelist_t ignorelist;
 	gitem_t *chosenItem2;		// Support for item kit mode
+
+	#ifdef USE_AQTION
+	char steamid[24];
+	char discordid[24];
+	#endif
 
 }
 client_persistant_t;
