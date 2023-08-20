@@ -170,7 +170,6 @@ extern int lights_camera_action;
 
 #define VEC_ORIGIN tv(0,0,0)
 
-
 typedef struct nodelink_s
 {
 	short int		targetNode;

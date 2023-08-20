@@ -978,6 +978,11 @@ extern edict_t *g_edicts;
 
 #define DMFLAGS(x)     (((int)dmflags->value & x) != 0)
 
+#ifndef NO_BOTS
+#define AQ2WTEAMSIZE	46
+#define NUMNAMES		10
+#endif
+
 extern cvar_t *maxentities;
 extern cvar_t *deathmatch;
 extern cvar_t *dmflags;
@@ -2160,7 +2165,9 @@ struct edict_s
 	int bot_speed; 
 	qboolean	bCrawl; 
 	qboolean	bLastJump; 
-	vec3_t	lastPosition; 
+	vec3_t	lastPosition;
+	qboolean	nameused[NUMNAMES][NUMNAMES];
+	qboolean	newnameused[AQ2WTEAMSIZE];
 #endif
 };
 
