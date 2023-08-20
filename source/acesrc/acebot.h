@@ -170,6 +170,10 @@ extern int lights_camera_action;
 
 #define VEC_ORIGIN tv(0,0,0)
 
+#define NUMNAMES		10
+#define AQ2WTEAMSIZE	46
+qboolean	adminnameused[AQ2WTEAMSIZE];
+qboolean	nameused[NUMNAMES][NUMNAMES];
 
 typedef struct nodelink_s
 {

@@ -811,7 +811,6 @@ void attract_mode_bot_check(void)
 //====================================
 // Stuff to generate pseudo-random names
 //====================================
-#define NUMNAMES	10
 char	*names1[NUMNAMES] = {
 	"Bad", "Death", "L33t", "Fast", "Real", "Lethal", "Hyper", "Hard", "Angel", "Red"};
 
@@ -824,13 +823,10 @@ char	*names3[NUMNAMES] = {
 char	*names4[NUMNAMES] = {
 	"ders", "rog", "born", "dor", "fing", "galad", "bon", "loss", "orch", "riel" };
 
-qboolean	nameused[NUMNAMES][NUMNAMES];
-
 //====================================
 // AQ2World Staff Names -- come shoot at our bots!
 // TODO: Find time to implement this better
 //====================================
-#define AQ2WTEAMSIZE	46
 char	*aq2names[] = {
 	"[BOT]bAron", "[BOT]darksaint", "[BOT]FragBait",
 	"[BOT]matic", "[BOT]JukS", "[BOT]TgT", "[BOT]dmc",
@@ -852,7 +848,6 @@ char	*aq2names[] = {
 	"_NME_Freud", "_NME_slicer", "_NME_JBravo", "_NME_Elviz"
 	};
 
-qboolean	adminnameused[AQ2WTEAMSIZE];
 // END AQ2World Staff Names //
 
 void	LTKsetBotNameNew(void)
@@ -896,9 +891,9 @@ void	LTKsetBotName( char	*bot_name )
 		}
 
 	// Mark that name as used
-	if (!am_newnames->value) {
-		nameused[part1][part2] = true;
-	}
+	// if (!am_newnames->value) {
+	// 	nameused[part1][part2] = true;
+	// }
 	// Intentionally not marking new names as used as
 	// we run out of names after a few iterations
 	// Will fix this some day?
