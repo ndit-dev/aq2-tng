@@ -753,7 +753,7 @@ void attract_mode_bot_check(void)
 			gi.cvar_forceset("am_botcount", "6");
 		} else {
 			gi.dprintf( "am is 2, am_botcount is %d, maxclients is too low at %d, reducing bot count\n", (int)am_botcount->value, (int)maxclients->value);
-			adj = (maxclientsminus2 / 2);
+			adj = (maxclientsminus2 - 2);
 			gi.cvar_forceset("am_botcount", va("%d", adj));
 		}
     }
