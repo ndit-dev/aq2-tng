@@ -912,12 +912,13 @@ void	LTKsetBotName( char	*bot_name )
 
 void LTKClearBotNames() {
 	edict_t ltknames;
-    for (int i = 0; i < NUMNAMES; i++) {
-        for (int j = 0; j < NUMNAMES; j++) {
+	int i, j;
+    for (i = 0; i < NUMNAMES; i++) {
+        for (j = 0; j < NUMNAMES; j++) {
             ltknames.nameused[i][j] = false; // Reset all elements to false
         }
     }
-	for (int i = 0; i < AQ2WTEAMSIZE; i++) {
+	for (i = 0; i < AQ2WTEAMSIZE; i++) {
 			ltknames.newnameused[i] = false; // Reset all elements to false
     }
 }
