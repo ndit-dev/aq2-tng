@@ -867,7 +867,7 @@ void LTKsetBotNameNew(char *bot_name)
         randomname = rand() % AQ2WTEAMSIZE;
         if (!ltknames.newnameused[randomname])
         {
-            ltknames.newnameused[randomname] = 1;
+            ltknames.newnameused[randomname] = true;
             break;
         }
     } while (ltknames.newnameused[randomname]);
@@ -895,7 +895,7 @@ void	LTKsetBotName( char	*bot_name )
 	// Mark that name as used
 	// TODO: This is causing crashes, figure out another way to mark them as used
 
-	//ltknames.nameused[part1][part2] = true;
+	ltknames.nameused[part1][part2] = true;
 	
 	// Now put the name together
 	if( random() < 0.5 )
@@ -908,4 +908,16 @@ void	LTKsetBotName( char	*bot_name )
 		strcpy( bot_name, names3[part1]);
 		strcat( bot_name, names4[part2]);
 	}
+}
+
+void LTKClearBotNames() {
+	edict_t ltknames;
+    for (int i = 0; i < NUMNAMES; i++) {
+        for (int j = 0; j < NUMNAMES; j++) {
+            ltknames.nameused[i][j] = false; // Reset all elements to false
+        }
+    }
+	for (int i = 0; i < AQ2WTEAMSIZE; i++) {
+			ltknames.newnameused[i] = false; // Reset all elements to false
+    }
 }

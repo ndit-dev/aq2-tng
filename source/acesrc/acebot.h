@@ -299,6 +299,7 @@ void     attract_mode_bot_check(void);
 void	 safe_cprintf (edict_t *ent, int printlevel, char *fmt, ...);
 void     safe_centerprintf (edict_t *ent, char *fmt, ...);
 void     debug_printf (char *fmt, ...);
+void 	 LTKClearBotNames();
 
 // bot_ai.c protos
 qboolean	BOTAI_NeedToBandage(edict_t *bot);
