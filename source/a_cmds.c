@@ -796,6 +796,12 @@ void Cmd_Bandage_f(edict_t *ent)
 
 	qboolean can_use_medkit = (ent->client->medkit > 0) && (ent->health < ent->max_health);
 
+	// No need to bandage if enhanced slippers are enabled and you only have fall damage
+	if (ent->client->bleeding == 0 && e_enhancedSlippers->value){
+		gi.cprintf(ent, PRINT_HIGH, "No need to bandage\n");
+		return;
+	}
+
 	if (ent->client->bleeding == 0 && ent->client->leg_damage == 0 && ! can_use_medkit) {
 		gi.cprintf(ent, PRINT_HIGH, "No need to bandage\n");
 		return;
