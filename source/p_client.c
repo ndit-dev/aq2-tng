@@ -502,9 +502,10 @@ void Add_Death( edict_t *ent, qboolean end_streak )
 		return;
 
 	ent->client->resp.deaths ++;
-	if( end_streak )
+	if( end_streak ) {
 		ent->client->resp.streakKills = 0;
 		ent->client->resp.roundStreakKills = 0;
+	}
 }
 
 // FRIENDLY FIRE functions
@@ -1754,11 +1755,12 @@ void SelectSpawnPoint(edict_t * ent, vec3_t origin, vec3_t angles)
 		spot = SelectCTFSpawnPoint(ent);
 	else if (dom->value)
 		spot = SelectDeathmatchSpawnPoint();
-	else if (!(gameSettings & GS_DEATHMATCH) && ent->client->resp.team && !in_warmup) {
+	else if (!(gameSettings & GS_DEATHMATCH) && ent->client->resp.team && !in_warmup)
 		spot = SelectTeamplaySpawnPoint(ent);
-	} else {
+	else if (jump->value)
+		spot = SelectFarthestDeathmatchSpawnPoint();
+	else
 		spot = SelectDeathmatchSpawnPoint();
-	}
 
 	// find a single player start spot
 	if (!spot) {
@@ -3560,6 +3562,14 @@ void ClientBeginServerFrame(edict_t * ent)
 	if (sv_antilag->value) // if sv_antilag is enabled, we want to track our player position for later reference
 		antilag_update(ent);
 
+	//PaTMaN's jmod
+	if(jump->value) {
+		if ((client->resp.toggle_lca) && (client->pers.spectator))
+			client->resp.toggle_lca = 0;
+		else if (client->resp.toggle_lca)
+			Cmd_PMLCA_f(ent);
+	}
+
 #ifdef AQTION_EXTENSION
 	// resync pm_timestamp so all limps are roughly synchronous, to try to maintain original behavior
 	unsigned short world_timestamp = (int)(level.time * 1000) % 60000;
@@ -3703,7 +3713,8 @@ void ClientBeginServerFrame(edict_t * ent)
 
 		if( (ppl_idletime->value > 0) && idleframes && (idleframes % (int)(ppl_idletime->value * HZ) == 0) )
 			//plays a random sound/insane sound, insane1-9.wav
-			gi.sound( ent, CHAN_VOICE, gi.soundindex(va( "insane/insane%i.wav", rand() % 9 + 1 )), 1, ATTN_NORM, 0 );
+			if (!jump->value) // Don't play insane sounds in jmod
+				gi.sound( ent, CHAN_VOICE, gi.soundindex(va( "insane/insane%i.wav", rand() % 9 + 1 )), 1, ATTN_NORM, 0 );
 
 		if( (sv_idleremove->value > 0) && (idleframes > (sv_idleremove->value * HZ)) && client->resp.team )
 		{

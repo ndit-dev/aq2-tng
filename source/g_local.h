@@ -973,9 +973,22 @@ extern int sm_meat_index;
 // Game Mode Flags
 #define GMF_NONE 0
 #define GMF_3TEAMS 1
-//#define NEW_MODE 2       // If new game mode flags are created, use 2 for its value first
+//#define GMF_NEW_MODE 2       // If new game mode flags are created, use 2 for its value first
 #define GMF_DARKMATCH 4
 #define GMF_MATCHMODE 8
+
+// Game Mode Names
+#define GMN_TEAMPLAY "Teamplay"
+#define GMN_TEAMDM "TeamDM"
+#define GMN_CTF "CTF"
+#define GMN_TOURNEY "Tourney"
+#define GMN_DEATHMATCH "Deathmatch"
+#define GMN_DOMINATION "Domination"
+#define GMN_JUMP "Jump"
+#define GMN_3TEAMS "3 Teams"
+//#define GMN_NEW_MODE 2       // If new game mode flags are created, use 2 for its value first
+#define GMN_DARKMATCH "Darkmatch"
+#define GMN_MATCHMODE "Matchmode"
 
 extern int meansOfDeath;
 // zucc for hitlocation of death
@@ -1371,6 +1384,7 @@ qboolean visible(edict_t *self, edict_t *other, int mask);
 qboolean ai_visible( edict_t *self, edict_t *other );
 qboolean infront( edict_t *self, edict_t *other );
 #endif
+void disablecvar(cvar_t *cvar, char *msg);
 
 // Re-enabled for bots
 float *tv (float x, float y, float z);
@@ -1756,6 +1770,10 @@ typedef struct
   int	hud_items[128];
   int	hud_type;
 #endif
+
+  //PaTMaN's jmod
+  int toggle_lca;
+  int toggles;
 
   //char skin[MAX_SKINLEN];
 }
@@ -2243,6 +2261,7 @@ void Cmd_TKOk (edict_t * ent);	// AQ:TNG - JBravo adding tkok
 void Cmd_FF_f( edict_t *ent );
 void Cmd_Time (edict_t * ent);	// AQ:TNG - JBravo adding time
 void Cmd_Roundtimeleft_f(edict_t *ent); // AQ:TNG - DW added roundtimeleft
+void Cmd_Noclip_f(edict_t *ent);
 void DropSpecialWeapon (edict_t * ent);
 void ReadySpecialWeapon (edict_t * ent);
 void DropSpecialItem (edict_t * ent);

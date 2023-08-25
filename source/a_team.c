@@ -994,6 +994,41 @@ pmenu_t randmenu[] = {
   {"v" VERSION, PMENU_ALIGN_RIGHT, NULL, NULL},
 };
 
+/*
+PaTMaN's JMOD
+*/
+void ToggleLaser(edict_t *ent, pmenu_t *p)
+{
+	Cmd_Toggle_f(ent, "laser");
+}
+
+void ToggleSlippers(edict_t *ent, pmenu_t *p)
+{
+	//strcpy(gi.args(),"togglecode slippers");
+	Cmd_Toggle_f(ent, "slippers");
+}
+
+
+//PaTMaN - Item Menu
+pmenu_t pmitemmenu[] = {
+  {"*Item Menu                  (command binds)",		PMENU_ALIGN_LEFT,	NULL, NULL					},
+  { "-----------------------------------------------",	PMENU_ALIGN_LEFT,	NULL, NULL					},
+  { "Laser Sight                (jmod laser)",			PMENU_ALIGN_LEFT,	NULL, ToggleLaser			},
+  { "Slippers                   (jmod slippers)",		PMENU_ALIGN_LEFT,	NULL, ToggleSlippers		},
+  { NULL,												PMENU_ALIGN_LEFT,	NULL, NULL					},
+  { "Respawn to Closest Spawn   (jmod spawnc)",			PMENU_ALIGN_LEFT,	NULL, Cmd_GotoPC_f   		},
+  { "Respawn to Random Spawn    (jmod spawnp)",			PMENU_ALIGN_LEFT,	NULL, Cmd_GotoP_f   		},
+
+};
+
+
+void OpenPMItemMenu(edict_t *ent)
+{
+	PMenu_Open(ent, pmitemmenu, 2, sizeof(pmitemmenu) / sizeof(pmenu_t));
+}
+
+//End PaTMaN's jmod add
+
 //AQ2:TNG - slicer
 void VotingMenu (edict_t * ent, pmenu_t * p)
 {
