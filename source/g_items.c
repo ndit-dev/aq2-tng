@@ -2000,5 +2000,4 @@ void SetItemNames (void)
 		it = &itemlist[i];
 		gi.configstring (CS_ITEMS + i, it->pickup_name);
 	}
-
 }

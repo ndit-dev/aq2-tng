@@ -495,7 +495,11 @@ void SelectWeapon2(edict_t *ent, pmenu_t *p)
 {
 	ent->client->pers.chosenWeapon = GET_ITEM(MP5_NUM);
 	PMenu_Close(ent);
-	OpenItemMenu(ent);
+	if(!item_kit_mode->value){
+		OpenItemMenu(ent);
+	} else {
+		OpenItemKitMenu(ent);
+	}
 	unicastSound(ent, gi.soundindex("weapons/mp5slide.wav"), 1.0);
 }
 
@@ -503,7 +507,11 @@ void SelectWeapon3(edict_t *ent, pmenu_t *p)
 {
 	ent->client->pers.chosenWeapon = GET_ITEM(M3_NUM);
 	PMenu_Close(ent);
-	OpenItemMenu(ent);
+	if(!item_kit_mode->value){
+		OpenItemMenu(ent);
+	} else {
+		OpenItemKitMenu(ent);
+	}
 	unicastSound(ent, gi.soundindex("weapons/m3in.wav"), 1.0);
 }
 
@@ -511,7 +519,11 @@ void SelectWeapon4(edict_t *ent, pmenu_t *p)
 {
 	ent->client->pers.chosenWeapon = GET_ITEM(HC_NUM);
 	PMenu_Close(ent);
-	OpenItemMenu(ent);
+	if(!item_kit_mode->value){
+		OpenItemMenu(ent);
+	} else {
+		OpenItemKitMenu(ent);
+	}
 	unicastSound(ent, gi.soundindex("weapons/cclose.wav"), 1.0);
 }
 
@@ -519,7 +531,11 @@ void SelectWeapon5(edict_t *ent, pmenu_t *p)
 {
 	ent->client->pers.chosenWeapon = GET_ITEM(SNIPER_NUM);
 	PMenu_Close(ent);
-	OpenItemMenu(ent);
+	if(!item_kit_mode->value){
+		OpenItemMenu(ent);
+	} else {
+		OpenItemKitMenu(ent);
+	}
 	unicastSound(ent, gi.soundindex("weapons/ssgbolt.wav"), 1.0);
 }
 
@@ -527,7 +543,11 @@ void SelectWeapon6(edict_t *ent, pmenu_t *p)
 {
 	ent->client->pers.chosenWeapon = GET_ITEM(M4_NUM);
 	PMenu_Close(ent);
-	OpenItemMenu(ent);
+	if(!item_kit_mode->value){
+		OpenItemMenu(ent);
+	} else {
+		OpenItemKitMenu(ent);
+	}
 	unicastSound(ent, gi.soundindex("weapons/m4a1slide.wav"), 1.0);
 }
 
@@ -535,7 +555,11 @@ void SelectWeapon0(edict_t *ent, pmenu_t *p)
 {
 	ent->client->pers.chosenWeapon = GET_ITEM(KNIFE_NUM);
 	PMenu_Close(ent);
-	OpenItemMenu(ent);
+	if(!item_kit_mode->value){
+		OpenItemMenu(ent);
+	} else {
+		OpenItemKitMenu(ent);
+	}
 	unicastSound(ent, gi.soundindex("weapons/swish.wav"), 1.0);
 }
 
@@ -543,13 +567,21 @@ void SelectWeapon9(edict_t *ent, pmenu_t *p)
 {
 	ent->client->pers.chosenWeapon = GET_ITEM(DUAL_NUM);
 	PMenu_Close(ent);
-	OpenItemMenu(ent);
+	if(!item_kit_mode->value){
+		OpenItemMenu(ent);
+	} else {
+		OpenItemKitMenu(ent);
+	}
 	unicastSound(ent, gi.soundindex("weapons/mk23slide.wav"), 1.0);
 }
 
 void SelectItem1(edict_t *ent, pmenu_t *p)
 {
 	ent->client->pers.chosenItem = GET_ITEM(KEV_NUM);
+	if(item_kit_mode->value){
+		// This is so it clears the chosenItem2 if a previous kit was chosen
+		ent->client->pers.chosenItem2 = NULL;
+	}
 	PMenu_Close(ent);
 	unicastSound(ent, gi.soundindex("misc/veston.wav"), 1.0);
 }
@@ -589,6 +621,36 @@ void SelectItem6(edict_t *ent, pmenu_t *p)
 	unicastSound(ent, gi.soundindex("misc/veston.wav"), 1.0);
 }
 
+// Commando kit
+void SelectKit1(edict_t *ent, pmenu_t *p)
+{
+	ent->client->pers.chosenItem = GET_ITEM(BAND_NUM);
+	ent->client->pers.chosenItem2 = GET_ITEM(HELM_NUM);
+
+	PMenu_Close(ent);
+	unicastSound(ent, gi.soundindex("misc/veston.wav"), 1.0);
+}
+
+// Stealth kit
+void SelectKit2(edict_t *ent, pmenu_t *p)
+{
+	ent->client->pers.chosenItem = GET_ITEM(SLIP_NUM);
+	ent->client->pers.chosenItem2= GET_ITEM(SIL_NUM);
+
+	PMenu_Close(ent);
+	unicastSound(ent, gi.soundindex("misc/screw.wav"), 1.0);
+}
+
+// Assassin kit
+void SelectKit3(edict_t *ent, pmenu_t *p)
+{
+	ent->client->pers.chosenItem = GET_ITEM(LASER_NUM);
+	ent->client->pers.chosenItem2= GET_ITEM(SIL_NUM);
+
+	PMenu_Close(ent);
+	unicastSound(ent, gi.soundindex("misc/lasersight.wav"), 1.0);
+}
+
 // newrand returns n, where 0 >= n < top
 int newrand (int top)
 {
@@ -622,7 +684,11 @@ void SelectRandomWeapon(edict_t *ent, pmenu_t *p)
 	unicastSound(ent, gi.soundindex(selected_weapon.sound), 1.0);
 	gi.centerprintf(ent, "You selected %s", selected_weapon.name);
 	PMenu_Close(ent);
-	OpenItemMenu(ent);
+	if(!item_kit_mode->value){
+		OpenItemMenu(ent);
+	} else {
+		OpenItemKitMenu(ent);
+	}
 }
 
 void SelectRandomItem(edict_t *ent, pmenu_t *p)
@@ -860,7 +926,7 @@ pmenu_t weapmenu[] = {
   {"Return to Main Menu", PMENU_ALIGN_LEFT, NULL, CreditsReturnToMain},
   {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
   //AQ2:TNG END
-  {"Use [ and ] to move cursor", PMENU_ALIGN_LEFT, NULL, NULL},
+  {"Use arrows to move cursor", PMENU_ALIGN_LEFT, NULL, NULL},
   {"ENTER to select", PMENU_ALIGN_LEFT, NULL, NULL},
   {"TAB to exit menu", PMENU_ALIGN_LEFT, NULL, NULL},
   {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
@@ -883,7 +949,26 @@ pmenu_t itemmenu[] = {
   {"Random Item", PMENU_ALIGN_LEFT, NULL, SelectRandomItem},
   //AQ2:TNG end adding itm_flags
   {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
-  {"Use [ and ] to move cursor", PMENU_ALIGN_LEFT, NULL, NULL},
+  {"Use arrows to move cursor", PMENU_ALIGN_LEFT, NULL, NULL},
+  {"ENTER to select", PMENU_ALIGN_LEFT, NULL, NULL},
+  {"TAB to exit menu", PMENU_ALIGN_LEFT, NULL, NULL},
+  {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
+  {"v" VERSION, PMENU_ALIGN_RIGHT, NULL, NULL},
+};
+
+pmenu_t itemkitmenu[] = {
+  {"*" TNG_TITLE, PMENU_ALIGN_CENTER, NULL, NULL},
+  {"\x9D\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9E\x9F", PMENU_ALIGN_CENTER, NULL, NULL},
+  {"Select your Item", PMENU_ALIGN_CENTER, NULL, NULL},
+  {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
+  //AQ2:TNG Igor adding itm_flags
+  {KEV_NAME, PMENU_ALIGN_LEFT, NULL, NULL},	// "Kevlar Vest", SelectItem1
+  {C_KIT_NAME, PMENU_ALIGN_LEFT, NULL, NULL},	// "Commando Kit", SelectKit1
+  {S_KIT_NAME, PMENU_ALIGN_LEFT, NULL, NULL},	// "Stealth Kit", SelectKit2
+  {A_KIT_NAME, PMENU_ALIGN_LEFT, NULL, NULL},	// "Assassin Kit", SelectKit3
+  //AQ2:TNG end adding itm_flags
+  {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
+  {"Use arrows to move cursor", PMENU_ALIGN_LEFT, NULL, NULL},
   {"ENTER to select", PMENU_ALIGN_LEFT, NULL, NULL},
   {"TAB to exit menu", PMENU_ALIGN_LEFT, NULL, NULL},
   {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
@@ -902,12 +987,47 @@ pmenu_t randmenu[] = {
   {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
   {"Return to Main Menu", PMENU_ALIGN_LEFT, NULL, CreditsReturnToMain},
   {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
-  {"Use [ and ] to move cursor", PMENU_ALIGN_LEFT, NULL, NULL},
+  {"Use arrows to move cursor", PMENU_ALIGN_LEFT, NULL, NULL},
   {"ENTER to select", PMENU_ALIGN_LEFT, NULL, NULL},
   {"TAB to exit menu", PMENU_ALIGN_LEFT, NULL, NULL},
   {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
   {"v" VERSION, PMENU_ALIGN_RIGHT, NULL, NULL},
 };
+
+/*
+PaTMaN's JMOD
+*/
+void ToggleLaser(edict_t *ent, pmenu_t *p)
+{
+	Cmd_Toggle_f(ent, "laser");
+}
+
+void ToggleSlippers(edict_t *ent, pmenu_t *p)
+{
+	//strcpy(gi.args(),"togglecode slippers");
+	Cmd_Toggle_f(ent, "slippers");
+}
+
+
+//PaTMaN - Item Menu
+pmenu_t pmitemmenu[] = {
+  {"*Item Menu                  (command binds)",		PMENU_ALIGN_LEFT,	NULL, NULL					},
+  { "-----------------------------------------------",	PMENU_ALIGN_LEFT,	NULL, NULL					},
+  { "Laser Sight                (jmod laser)",			PMENU_ALIGN_LEFT,	NULL, ToggleLaser			},
+  { "Slippers                   (jmod slippers)",		PMENU_ALIGN_LEFT,	NULL, ToggleSlippers		},
+  { NULL,												PMENU_ALIGN_LEFT,	NULL, NULL					},
+  { "Respawn to Closest Spawn   (jmod spawnc)",			PMENU_ALIGN_LEFT,	NULL, Cmd_GotoPC_f   		},
+  { "Respawn to Random Spawn    (jmod spawnp)",			PMENU_ALIGN_LEFT,	NULL, Cmd_GotoP_f   		},
+
+};
+
+
+void OpenPMItemMenu(edict_t *ent)
+{
+	PMenu_Open(ent, pmitemmenu, 2, sizeof(pmitemmenu) / sizeof(pmenu_t));
+}
+
+//End PaTMaN's jmod add
 
 //AQ2:TNG - slicer
 void VotingMenu (edict_t * ent, pmenu_t * p)
@@ -937,7 +1057,7 @@ pmenu_t joinmenu[] = {
   {"MOTD", PMENU_ALIGN_LEFT, NULL, ReprintMOTD},
   {"Credits", PMENU_ALIGN_LEFT, NULL, CreditsMenu},
   {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
-  {"Use [ and ] to move cursor", PMENU_ALIGN_LEFT, NULL, NULL},
+  {"Use arrows to move cursor", PMENU_ALIGN_LEFT, NULL, NULL},
   {"ENTER to select", PMENU_ALIGN_LEFT, NULL, NULL},
   {"TAB to exit menu", PMENU_ALIGN_LEFT, NULL, NULL},
   {NULL, PMENU_ALIGN_LEFT, NULL, NULL},
@@ -1293,7 +1413,7 @@ void ReturnToMain (edict_t * ent, pmenu_t * p)
 	OpenJoinMenu (ent);
 }
 
-char *menu_itemnames[ITEM_MAX_NUM] = {
+char *menu_itemnames[KIT_MAX_NUM] = {
 	"",
 	MK23_NAME,
 	MP5_NAME,
@@ -1304,15 +1424,26 @@ char *menu_itemnames[ITEM_MAX_NUM] = {
 	"Akimbo Pistols",
 	"Combat Knives",
 	GRENADE_NAME,
-
 	SIL_NAME,
 	SLIP_NAME,
 	BAND_NAME,
 	KEV_NAME,
 	"Laser Sight",
 	HELM_NAME,
-	""
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	C_KIT_NAME_FULL,
+	S_KIT_NAME_FULL,
+	A_KIT_NAME_FULL,
 };
+
 
 typedef struct menuentry_s
 {
@@ -1356,6 +1487,39 @@ void OpenItemMenu (edict_t * ent)
 			PMenu_Open(ent, itemmenu, 4, sizeof(itemmenu) / sizeof(pmenu_t));
 			return;
 		}
+	}
+
+	PMenu_Close(ent);
+}
+
+void OpenItemKitMenu (edict_t * ent)
+{
+	menuentry_t *kitmenuEntry, kit_menu_items[] = {
+		{ KEV_NUM, SelectItem1 },
+		{ C_KIT_NUM, SelectKit1 },
+		{ S_KIT_NUM, SelectKit2 },
+		{ A_KIT_NUM, SelectKit3 }
+		};
+	int i, count, pos = 4;
+
+	count = sizeof( kit_menu_items ) / sizeof( kit_menu_items[0] );
+
+	for (kitmenuEntry = kit_menu_items, i = 0; i < count; i++, kitmenuEntry++) {
+		itemkitmenu[pos].text = menu_itemnames[kitmenuEntry->itemNum];
+		itemkitmenu[pos].SelectFunc = kitmenuEntry->SelectFunc;
+		pos++;
+	}
+
+	if ( pos > 4 )
+	{
+		for (; pos < 10; pos++)
+		{
+			itemkitmenu[pos].text = NULL;
+			itemkitmenu[pos].SelectFunc = NULL;
+		}
+
+		PMenu_Open(ent, itemkitmenu, 4, sizeof(itemkitmenu) / sizeof(pmenu_t));
+		return;
 	}
 
 	PMenu_Close(ent);
@@ -1406,7 +1570,11 @@ void OpenWeaponMenu (edict_t * ent)
 		}
 	}
 
-	OpenItemMenu(ent);
+	if(!item_kit_mode->value){
+		OpenItemMenu(ent);
+	} else {
+		OpenItemKitMenu(ent);
+	}
 }
 
 // AQ2:TNG Deathwatch - Updated this for the new menu
@@ -1613,6 +1781,7 @@ void ResetScores (qboolean playerScores)
 		ent->client->resp.damage_dealt = 0;
 		ent->client->resp.streakHS = 0;
 		ent->client->resp.streakKills = 0;
+		ent->client->resp.roundStreakKills = 0;
 		ent->client->resp.ctf_caps = 0;
 		ent->client->resp.ctf_capstreak = 0;
 		ent->client->resp.deaths = 0;
@@ -2243,7 +2412,7 @@ int WonGame (int winner)
 	if (use_killcounts->value){
 		for (i = 0; i < game.maxclients; i++) {
 			cl_ent = g_edicts + 1 + i;
-			cl_ent->client->resp.streakKills = 0;
+			cl_ent->client->resp.roundStreakKills = 0;
 		}
 	}
 

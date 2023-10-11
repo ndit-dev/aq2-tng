@@ -608,6 +608,7 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 {
 	int mod;
 	int loc;
+	int chosenItem = 0;
 	int gametime = 0;
 	int roundNum;
 	int eventtime;
@@ -687,6 +688,29 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 		sprintf(vloc, "%5.0f,%5.0f,%5.0f", self->s.origin[0], self->s.origin[1], self->s.origin[2]);
 		sprintf(kloc, "%5.0f,%5.0f,%5.0f", attacker->s.origin[0], attacker->s.origin[1], attacker->s.origin[2]);
 
+		// Item identifier, taking item kit mode into account
+		if (!item_kit_mode->value) {
+			chosenItem = attacker->client->pers.chosenItem->typeNum;
+		} else {
+			if (attacker->client->pers.chosenItem->typeNum == KEV_NUM) {
+				chosenItem = KEV_NUM;
+			} else {
+				// Commando Kit
+				if (attacker->client->pers.chosenItem->typeNum == BAND_NUM &&
+					attacker->client->pers.chosenItem2->typeNum == HELM_NUM ) {
+						chosenItem = C_KIT_NUM;
+				// Stealth Kit
+				} else if (attacker->client->pers.chosenItem->typeNum == SLIP_NUM &&
+						attacker->client->pers.chosenItem2->typeNum == SIL_NUM ) {
+						chosenItem = S_KIT_NUM;
+				// Assassin Kit
+				} else if (attacker->client->pers.chosenItem->typeNum == LASER_NUM &&
+						attacker->client->pers.chosenItem2->typeNum == SIL_NUM ) {
+						chosenItem = A_KIT_NUM;	
+				}
+			}
+		}
+
 		Com_sprintf(
 			msg, sizeof(msg),
 			"{\"frag\":{\"sid\":\"%s\",\"mid\":\"%s\",\"v\":\"%s\",\"vn\":\"%s\",\"vi\":\"%s\",\"vt\":%i,\"vl\":%i,\"k\":\"%s\",\"kn\":\"%s\",\"ki\":\"%s\",\"kt\":%i,\"kl\":%i,\"w\":%i,\"i\":%i,\"l\":%i,\"ks\":%i,\"gm\":%i,\"gmf\":%i,\"ttk\":%d,\"t\":%d,\"gt\":%d,\"m\":\"%s\",\"r\":%i,\"vd\":\"%s\",\"kd\":\"%s\",\"vloc\":\"%s\",\"kloc\":\"%s\"}}\n",
@@ -703,7 +727,7 @@ void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker)
 			kt,
 			kl,
 			mod,
-			attacker->client->pers.chosenItem->typeNum,
+			chosenItem,
 			loc,
 			attacker->client->resp.streakKills + 1,
 			Gamemode(),
@@ -875,7 +899,7 @@ void LogMatch()
 LogAward
 =================
 */
-void LogAward(char* steamid, char* discordid, int award)
+void LogAward(edict_t *ent, int award)
 {
 	int gametime = 0;
 	int eventtime;
@@ -899,9 +923,9 @@ void LogAward(char* steamid, char* discordid, int award)
 		eventtime,
 		gametime,
 		award,
-		steamid,
+		ent->client->pers.steamid,
 		mod,
-		discordid
+		ent->client->pers.discordid
 	);
 	Write_Stats(msg);
 }
@@ -940,16 +964,13 @@ void LogEndMatchStats()
 				fpm = (double)cl->resp.score * 60.0 / (double)secs;
 			else
 				fpm = 0.0;
-				
-		Q_strncpyz(steamid, Info_ValueForKey(cl->pers.userinfo, "steamid"), sizeof(steamid));
-		Q_strncpyz(discordid, Info_ValueForKey(cl->pers.userinfo, "cl_discord_id"), sizeof(discordid));
 
 		Com_sprintf(
 			msg, sizeof(msg),
 			"{\"matchstats\":{\"sid\":\"%s\",\"mid\":\"%s\",\"s\":\"%s\",\"sc\":%i,\"sh\":%i,\"a\":%f,\"f\":%f,\"dd\":%i,\"d\":%i,\"k\":%i,\"ctfc\":%i,\"ctfcs\":%i,\"ht\":%i,\"tk\":%i,\"t\":%i,\"hks\":%i,\"hhs\":%i,\"dis\":\"%s\",\"pt\":%i,\"hlh\":%i,\"hlc\":%i,\"hls\":%i,\"hll\":%i,\"hlkh\":%i,\"hlkv\":%i,\"hln\":%i,\"gss1\":%i,\"gss2\":%i,\"gss3\":%i,\"gss4\":%i,\"gss5\":%i,\"gss6\":%i,\"gss7\":%i,\"gss8\":%i,\"gss9\":%i,\"gss13\":%i,\"gss14\":%i,\"gss35\":%i,\"gsh1\":%i,\"gsh2\":%i,\"gsh3\":%i,\"gsh4\":%i,\"gsh5\":%i,\"gsh6\":%i,\"gsh7\":%i,\"gsh8\":%i,\"gsh9\":%i,\"gsh13\":%i,\"gsh14\":%i,\"gsh35\":%i,\"gshs1\":%i,\"gshs2\":%i,\"gshs3\":%i,\"gshs4\":%i,\"gshs5\":%i,\"gshs6\":%i,\"gshs7\":%i,\"gshs8\":%i,\"gshs9\":%i,\"gshs13\":%i,\"gshs14\":%i,\"gshs35\":%i,\"gsk1\":%i,\"gsk2\":%i,\"gsk3\":%i,\"gsk4\":%i,\"gsk5\":%i,\"gsk6\":%i,\"gsk7\":%i,\"gsk8\":%i,\"gsk9\":%i,\"gsk13\":%i,\"gsk14\":%i,\"gsk35\":%i,\"gsd1\":%i,\"gsd2\":%i,\"gsd3\":%i,\"gsd4\":%i,\"gsd5\":%i,\"gsd6\":%i,\"gsd7\":%i,\"gsd8\":%i,\"gsd9\":%i,\"gsd13\":%i,\"gsd14\":%i,\"gsd35\":%i}}\n",
 			server_id->string,
 			game.matchid,
-			steamid,
+			cl->pers.steamid,
 			cl->resp.score,
 			shots,
 			accuracy,
@@ -964,7 +985,7 @@ void LogEndMatchStats()
 			cl->resp.team,
 			cl->resp.streakKillsHighest,
 			cl->resp.streakHSHighest,
-			discordid,
+			cl->pers.discordid,
 			secs,
 			cl->resp.hitsLocations[LOC_HDAM],
 			cl->resp.hitsLocations[LOC_CDAM],

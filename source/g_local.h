@@ -583,6 +583,14 @@ bind 6 "use Sniper Rifle"
 #define HELM_NAME    "Kevlar Helmet"
 #define LASER_NAME   "Lasersight"
 
+#define C_KIT_NAME	 "Commando Kit"
+#define S_KIT_NAME	 "Stealth Kit"
+#define A_KIT_NAME	 "Assassin Kit"
+
+#define C_KIT_NAME_FULL	 "Commando Kit (Bandolier + Helm)"
+#define S_KIT_NAME_FULL	 "Stealth Kit (Slippers + Silencer)"
+#define A_KIT_NAME_FULL	 "Assassin Kit (Laser + Silencer)"
+
 #define NO_NUM					0
 
 #define MK23_NUM				1
@@ -615,15 +623,24 @@ bind 6 "use Sniper Rifle"
 
 #define ITEM_MAX_NUM			24
 
+#define C_KIT_NUM				25
+#define S_KIT_NUM				26
+#define A_KIT_NUM				27
+
+#define KIT_MAX_NUM				28
+
 #define WEAPON_COUNT			9
 #define ITEM_COUNT				6
 #define AMMO_COUNT				5
+#define KIT_COUNT               3
 #define WEAPON_FIRST			1
 #define WEAPON_MAX				WEAPON_FIRST+WEAPON_COUNT
 #define ITEM_FIRST				WEAPON_MAX
 #define ITEM_MAX				ITEM_FIRST+ITEM_COUNT
 #define AMMO_FIRST				ITEM_MAX
 #define AMMO_MAX				AMMO_FIRST+AMMO_COUNT
+#define KIT_FIRST				C_KIT_NUM
+#define KIT_MAX					KIT_MAX_NUM
 
 //AQ2:TNG - Igor adding wp_flags/itm_flags
 #define STRINGIFY(x) #x
@@ -956,9 +973,22 @@ extern int sm_meat_index;
 // Game Mode Flags
 #define GMF_NONE 0
 #define GMF_3TEAMS 1
-//#define NEW_MODE 2       // If new game mode flags are created, use 2 for its value first
+//#define GMF_NEW_MODE 2       // If new game mode flags are created, use 2 for its value first
 #define GMF_DARKMATCH 4
 #define GMF_MATCHMODE 8
+
+// Game Mode Names
+#define GMN_TEAMPLAY "Teamplay"
+#define GMN_TEAMDM "TeamDM"
+#define GMN_CTF "CTF"
+#define GMN_TOURNEY "Tourney"
+#define GMN_DEATHMATCH "Deathmatch"
+#define GMN_DOMINATION "Domination"
+#define GMN_JUMP "Jump"
+#define GMN_3TEAMS "3 Teams"
+//#define GMN_NEW_MODE 2       // If new game mode flags are created, use 2 for its value first
+#define GMN_DARKMATCH "Darkmatch"
+#define GMN_MATCHMODE "Matchmode"
 
 extern int meansOfDeath;
 // zucc for hitlocation of death
@@ -1179,6 +1209,7 @@ extern cvar_t *am_botcount;
 extern cvar_t *am_delay;
 extern cvar_t *am_team;
 extern cvar_t *zoom_comp;
+extern cvar_t *item_kit_mode;
 
 #ifdef AQTION_EXTENSION
 extern int (*engine_Client_GetVersion)(edict_t *ent);
@@ -1320,6 +1351,7 @@ void ChangeWeapon (edict_t * ent);
 void PrecacheItems( void );
 void SpawnItem (edict_t * ent, gitem_t * item);
 void Think_Weapon (edict_t * ent);
+void AddItem(edict_t *ent, gitem_t *item);
 qboolean Add_Ammo (edict_t * ent, gitem_t * item, int count);
 void Touch_Item (edict_t * ent, edict_t * other, cplane_t * plane,
 		 csurface_t * surf);
@@ -1352,6 +1384,7 @@ qboolean visible(edict_t *self, edict_t *other, int mask);
 qboolean ai_visible( edict_t *self, edict_t *other );
 qboolean infront( edict_t *self, edict_t *other );
 #endif
+void disablecvar(cvar_t *cvar, char *msg);
 
 // Re-enabled for bots
 float *tv (float x, float y, float z);
@@ -1544,7 +1577,7 @@ void StatBotCheck(void);
 void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker);
 void LogWorldKill(edict_t *self);
 void LogMatch();
-void LogAward(char* steamid, char* discordid, int award);
+void LogAward(edict_t *ent, int award);
 void LogEndMatchStats();
 #endif
 
@@ -1638,6 +1671,13 @@ typedef struct
 	int irvision;			// ir on or off (only matters if player has ir device, currently bandolier)
 
 	ignorelist_t ignorelist;
+	gitem_t *chosenItem2;		// Support for item kit mode
+
+	#ifdef USE_AQTION
+	char steamid[24];
+	char discordid[24];
+	#endif
+
 }
 client_persistant_t;
 
@@ -1699,6 +1739,7 @@ typedef struct
   int shotsTotal;					//Total number of shots
   int hitsTotal;					//Total number of hits
   int streakKills;					//Kills in a row
+  int roundStreakKills;				//Kills in a row in that round
   int streakHS;						//Headshots in a Row
   int streakKillsHighest;			//Highest kills in a row
   int streakHSHighest;				//Highest headshots in a Row
@@ -1729,6 +1770,10 @@ typedef struct
   int	hud_items[128];
   int	hud_type;
 #endif
+
+  //PaTMaN's jmod
+  int toggle_lca;
+  int toggles;
 
   //char skin[MAX_SKINLEN];
 }
@@ -2216,6 +2261,7 @@ void Cmd_TKOk (edict_t * ent);	// AQ:TNG - JBravo adding tkok
 void Cmd_FF_f( edict_t *ent );
 void Cmd_Time (edict_t * ent);	// AQ:TNG - JBravo adding time
 void Cmd_Roundtimeleft_f(edict_t *ent); // AQ:TNG - DW added roundtimeleft
+void Cmd_Noclip_f(edict_t *ent);
 void DropSpecialWeapon (edict_t * ent);
 void ReadySpecialWeapon (edict_t * ent);
 void DropSpecialItem (edict_t * ent);

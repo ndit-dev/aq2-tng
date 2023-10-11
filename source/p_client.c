@@ -353,17 +353,6 @@ static void FreeClientEdicts(gclient_t *client)
 void Announce_Reward(edict_t *ent, int rewardType){
 	char buf[256];
 
-	#ifdef USE_AQTION
-	char steamid[24];
-	char discordid[24];
-
-	// Gather stat-related info
-	if (stat_logs->value) {
-		Q_strncpyz(steamid, Info_ValueForKey(ent->client->pers.userinfo, "steamid"), sizeof(steamid));
-		Q_strncpyz(discordid, Info_ValueForKey(ent->client->pers.userinfo, "cl_discord_id"), sizeof(discordid));
-	}
-	#endif
-
 	if (rewardType == IMPRESSIVE) {
 		sprintf(buf, "IMPRESSIVE %s!", ent->client->pers.netname);
 		CenterPrintAll(buf);
@@ -378,8 +367,10 @@ void Announce_Reward(edict_t *ent, int rewardType){
 		gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD, gi.soundindex("tng/accuracy.wav"), 1.0, ATTN_NONE, 0.0);
 	}
 
+	#ifdef USE_AQTION
 	if (stat_logs->value)
-		LogAward(steamid, discordid, rewardType);
+		LogAward(ent, rewardType);
+	#endif
 }
 
 void Add_Frag(edict_t * ent, int mod)
@@ -402,6 +393,7 @@ void Add_Frag(edict_t * ent, int mod)
 	if (IS_ALIVE(ent))
 	{
 		ent->client->resp.streakKills++;
+		ent->client->resp.roundStreakKills++;
 		if (ent->client->resp.streakKills > ent->client->resp.streakKillsHighest)
 			ent->client->resp.streakKillsHighest = ent->client->resp.streakKills;
 
@@ -481,6 +473,11 @@ void Add_Frag(edict_t * ent, int mod)
 
 	// Announce kill streak to player if use_killcounts is enabled on server
 	if (use_killcounts->value) {
+		// Report only killstreak during that round
+		if(ent->client->resp.roundStreakKills)
+			gi.cprintf(ent, PRINT_HIGH, "Kill count: %d\n", ent->client->resp.roundStreakKills);
+	} else {
+		// Report total killstreak across previous rounds
 		if(ent->client->resp.streakKills)
 			gi.cprintf(ent, PRINT_HIGH, "Kill count: %d\n", ent->client->resp.streakKills);
 	}
@@ -494,6 +491,7 @@ void Subtract_Frag(edict_t * ent)
 	ent->client->resp.kills--;
 	ent->client->resp.score--;
 	ent->client->resp.streakKills = 0;
+	ent->client->resp.roundStreakKills = 0;
 	if(teamdm->value)
 		teams[ent->client->resp.team].score--;
 }
@@ -504,8 +502,10 @@ void Add_Death( edict_t *ent, qboolean end_streak )
 		return;
 
 	ent->client->resp.deaths ++;
-	if( end_streak )
+	if( end_streak ) {
 		ent->client->resp.streakKills = 0;
+		ent->client->resp.roundStreakKills = 0;
+	}
 }
 
 // FRIENDLY FIRE functions
@@ -1755,11 +1755,12 @@ void SelectSpawnPoint(edict_t * ent, vec3_t origin, vec3_t angles)
 		spot = SelectCTFSpawnPoint(ent);
 	else if (dom->value)
 		spot = SelectDeathmatchSpawnPoint();
-	else if (!(gameSettings & GS_DEATHMATCH) && ent->client->resp.team && !in_warmup) {
+	else if (!(gameSettings & GS_DEATHMATCH) && ent->client->resp.team && !in_warmup)
 		spot = SelectTeamplaySpawnPoint(ent);
-	} else {
+	else if (jump->value)
+		spot = SelectFarthestDeathmatchSpawnPoint();
+	else
 		spot = SelectDeathmatchSpawnPoint();
-	}
 
 	// find a single player start spot
 	if (!spot) {
@@ -2146,11 +2147,16 @@ void EquipClient(edict_t * ent)
 		break;
 	}
 
+	memset(&etemp, 0, sizeof(etemp));
 	if (client->pers.chosenItem) {
-		memset(&etemp, 0, sizeof(etemp));
 		etemp.item = client->pers.chosenItem;
 		Pickup_Special(&etemp, ent);
 	}
+	if (item_kit_mode->value && client->pers.chosenItem2){
+		client->inventory[ITEM_INDEX(client->pers.chosenItem2)] = 1;
+		client->unique_item_total++;
+	}
+
 }
 
 // Igor[Rock] start
@@ -3048,6 +3054,15 @@ qboolean ClientConnect(edict_t * ent, char *userinfo)
 	Q_strncpyz(ent->client->pers.ip, ipaddr_buf, sizeof(ent->client->pers.ip));
 	Q_strncpyz(ent->client->pers.userinfo, userinfo, sizeof(ent->client->pers.userinfo));
 
+	#ifdef USE_AQTION
+	value = Info_ValueForKey(userinfo, "steamid");
+	if (*value)
+		Q_strncpyz(ent->client->pers.steamid, value, sizeof(ent->client->pers.steamid));
+	value = Info_ValueForKey(userinfo, "discordid");
+	if (*value)
+		Q_strncpyz(ent->client->pers.discordid, value, sizeof(ent->client->pers.discordid));
+	#endif
+
 	if (game.serverfeatures & GMF_MVDSPEC) {
 		value = Info_ValueForKey(userinfo, "mvdspec");
 		if (*value) {
@@ -3547,6 +3562,14 @@ void ClientBeginServerFrame(edict_t * ent)
 	if (sv_antilag->value) // if sv_antilag is enabled, we want to track our player position for later reference
 		antilag_update(ent);
 
+	//PaTMaN's jmod
+	if(jump->value) {
+		if ((client->resp.toggle_lca) && (client->pers.spectator))
+			client->resp.toggle_lca = 0;
+		else if (client->resp.toggle_lca)
+			Cmd_PMLCA_f(ent);
+	}
+
 #ifdef AQTION_EXTENSION
 	// resync pm_timestamp so all limps are roughly synchronous, to try to maintain original behavior
 	unsigned short world_timestamp = (int)(level.time * 1000) % 60000;
@@ -3690,7 +3713,8 @@ void ClientBeginServerFrame(edict_t * ent)
 
 		if( (ppl_idletime->value > 0) && idleframes && (idleframes % (int)(ppl_idletime->value * HZ) == 0) )
 			//plays a random sound/insane sound, insane1-9.wav
-			gi.sound( ent, CHAN_VOICE, gi.soundindex(va( "insane/insane%i.wav", rand() % 9 + 1 )), 1, ATTN_NORM, 0 );
+			if (!jump->value) // Don't play insane sounds in jmod
+				gi.sound( ent, CHAN_VOICE, gi.soundindex(va( "insane/insane%i.wav", rand() % 9 + 1 )), 1, ATTN_NORM, 0 );
 
 		if( (sv_idleremove->value > 0) && (idleframes > (sv_idleremove->value * HZ)) && client->resp.team )
 		{

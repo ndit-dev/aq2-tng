@@ -649,6 +649,15 @@ Features
   warmup_bots [#] - server cvar, set in number of bots to add.  This adds this many bots to the warmup phase of matchmode.
   Set to '0' to disable warmup_bots, suggested value for usage is '4' to '6'.
 
+* Item Kit Mode
+  item_kit_mode [0/1] - server cvar, default 0.  Works in any mode where you choose a weapon (GS_WEAPONCHOOSE), it combines items into kits:
+    * Commando Kit: Bandolier + Kevlar Helm
+    * Stealth Kit: Slippers + Silencer
+    * Assassin Kit: Laser Sight + Silencer
+  Players may drop the items anytime (using `drop item`) but you can only pick one up at a time, assuming the server doesn't allow for more
+  On player entity death, both items will drop.  LTK bots do not use kits, they will retain their normal behavior.
+  e_enhancedSlippers settings are honored, boosting the effectiveness of the Stealth Kit even more
+
 --------------------------------------------------------------------------------------------------------------------
 Contact Information
   If you wish to contact the TNG team, to report a bug, suggest a new feature, or offer JBravo your
