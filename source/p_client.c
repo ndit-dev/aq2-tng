@@ -1780,6 +1780,19 @@ void SelectSpawnPoint(edict_t * ent, vec3_t origin, vec3_t angles)
 		if (!spot) {
 			if (!game.spawnpoint[0]) {	// there wasn't a spawnpoint without a target, so use any
 				spot = G_Find(spot, FOFS(classname), "info_player_start");
+				gi.dprintf("Trying info_player_start\n");
+				if (!spot) {
+					spot = G_Find(spot, FOFS(classname), "info_player_coop");
+					gi.dprintf("Trying info_player_coop\n");
+				}
+				if (!spot) {
+					spot = G_Find(spot, FOFS(classname), "info_player_team1");
+					gi.dprintf("Trying info_player_team1\n");
+				}
+				if (!spot) {
+					spot = G_Find(spot, FOFS(classname), "info_player_team2");
+					gi.dprintf("Trying info_player_team2\n");
+				}
 			}
 			if (!spot) {
 				gi.error("Couldn't find spawn point %s\n", game.spawnpoint);
