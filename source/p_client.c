@@ -3213,6 +3213,10 @@ void CreateGhost(edict_t * ent)
 
 	strcpy(ghost->ip, ent->client->pers.ip);
 	strcpy(ghost->netname, ent->client->pers.netname);
+	#if USE_AQTION
+	strcpy(ghost->steamid, ent->client->pers.steamid);
+	strcpy(ghost->discordid, ent->client->pers.discordid);
+	#endif
 
 	ghost->enterframe = ent->client->resp.enterframe;
 	ghost->disconnect_frame = level.framenum;
@@ -3223,6 +3227,10 @@ void CreateGhost(edict_t * ent)
 	ghost->kills = ent->client->resp.kills;
 	ghost->deaths = ent->client->resp.deaths;
 	ghost->ctf_caps = ent->client->resp.ctf_caps;
+	ghost->ctf_capstreak = ent->client->resp.ctf_capstreak;
+	ghost->team_kills = ent->client->resp.team_kills;
+	ghost->streakKillsHighest = ent->client->resp.streakKillsHighest;
+	ghost->streakHSHighest = ent->client->resp.streakHSHighest;
 
 	// Teamplay variables
 	if (teamplay->value) {

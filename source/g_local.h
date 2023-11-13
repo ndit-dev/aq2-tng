@@ -2234,6 +2234,16 @@ typedef struct
 	int team;
 	gitem_t *weapon;
 	gitem_t *item;
+	// Extended stats
+	#ifdef USE_AQTION
+	char steamid[24];
+	char discordid[24];
+	#endif
+	int ctf_capstreak;
+	int team_kills;
+	int streakKillsHighest;
+	int streakHSHighest;
+
 }
 gghost_t;
 

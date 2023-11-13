@@ -1266,6 +1266,10 @@ void Cmd_Ghost_f(edict_t * ent)
 	ent->client->resp.deaths = ghost->deaths;
 	ent->client->resp.damage_dealt = ghost->damage_dealt;
 	ent->client->resp.ctf_caps = ghost->ctf_caps;
+	ent->client->resp.ctf_capstreak = ghost->ctf_capstreak;
+	ent->client->resp.team_kills = ghost->team_kills;
+	ent->client->resp.streakKillsHighest = ghost->streakKillsHighest;
+	ent->client->resp.streakHSHighest = ghost->streakHSHighest;
 
 	if (teamplay->value && ghost->team && ghost->team != ent->client->resp.team)
 			JoinTeam( ent, ghost->team, 1 );
