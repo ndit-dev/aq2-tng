@@ -1740,6 +1740,62 @@ edict_t *SelectDeathmatchSpawnPoint(void)
 }
 
 /*
+UncommonSpawnPoint
+
+This is used when a map does not have the appropriate spawn points for the
+game mode being played.  This is used to prevent server crashes if a player
+cannot spawn.
+*/
+
+edict_t *UncommonSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles)
+{
+	edict_t *spot = NULL;
+
+	if (!spot) {
+		gi.dprintf("Warning: failed to find deathmatch spawn point, unexpected spawns will be utilized\n");
+
+		/*
+		Try all possible classes of spawn points, and use DM weapon spawns as a last resort.
+		*/
+		char* spawnpoints[] = {
+			"info_player_start",
+			"info_player_coop",
+			"info_player_team1",
+			"info_player_team2",
+			"info_player_team3",
+			"weapon_bfg",
+			"weapon_chaingun",
+			"weapon_machinegun",
+			"weapon_rocketlauncher",
+			"weapon_shotgun",
+			"weapon_supershotgun",
+			"weapon_railgun"
+		};
+		size_t num_spawnpoints = sizeof(spawnpoints) / sizeof(spawnpoints[0]);
+
+		for (size_t i = 0; i < num_spawnpoints; ++i) {
+			while ((spot = G_Find(spot, FOFS(classname), spawnpoints[i])) != NULL) {
+				if (!game.spawnpoint[0] && !spot->targetname)
+					break;
+
+				if (!game.spawnpoint[0] || !spot->targetname)
+					continue;
+
+				if (Q_stricmp(game.spawnpoint, spot->targetname) == 0)
+					break;
+			}
+
+			if (spot) {
+				gi.dprintf("Warning: Uncommon spawn point of class %s used for %s\n", spawnpoints[i], ent->client->pers.netname);
+				break;
+			}
+		}
+	}
+
+	return spot;
+}
+
+/*
 ===========
 SelectSpawnPoint
 
@@ -1762,41 +1818,15 @@ void SelectSpawnPoint(edict_t * ent, vec3_t origin, vec3_t angles)
 	else
 		spot = SelectDeathmatchSpawnPoint();
 
-	// find a single player start spot
+	// desperation mode, find a spawnpoint or the server will crash
 	if (!spot) {
-		gi.dprintf("Warning: failed to find deathmatch spawn point\n");
-
-		while ((spot = G_Find(spot, FOFS(classname), "info_player_start")) != NULL) {
-			if (!game.spawnpoint[0] && !spot->targetname)
-				break;
-
-			if (!game.spawnpoint[0] || !spot->targetname)
-				continue;
-
-			if (Q_stricmp(game.spawnpoint, spot->targetname) == 0)
-				break;
-		}
-
-		if (!spot) {
-			if (!game.spawnpoint[0]) {	// there wasn't a spawnpoint without a target, so use any
-				spot = G_Find(spot, FOFS(classname), "info_player_start");
-				if (!spot) {
-					spot = G_Find(spot, FOFS(classname), "info_player_coop");
-				}
-				if (!spot) {
-					spot = G_Find(spot, FOFS(classname), "info_player_team1");
-				}
-				if (!spot) {
-					spot = G_Find(spot, FOFS(classname), "info_player_team2");
-				}
-			}
-			if (!spot) {
-				gi.error("Couldn't find spawn point %s\n", game.spawnpoint);
-				return;
-			}
-		}
+		spot = UncommonSpawnPoint(ent, origin, angles);
 	}
 
+	// If still no spot, then this map is just not playable, sorry
+	if (!spot)
+		Sys_Error("Couldn't find spawn point, map is not playable\n");
+			
 	VectorCopy(spot->s.origin, origin);
 	origin[2] += 9;
 	VectorCopy(spot->s.angles, angles);
