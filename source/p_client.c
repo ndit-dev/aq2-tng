@@ -1641,6 +1641,44 @@ float PlayersRangeFromSpot(edict_t * spot)
 
 /*
 ================
+SelectAnyDeathmatchSpawnPoint
+
+I just need a spawnpoint, any spawnpoint...
+================
+*/
+edict_t *SelectAnyDeathmatchSpawnPoint(void)
+{
+    edict_t *spot = NULL;
+    edict_t **spots = NULL;
+    int count = 0;
+
+	gi.dprintf("Warning: too few spawnpoints in this map\n");
+
+    while ((spot = G_Find(spot, FOFS(classname), "info_player_deathmatch")) != NULL) {
+        spots = realloc(spots, sizeof(*spots) * (count + 1));
+        if (!spots) {
+            // Handle memory allocation error
+            return NULL;
+        }
+        spots[count++] = spot;
+    }
+
+    if (count == 0) {
+        // No DM spawns found, womp womp
+        return NULL;
+    }
+
+    // Select a random spot
+    spot = spots[rand() % count];
+
+    // Free the spots array
+    free(spots);
+
+    return spot;
+}
+
+/*
+================
 SelectRandomDeathmatchSpawnPoint
 
 go to a random point, but NOT the two points closest
@@ -1733,10 +1771,14 @@ edict_t *SelectFarthestDeathmatchSpawnPoint(void)
 
 edict_t *SelectDeathmatchSpawnPoint(void)
 {
+	edict_t *spot = NULL;
+
 	if (DMFLAGS(DF_SPAWN_FARTHEST))
-		return SelectFarthestDeathmatchSpawnPoint();
+		spot = SelectFarthestDeathmatchSpawnPoint();
 	else
-		return SelectRandomDeathmatchSpawnPoint();
+		spot = SelectRandomDeathmatchSpawnPoint();
+
+	return spot;
 }
 
 /*
@@ -1747,7 +1789,7 @@ game mode being played.  This is used to prevent server crashes if a player
 cannot spawn.
 */
 
-edict_t *UncommonSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles)
+edict_t *UncommonSpawnPoint(void)
 {
 	edict_t *spot = NULL;
 
@@ -1758,6 +1800,7 @@ edict_t *UncommonSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles)
 		Try all possible classes of spawn points, and use DM weapon spawns as a last resort.
 		*/
 		char* spawnpoints[] = {
+			"info_player_deathmatch",
 			"info_player_start",
 			"info_player_coop",
 			"info_player_team1",
@@ -1785,10 +1828,13 @@ edict_t *UncommonSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles)
 					break;
 			}
 
+			#ifdef _DEBUG
 			if (spot) {
-				gi.dprintf("Warning: Uncommon spawn point of class %s used for %s\n", spawnpoints[i], ent->client->pers.netname);
+				gi.dprintf("Warning: Uncommon spawn point of class %s\n", spawnpoints[i]);
+				gi.dprintf("Warning: if you are the map author, you need to be utilizing info_player_deathmatch or info_player_team entities\n");
 				break;
 			}
+			#endif
 		}
 	}
 
@@ -1819,9 +1865,13 @@ void SelectSpawnPoint(edict_t * ent, vec3_t origin, vec3_t angles)
 		spot = SelectDeathmatchSpawnPoint();
 
 	// desperation mode, find a spawnpoint or the server will crash
-	if (!spot) {
-		spot = UncommonSpawnPoint(ent, origin, angles);
-	}
+	if (!spot)
+		spot = UncommonSpawnPoint();
+
+	// Last resort, just choose any info_player_deathmatch even if it turns into
+	// a messy telefrag nightmare
+	if (!spot)
+		spot = SelectAnyDeathmatchSpawnPoint();
 
 	// If still no spot, then this map is just not playable, sorry
 	if (!spot)
