@@ -2230,7 +2230,7 @@ typedef struct
 	int shotsTotal;
 	int hitsTotal;
 	int hitsLocations[LOC_MAX];
-	gunStats_t gunstats[MAX_GUNSTAT];
+	gunStats_t gunstats[MOD_TOTAL];
 	int team;
 	gitem_t *weapon;
 	gitem_t *item;

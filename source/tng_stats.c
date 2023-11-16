@@ -1061,8 +1061,6 @@ void LogEndMatchStats()
 	int i;
 	gclient_t *sortedClients[MAX_CLIENTS], *cl;
 	int totalClients;
-	char steamid[24];
-	char discordid[24];
 	totalClients = G_SortedClients(sortedClients);
 
 	// Check if there's an AI bot in the game, if so, do nothing
@@ -1073,6 +1071,9 @@ void LogEndMatchStats()
 	// Write out the stats for each client still connected to the server
 	for (i = 0; i < totalClients; i++){
 		cl = sortedClients[i];
+
+		gi.dprintf("Writing real stats for %s\n", cl->pers.netname);
+
 		WriteLogEndMatchStats(cl);
 	}
 
@@ -1085,10 +1086,18 @@ void LogEndMatchStats()
 		edict_t *ent = NULL;
 		gclient_t *ghlient = NULL;
 		
+		// Initialize the ghost client
 		ent = G_Spawn();
+		ent->client = gi.TagMalloc(sizeof(gclient_t), TAG_LEVEL);
+			if (!ent->client) {
+				gi.error("Couldn't allocate client memory\n");
+				return;
+			}
 		ghlient = ent->client;
 
-		for (i = 0, ghost = ghost_players; i < num_ghost_players; i++) {
+		for (i = 0, ghost = ghost_players; i < num_ghost_players; i++, ghost++) {
+			gi.dprintf("I found %i ghosts, Writing ghost stats for %s\n", num_ghost_players, ghost->netname);
+
 			strcpy(ghlient->pers.ip, ghost->ip);
 			strcpy(ghlient->pers.netname, ghost->netname);
 			strcpy(ghlient->pers.steamid, ghost->steamid);
@@ -1121,14 +1130,10 @@ void LogEndMatchStats()
 
 			memcpy(ghlient->resp.hitsLocations, ghost->hitsLocations, sizeof(ghlient->resp.hitsLocations));
 			memcpy(ghlient->resp.gunstats, ghost->gunstats, sizeof(ghlient->resp.gunstats));
-		}
 
-		//Remove it from the list
-		for (i += 1; i < num_ghost_players; i++) {
-			ghost_players[i - 1] = ghost_players[i];
-		}
-		num_ghost_players--;
 		WriteLogEndMatchStats(ghlient);
+		}
+		num_ghost_players = 0;
 	}
 }
 #endif
