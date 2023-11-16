@@ -1090,7 +1090,7 @@ void LogEndMatchStats()
 		ent = G_Spawn();
 		ent->client = gi.TagMalloc(sizeof(gclient_t), TAG_LEVEL);
 			if (!ent->client) {
-				gi.error("Couldn't allocate client memory\n");
+				gi.error("%s: Couldn't allocate client memory\n", __FUNCTION__);
 				return;
 			}
 		ghlient = ent->client;
@@ -1098,6 +1098,7 @@ void LogEndMatchStats()
 		for (i = 0, ghost = ghost_players; i < num_ghost_players; i++, ghost++) {
 			//gi.dprintf("I found %i ghosts, Writing ghost stats for %s\n", num_ghost_players, ghost->netname);
 
+			// Copy ghost data to this dummy entity
 			strcpy(ghlient->pers.ip, ghost->ip);
 			strcpy(ghlient->pers.netname, ghost->netname);
 			strcpy(ghlient->pers.steamid, ghost->steamid);
@@ -1113,26 +1114,19 @@ void LogEndMatchStats()
 			ghlient->resp.team_kills = ghost->team_kills;
 			ghlient->resp.streakKillsHighest = ghost->streakKillsHighest;
 			ghlient->resp.streakHSHighest = ghost->streakHSHighest;
+			ghlient->resp.shotsTotal = ghost->shotsTotal;
+			ghlient->resp.hitsTotal = ghost->hitsTotal;
 
 			if (teamplay->value && ghost->team)
 				ghlient->resp.team = ghost->team;
 
-			if (gameSettings & GS_WEAPONCHOOSE) {
-				if (ghost->weapon)
-					ghlient->pers.chosenWeapon = ghost->weapon;
-
-				if (ghost->item)
-					ghlient->pers.chosenItem = ghost->item;
-			}
-
-			ghlient->resp.shotsTotal = ghost->shotsTotal;
-			ghlient->resp.hitsTotal = ghost->hitsTotal;
-
+			// Copy all gunstats and hit locations to this dummy entity
 			memcpy(ghlient->resp.hitsLocations, ghost->hitsLocations, sizeof(ghlient->resp.hitsLocations));
 			memcpy(ghlient->resp.gunstats, ghost->gunstats, sizeof(ghlient->resp.gunstats));
 
 		WriteLogEndMatchStats(ghlient);
 		}
+		// Loop is over, set this to zero
 		num_ghost_players = 0;
 	}
 }
