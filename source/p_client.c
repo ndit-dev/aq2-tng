@@ -1815,8 +1815,8 @@ edict_t *UncommonSpawnPoint(void)
 			"weapon_railgun"
 		};
 		size_t num_spawnpoints = sizeof(spawnpoints) / sizeof(spawnpoints[0]);
-
-		for (size_t i = 0; i < num_spawnpoints; ++i) {
+		int i;
+		for (i = 0; i < num_spawnpoints; ++i) {
 			while ((spot = G_Find(spot, FOFS(classname), spawnpoints[i])) != NULL) {
 				if (!game.spawnpoint[0] && !spot->targetname)
 					break;
