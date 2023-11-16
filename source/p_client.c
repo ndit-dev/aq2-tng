@@ -1800,12 +1800,12 @@ edict_t *UncommonSpawnPoint(void)
 		Try all possible classes of spawn points, and use DM weapon spawns as a last resort.
 		*/
 		char* spawnpoints[] = {
-			"info_player_deathmatch",
 			"info_player_start",
 			"info_player_coop",
 			"info_player_team1",
 			"info_player_team2",
 			"info_player_team3",
+			"info_player_deathmatch",
 			"weapon_bfg",
 			"weapon_chaingun",
 			"weapon_machinegun",
