@@ -367,7 +367,7 @@ void Announce_Reward(edict_t *ent, int rewardType){
 		gi.sound(&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD, gi.soundindex("tng/accuracy.wav"), 1.0, ATTN_NONE, 0.0);
 	}
 
-	#ifdef USE_AQTION
+	#if USE_AQTION
 	if (stat_logs->value)
 		LogAward(ent, rewardType);
 	#endif
@@ -3054,7 +3054,7 @@ qboolean ClientConnect(edict_t * ent, char *userinfo)
 	Q_strncpyz(ent->client->pers.ip, ipaddr_buf, sizeof(ent->client->pers.ip));
 	Q_strncpyz(ent->client->pers.userinfo, userinfo, sizeof(ent->client->pers.userinfo));
 
-	#ifdef USE_AQTION
+	#if USE_AQTION
 	value = Info_ValueForKey(userinfo, "steamid");
 	if (*value)
 		Q_strncpyz(ent->client->pers.steamid, value, sizeof(ent->client->pers.steamid));

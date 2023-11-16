@@ -1573,7 +1573,7 @@ void ProduceShotgunDamageReport(edict_t*);
 
 //tng_stats.c
 void StatBotCheck(void);
-#ifdef USE_AQTION
+#if USE_AQTION
 void LogKill(edict_t *self, edict_t *inflictor, edict_t *attacker);
 void LogWorldKill(edict_t *self);
 void LogMatch();
@@ -1673,7 +1673,7 @@ typedef struct
 	ignorelist_t ignorelist;
 	gitem_t *chosenItem2;		// Support for item kit mode
 
-	#ifdef USE_AQTION
+	#if USE_AQTION
 	char steamid[24];
 	char discordid[24];
 	#endif
@@ -2235,7 +2235,7 @@ typedef struct
 	gitem_t *weapon;
 	gitem_t *item;
 	// Extended stats
-	#ifdef USE_AQTION
+	#if USE_AQTION
 	char steamid[24];
 	char discordid[24];
 	#endif
