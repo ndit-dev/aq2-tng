@@ -1072,7 +1072,7 @@ void LogEndMatchStats()
 	for (i = 0; i < totalClients; i++){
 		cl = sortedClients[i];
 
-		gi.dprintf("Writing real stats for %s\n", cl->pers.netname);
+		//gi.dprintf("Writing real stats for %s\n", cl->pers.netname);
 
 		WriteLogEndMatchStats(cl);
 	}
@@ -1096,7 +1096,7 @@ void LogEndMatchStats()
 		ghlient = ent->client;
 
 		for (i = 0, ghost = ghost_players; i < num_ghost_players; i++, ghost++) {
-			gi.dprintf("I found %i ghosts, Writing ghost stats for %s\n", num_ghost_players, ghost->netname);
+			//gi.dprintf("I found %i ghosts, Writing ghost stats for %s\n", num_ghost_players, ghost->netname);
 
 			strcpy(ghlient->pers.ip, ghost->ip);
 			strcpy(ghlient->pers.netname, ghost->netname);
