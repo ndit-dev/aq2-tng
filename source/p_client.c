@@ -1828,13 +1828,11 @@ edict_t *UncommonSpawnPoint(void)
 					break;
 			}
 
-			#ifdef _DEBUG
 			if (spot) {
 				gi.dprintf("Warning: Uncommon spawn point of class %s\n", spawnpoints[i]);
-				gi.dprintf("Warning: if you are the map author, you need to be utilizing MULTIPLE info_player_deathmatch or info_player_team entities\n");
+				gi.dprintf("**If you are the map author, you need to be utilizing MULTIPLE info_player_deathmatch or info_player_team entities**\n");
 				break;
 			}
-			#endif
 		}
 	}
 
