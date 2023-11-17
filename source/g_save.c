@@ -582,6 +582,7 @@ void InitGame( void )
 	am_team = gi.cvar("am_team", "0", 0);
 	zoom_comp = gi.cvar("zoom_comp", "0", 0);
 	item_kit_mode = gi.cvar("item_kit_mode", "0", CVAR_LATCH);
+	gun_dualmk23_enhance = gi.cvar("gun_dualmk23_enhance", "0", 0);
 
 	// new AQtion Extension cvars
 #ifdef AQTION_EXTENSION
