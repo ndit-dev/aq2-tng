@@ -2922,6 +2922,8 @@ void Dual_Fire(edict_t* ent)
 
 
 			ent->client->weapon_sound = MZ_BLASTER2;  // Becomes MZ_BLASTER.
+			if (gun_dualmk23_enhance->value && INV_AMMO(ent, SIL_NUM))
+				ent->client->weapon_sound |= MZ_SILENCED;
 			PlayWeaponSound(ent);
 		}
 		else
@@ -2994,6 +2996,8 @@ void Dual_Fire(edict_t* ent)
 
 
 	ent->client->weapon_sound = MZ_BLASTER2;  // Becomes MZ_BLASTER.
+	if (gun_dualmk23_enhance->value && INV_AMMO(ent, SIL_NUM))
+		ent->client->weapon_sound |= MZ_SILENCED;
 	PlayWeaponSound(ent);
 }
 
