@@ -162,19 +162,36 @@ void SP_LaserSight(edict_t * self, gitem_t * item)
 		return;
 	}
 	//zucc code to make it be used with the right weapons
-
-	switch (self->client->weapon->typeNum) {
-	case MK23_NUM:
-	case MP5_NUM:
-	case M4_NUM:
-		break;
-	default:
-		// laser is on but we want it off
-		if (lasersight) {
-			G_FreeEdict(lasersight);
-			self->client->lasersight = NULL;
+	// edited to allow laser to be used with dual pistols if enabled -ds
+	if (!gun_dualmk23_enhance->value) {
+		switch (self->client->weapon->typeNum) {
+		case MK23_NUM:
+		case MP5_NUM:
+		case M4_NUM:
+			break;
+		default:
+			// laser is on but we want it off
+			if (lasersight) {
+				G_FreeEdict(lasersight);
+				self->client->lasersight = NULL;
+			}
+			return;
 		}
-		return;
+	} else { // include dualmk23
+		switch (self->client->weapon->typeNum) {
+		case DUAL_NUM:
+		case MK23_NUM:
+		case MP5_NUM:
+		case M4_NUM:
+			break;
+		default:
+			// laser is on but we want it off
+			if (lasersight) {
+				G_FreeEdict(lasersight);
+				self->client->lasersight = NULL;
+			}
+			return;
+		}
 	}
 
 	if (lasersight) { //Lasersight is already on
@@ -794,9 +811,6 @@ void Cmd_Bandage_f(edict_t *ent)
 	}
 
 	qboolean can_use_medkit = (ent->client->medkit > 0) && (ent->health < ent->max_health);
-
-	// No need to bandage if enhanced slippers are enabled and you only have fall damage
-	// but you can still use the medkit to regain health
 
 	// TODO: This breaks the ability for players to jump out of the water, so I am not checking for
 	// this at the moment
