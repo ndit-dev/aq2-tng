@@ -812,12 +812,12 @@ void Cmd_Bandage_f(edict_t *ent)
 
 	qboolean can_use_medkit = (ent->client->medkit > 0) && (ent->health < ent->max_health);
 
-	// No need to bandage if enhanced slippers are enabled and you only have fall damage
-	// but you can still use the medkit to regain health
-	if (ent->client->bleeding == 0 && e_enhancedSlippers->value && INV_AMMO(ent, SLIP_NUM) && ! can_use_medkit){
-		gi.cprintf(ent, PRINT_HIGH, "No need to bandage\n");
-		return;
-	}
+	// TODO: This breaks the ability for players to jump out of the water, so I am not checking for
+	// this at the moment
+	// if (ent->client->bleeding == 0 && e_enhancedSlippers->value && INV_AMMO(ent, SLIP_NUM) && ! can_use_medkit){
+	// 	gi.cprintf(ent, PRINT_HIGH, "Not bleeding: No need to bandage\n");
+	// 	return;
+	// }
 
 	if (ent->client->bleeding == 0 && ent->client->leg_damage == 0 && ! can_use_medkit) {
 		gi.cprintf(ent, PRINT_HIGH, "No need to bandage\n");
@@ -1280,6 +1280,10 @@ void Cmd_Ghost_f(edict_t * ent)
 	ent->client->resp.deaths = ghost->deaths;
 	ent->client->resp.damage_dealt = ghost->damage_dealt;
 	ent->client->resp.ctf_caps = ghost->ctf_caps;
+	ent->client->resp.ctf_capstreak = ghost->ctf_capstreak;
+	ent->client->resp.team_kills = ghost->team_kills;
+	ent->client->resp.streakKillsHighest = ghost->streakKillsHighest;
+	ent->client->resp.streakHSHighest = ghost->streakHSHighest;
 
 	if (teamplay->value && ghost->team && ghost->team != ent->client->resp.team)
 			JoinTeam( ent, ghost->team, 1 );
