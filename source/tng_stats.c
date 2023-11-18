@@ -1128,6 +1128,8 @@ void LogEndMatchStats()
 		}
 		// Loop is over, set this to zero
 		num_ghost_players = 0;
+		// Be free, little dummy entity
+		G_FreeEdict(ent);
 	}
 }
 #endif
