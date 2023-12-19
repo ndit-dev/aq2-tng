@@ -620,8 +620,7 @@ Use_Weapon(edict_t* ent, gitem_t* item)
 
 
 
-edict_t*
-FindSpecWeapSpawn(edict_t* ent)
+edict_t *FindSpecWeapSpawn(edict_t* ent)
 {
 	edict_t* spot = NULL;
 
@@ -643,8 +642,7 @@ FindSpecWeapSpawn(edict_t* ent)
 	return spot;
 }
 
-static void
-SpawnSpecWeap(gitem_t* item, edict_t* spot)
+static void SpawnSpecWeap(gitem_t* item, edict_t* spot)
 {
 	/*        edict_t *ent;
 			vec3_t  forward, right;
@@ -683,41 +681,61 @@ SpawnSpecWeap(gitem_t* item, edict_t* spot)
 	gi.linkentity(spot);
 }
 
-void temp_think_specweap(edict_t* ent)
+void SpecialWeaponRespawnTimer(edict_t* ent)
 {
 	ent->touch = Touch_Item;
 
+	/*
+	G_FreeEdict frees the weapon after the nextthink timer expires
+	Placeholder is used to keep the weapon around for a very long time
+	ThinkSpecWeap is used to respawn the weapon at a different spawn point
+	*/
+
+	// Allweapon setting makes dropped weapons disappear in 1s
 	if (allweapon->value) { // allweapon set
-		ent->nextthink = level.framenum + 1 * HZ;
+		ent->nextthink = eztimer(1);
 		ent->think = G_FreeEdict;
 		return;
 	}
-
+	// Removes weapons more often during warmup (10s)
+	if (in_warmup) {
+		ent->nextthink = eztimer(10);
+		ent->think = G_FreeEdict;
+		return;
+	}
+	// Espionage, CTF and Domination weapons disappear after 30s
+	if (esp->value || dom->value || ctf->value) {
+		ent->nextthink = eztimer(30);
+		ent->think = G_FreeEdict;
+		return;
+	}
+	// Normal teamplay, weapons basically never disappear
 	if (gameSettings & GS_ROUNDBASED) {
-		ent->nextthink = level.framenum + 1000 * HZ;
+		ent->nextthink = eztimer(1000);
 		ent->think = PlaceHolder;
 		return;
 	}
-
+	// Deathmatch with weapon choose, weapons disappear in 6s
 	if (gameSettings & GS_WEAPONCHOOSE) {
-		ent->nextthink = level.framenum + 6 * HZ;
+		ent->nextthink = eztimer(6);
 		ent->think = ThinkSpecWeap;
+		return;
 	}
+	// unless weapon respawn dmflag is set, then use the weapon_respawn cvar
 	else if (DMFLAGS(DF_WEAPON_RESPAWN)) {
 		ent->nextthink = level.framenum + (weapon_respawn->value * 0.6f) * HZ;
 		ent->think = G_FreeEdict;
+		return;
 	}
-	else {
-		ent->nextthink = level.framenum + weapon_respawn->value * HZ;
-		ent->think = ThinkSpecWeap;
-	}
+	// Catch-all, should just remove weapons after weapon_respawn setting
+	// and then indicate that the weapon should respawn at its set spawn point
+	ent->nextthink = level.framenum + eztimer((int)weapon_respawn->value / 10) * HZ;
+	ent->think = ThinkSpecWeap;
+	return;
 }
 
-
-
 // zucc make dropped weapons respawn elsewhere
-void
-ThinkSpecWeap(edict_t* ent)
+void ThinkSpecWeap(edict_t* ent)
 {
 	edict_t* spot;
 
@@ -728,7 +746,7 @@ ThinkSpecWeap(edict_t* ent)
 	}
 	else
 	{
-		ent->nextthink = level.framenum + 1 * HZ;
+		ent->nextthink = eztimer(1);
 		ent->think = G_FreeEdict;
 	}
 }
@@ -790,7 +808,7 @@ void Drop_Weapon(edict_t* ent, gitem_t* item)
 		}
 		ent->client->unique_weapon_total--;	// dropping 1 unique weapon
 		temp = Drop_Item(ent, item);
-		temp->think = temp_think_specweap;
+		temp->think = SpecialWeaponRespawnTimer;
 		ent->client->inventory[index]--;
 	}
 	else if (item->typeNum == M4_NUM)
@@ -807,7 +825,7 @@ void Drop_Weapon(edict_t* ent, gitem_t* item)
 		}
 		ent->client->unique_weapon_total--;	// dropping 1 unique weapon
 		temp = Drop_Item(ent, item);
-		temp->think = temp_think_specweap;
+		temp->think = SpecialWeaponRespawnTimer;
 		ent->client->inventory[index]--;
 	}
 	else if (item->typeNum == M3_NUM)
@@ -823,7 +841,7 @@ void Drop_Weapon(edict_t* ent, gitem_t* item)
 		}
 		ent->client->unique_weapon_total--;	// dropping 1 unique weapon
 		temp = Drop_Item(ent, item);
-		temp->think = temp_think_specweap;
+		temp->think = SpecialWeaponRespawnTimer;
 		ent->client->inventory[index]--;
 	}
 	else if (item->typeNum == HC_NUM)
@@ -838,7 +856,7 @@ void Drop_Weapon(edict_t* ent, gitem_t* item)
 		}
 		ent->client->unique_weapon_total--;	// dropping 1 unique weapon
 		temp = Drop_Item(ent, item);
-		temp->think = temp_think_specweap;
+		temp->think = SpecialWeaponRespawnTimer;
 		ent->client->inventory[index]--;
 	}
 	else if (item->typeNum == SNIPER_NUM)
@@ -856,7 +874,7 @@ void Drop_Weapon(edict_t* ent, gitem_t* item)
 		}
 		ent->client->unique_weapon_total--;	// dropping 1 unique weapon
 		temp = Drop_Item(ent, item);
-		temp->think = temp_think_specweap;
+		temp->think = SpecialWeaponRespawnTimer;
 		ent->client->inventory[index]--;
 	}
 	else if (item->typeNum == DUAL_NUM)
@@ -1449,7 +1467,10 @@ Weapon_Generic(edict_t* ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 		if (ent->client->ps.gunframe == FRAME_DEACTIVATE_LAST)
 		{
 			ent->client->weaponstate = WEAPON_BUSY;
-			ent->client->idle_weapon = BANDAGE_TIME;
+			if (esp->value && esp_leaderenhance->value && IS_LEADER(ent))
+				ent->client->idle_weapon = ENHANCED_BANDAGE_TIME;
+			else
+				ent->client->idle_weapon = BANDAGE_TIME;
 			return;
 		}
 		ent->client->ps.gunframe++;
@@ -3195,7 +3216,10 @@ Weapon_Generic_Knife(edict_t* ent, int FRAME_ACTIVATE_LAST,
 		if (ent->client->ps.gunframe == FRAME_DEACTIVATE_LAST)
 		{
 			ent->client->weaponstate = WEAPON_BUSY;
-			ent->client->idle_weapon = BANDAGE_TIME;
+			if (esp->value && esp_leaderenhance->value && IS_LEADER(ent))
+				ent->client->idle_weapon = ENHANCED_BANDAGE_TIME;
+			else
+				ent->client->idle_weapon = BANDAGE_TIME;
 			return;
 		}
 		ent->client->ps.gunframe++;
@@ -3690,7 +3714,10 @@ void Weapon_Gas(edict_t* ent)
 		if (ent->client->ps.gunframe == 0)
 		{
 			ent->client->weaponstate = WEAPON_BUSY;
-			ent->client->idle_weapon = BANDAGE_TIME;
+			if (esp->value && esp_leaderenhance->value && IS_LEADER(ent))
+				ent->client->idle_weapon = ENHANCED_BANDAGE_TIME;
+			else
+				ent->client->idle_weapon = BANDAGE_TIME;
 			return;
 		}
 		ent->client->ps.gunframe--;
