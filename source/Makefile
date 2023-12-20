@@ -65,6 +65,10 @@ ARCH=$(MACHINE)
 ifneq (,$(findstring __arm,__$(MACHINE)))
 ARCH=arm
 endif
+# If machine is aarch64 (64-bit ARM architecture), set ARCH to arm64.
+ifeq ($(MACHINE),aarch64)
+ARCH=arm64
+endif
 
 DO_CC=$(CC) $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
 DO_LINK=$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(GAME_OBJS) $(SHLIBLIBS)
