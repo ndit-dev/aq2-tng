@@ -210,6 +210,9 @@
     <ClCompile Include="g_ext.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="a_esp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="a_ctf.h">
@@ -300,6 +303,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="q_ghud.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="a_esp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
