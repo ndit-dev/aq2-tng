@@ -220,6 +220,7 @@
     <ClCompile Include="a_ctf.c" />
     <ClCompile Include="a_dom.c" />
     <ClCompile Include="a_doorkick.c" />
+    <ClCompile Include="a_esp.c" />
     <ClCompile Include="a_game.c" />
     <ClCompile Include="a_items.c" />
     <ClCompile Include="a_match.c" />
@@ -285,6 +286,7 @@
   <ItemGroup>
     <ClInclude Include="a_ctf.h" />
     <ClInclude Include="a_dom.h" />
+    <ClInclude Include="a_esp.h" />
     <ClInclude Include="a_game.h" />
     <ClInclude Include="a_match.h" />
     <ClInclude Include="a_menu.h" />
