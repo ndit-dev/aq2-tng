@@ -353,7 +353,7 @@ static void FreeClientEdicts(gclient_t *client)
 void Announce_Reward(edict_t *ent, int rewardType) {
     char buf[256];
     char *soundFile;
-	  char *playername = ent->client->pers.netname;
+    char *playername = ent->client->pers.netname;
 
     switch (rewardType) {
         case IMPRESSIVE:
