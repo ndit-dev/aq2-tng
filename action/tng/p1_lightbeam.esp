@@ -19,10 +19,10 @@ name=Proof of Guilt
 name=Lawyers
 leader_name=Mister Chow
 skin=male/ctf_r
-leader_skin=male/chow
+leader_skin=male/ctf_vip_r
 
 [blue_team]
 name=Lighthouse Keepers
 leader_name=Lightmaster
 skin=male/ctf_b
-leader_skin=male/adidas
+leader_skin=male/ctf_vip_b

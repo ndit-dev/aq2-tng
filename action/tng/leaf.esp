@@ -24,6 +24,6 @@ leader_skin=male/aqgvillain
 
 [blue_team]
 name=The EPA
-leader_name=Frank The Cop
+leader_name=Gordon
 skin=male/ctf_b
-leader_skin=male/bravo
+leader_skin=male/ctf_vip_b

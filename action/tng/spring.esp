@@ -19,10 +19,10 @@ name=Travel documents
 name=Convicts
 leader_name=Mastermind
 skin=male/ctf_r
-leader_skin=male/chow
+leader_skin=male/ctf_vip_r
 
 [blue_team]
 name=The Company
 leader_name=Supervisor
 skin=male/ctf_b
-leader_skin=male/adidas
+leader_skin=male/ctf_vip_b

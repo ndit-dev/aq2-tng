@@ -19,10 +19,10 @@ name=Axe in the Briefcase
 name=Yuppies
 leader_name=Patrick Bateman
 skin=male/ctf_r
-leader_skin=male/chow
+leader_skin=male/ctf_vip_r
 
 [blue_team]
 name=Innocent Victims
 leader_name=Mohoney
 skin=male/ctf_b
-leader_skin=male/Mohoney
+leader_skin=male/ctf_vip_b
