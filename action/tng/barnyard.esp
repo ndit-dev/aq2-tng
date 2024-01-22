@@ -19,10 +19,10 @@ name=Haybale on the truck
 name=Ranchers
 leader_name=Old MacDonald
 skin=male/ctf_r
-leader_skin=male/chow
+leader_skin=male/ctf_vip_r
 
 [blue_team]
 name=Farmers
 leader_name=John Deere
 skin=male/ctf_b
-leader_skin=male/rredneck
+leader_skin=male/ctf_vip_b

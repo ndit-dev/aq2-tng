@@ -17,17 +17,17 @@ green=<-1311 -831 62 0>,<160 -1183 814 135>,<-1445 -1264 494 87>
 name=The B-Team
 leader_name=Mr. Tabasco
 skin=male/ctf_r
-leader_skin=male/chow
+leader_skin=male/ctf_vip_r
 
 [blue_team]
 name=Peacekeepers
-leader_name=Frank The Cop
+leader_name=Serpico
 skin=male/ctf_b
-leader_skin=male/blues
+leader_skin=male/ctf_vip_b
 
 [green_team]
-name=Landscaping Crew
-leader_name=The Incredible Chulk
+name=Gardening Crew
+leader_name=Dr. Cannabis
 skin=male/ctf_g
-leader_skin=male/hulk2
+leader_skin=male/ctf_vip_g
 

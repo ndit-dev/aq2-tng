@@ -353,27 +353,27 @@ static void FreeClientEdicts(gclient_t *client)
 void Announce_Reward(edict_t *ent, int rewardType) {
     char buf[256];
     char *soundFile;
-	  char *playername = ent->client->pers.netname;
+    char *playername = ent->client->pers.netname;
 
     switch (rewardType) {
         case IMPRESSIVE:
-            sprintf(buf, "IMPRESSIVE %s!", playername);
+            sprintf(buf,"-------------------\n" "IMPRESSIVE %s (%dx)!\n" "-------------------\n", playername, ent->client->resp.streakKills/5);
             soundFile = "tng/impressive.wav";
             break;
         case EXCELLENT:
-            sprintf(buf, "EXCELLENT %s (%dx)!", playername, ent->client->resp.streakKills/12);
+            sprintf(buf,"-------------------\n" "EXCELLENT %s (%dx)!\n" "-------------------\n", playername, ent->client->resp.streakKills/12);
             soundFile = "tng/excellent.wav";
             break;
         case ACCURACY:
-            sprintf(buf, "ACCURACY %s!", playername);
+            sprintf(buf,"-------------------\n" "ACCURACY %s (%dx)!\n" "-------------------\n", playername, ent->client->resp.streakHS/3);
             soundFile = "tng/accuracy.wav";
             break;
         case DOMINATING:
-            sprintf(buf, "%s IS DOMINATING!", playername);
+            sprintf(buf,"-------------------\n" "%s IS DOMINATING!\n" "-------------------\n", playername);
             soundFile = "radio/male/deliv3.wav";
             break;
         case UNSTOPPABLE:
-            sprintf(buf, "%s IS UNSTOPPABLE!", playername);
+            sprintf(buf,"-------------------\n" "%s IS UNSTOPPABLE!\n" "-------------------\n", playername);
             soundFile = "radio/male/deliv3.wav";
             break;
         default:
