@@ -353,11 +353,11 @@ static void FreeClientEdicts(gclient_t *client)
 void Announce_Reward(edict_t *ent, int rewardType) {
     char buf[256];
     char *soundFile;
-	  char *playername = ent->client->pers.netname;
+    char *playername = ent->client->pers.netname;
 
     switch (rewardType) {
         case IMPRESSIVE:
-            sprintf(buf,"-------------------\n" "IMPRESSIVE %s!\n" "-------------------\n", playername);
+            sprintf(buf,"-------------------\n" "IMPRESSIVE %s (%dx)!\n" "-------------------\n", playername, ent->client->resp.streakKills/5);
             soundFile = "tng/impressive.wav";
             break;
         case EXCELLENT:
@@ -365,7 +365,7 @@ void Announce_Reward(edict_t *ent, int rewardType) {
             soundFile = "tng/excellent.wav";
             break;
         case ACCURACY:
-            sprintf(buf,"-------------------\n" "ACCURACY %s!\n" "-------------------\n", playername);
+            sprintf(buf,"-------------------\n" "ACCURACY %s (%dx)!\n" "-------------------\n", playername, ent->client->resp.streakHS/3);
             soundFile = "tng/accuracy.wav";
             break;
         case DOMINATING:

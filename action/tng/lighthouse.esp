@@ -19,10 +19,10 @@ name=Lighthouse Beacon
 name=No Good Teenagers
 leader_name=Simi the Slasher
 skin=male/ctf_r
-leader_skin=male/chow
+leader_skin=male/ctf_vip_r
 
 [blue_team]
 name=Lightkeepers
-leader_name=John Deere
+leader_name=Sir Per Kele
 skin=male/ctf_b
-leader_skin=male/rredneck
+leader_skin=male/ctf_vip_b
