@@ -1003,8 +1003,8 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 		Q_strncpyz(teams[TEAM2].name, "BLUE", sizeof(teams[TEAM2].name));
 		Q_strncpyz(teams[TEAM1].skin, "male/ctf_r", sizeof(teams[TEAM1].skin));
 		Q_strncpyz(teams[TEAM2].skin, "male/ctf_b", sizeof(teams[TEAM2].skin));
-		Q_strncpyz(teams[TEAM1].skin_index, "ctf_r", sizeof(teams[TEAM1].skin_index));
-		Q_strncpyz(teams[TEAM2].skin_index, "ctf_b", sizeof(teams[TEAM2].skin_index));
+		Q_strncpyz(teams[TEAM1].skin_index, "ctf_r_i", sizeof(teams[TEAM1].skin_index));
+		Q_strncpyz(teams[TEAM2].skin_index, "ctf_b_i", sizeof(teams[TEAM2].skin_index));
 	}
 	else if (esp->value)
 	{
