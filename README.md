@@ -22,7 +22,6 @@ The following table will provide you with the correct artifact to download if yo
 | Windows 32-bit | x86 | tng-win-32.zip | .dll
 | Windows 64-bit | x86_64 |  tng-win-64.zip | .dll
 | Linux 64-bit (recent glibc) | x86_64 | tng-lin-x86_64.zip  | .so
-| Linux 64-bit (old glibc) | x86_64 | tng-lin-x86_64-compat.zip  | .so
 | Linux 64-bit | ARM | tng-lin-arm64.zip  | .so
 
 Regarding glibc, essentially a 'recent glibc' would be built on whatever version the latest Ubuntu (currently 22.04) uses.  'Old glibc' would be **2.19** and is compatible with Ubuntu 16.04 and CentOS 7 and higher, for example.  The automated builds do not support any older versions, but you have the freedom to build the code yourself to fit your systems needs.
