@@ -343,6 +343,9 @@ void InitGame( void )
 	dedicated = gi.cvar( "dedicated", "0", CVAR_NOSET );
 	steamid = gi.cvar( "steamid", "0", CVAR_NOSET );
 
+    hitsounds = gi.cvar("hitsounds", "0", 0);
+    killsounds = gi.cvar("killsounds", "0", 0);
+
 	sv_cheats = gi.cvar( "cheats", "0", CVAR_SERVERINFO | CVAR_LATCH );
 	gi.cvar( "gamename", GAMEVERSION, CVAR_SERVERINFO | CVAR_NOSET ); 	// Removed it from Serverinfo, we already have game and gamedir
 	gi.cvar( "gamedate", __DATE__, CVAR_SERVERINFO | CVAR_NOSET );

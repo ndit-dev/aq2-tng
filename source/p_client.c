@@ -917,6 +917,9 @@ void ClientObituary(edict_t * self, edict_t * inflictor, edict_t * attacker)
 	self->enemy = attacker;
 	if (attacker && attacker->client)
 	{
+        if (killsounds->value)
+            unicastSound(attacker, gi.soundindex("hitsounds/frag.wav"), 1.0);
+
 		switch (mod) {
 		case MOD_MK23:	// zucc
 			switch (loc) {

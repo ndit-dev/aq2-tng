@@ -1166,6 +1166,9 @@ extern cvar_t *g_select_empty;
 extern cvar_t *dedicated;
 extern cvar_t *steamid;
 
+extern cvar_t* hitsounds;
+extern cvar_t* killsounds;
+
 extern cvar_t *filterban;
 extern cvar_t* silenceban; //rekkie -- silence ban
 extern cvar_t *flood_threshold;

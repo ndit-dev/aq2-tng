@@ -405,6 +405,9 @@ cvar_t *hearall;		// used for matchmode
 cvar_t *deadtalk;
 cvar_t *force_skin;
 
+cvar_t* hitsounds;
+cvar_t* killsounds;
+
 cvar_t *mm_forceteamtalk;
 cvar_t *mm_adminpwd;
 cvar_t *mm_allowlock;

@@ -554,6 +554,9 @@ void T_Damage (edict_t * targ, edict_t * inflictor, edict_t * attacker, vec3_t d
 					if (attacker->client)
 						gi.cprintf(attacker, PRINT_HIGH, "You hit %s in the head\n", client->pers.netname);
 
+					if (hitsounds->value)
+						unicastSound(attacker, gi.soundindex("hitsounds/head.wav"), 1.0);
+
 					if (mod != MOD_KNIFE && mod != MOD_KNIFE_THROWN)
 						gi.sound(targ, CHAN_VOICE, level.snd_headshot, 1, ATTN_NORM, 0);
 				}
@@ -564,6 +567,8 @@ void T_Damage (edict_t * targ, edict_t * inflictor, edict_t * attacker, vec3_t d
 						gi.cprintf(attacker, PRINT_HIGH,
 							"%s has a Kevlar Helmet, too bad you have AP rounds...\n",
 							client->pers.netname);
+						if (hitsounds->value)
+							unicastSound(attacker, gi.soundindex("hitsounds/kevlar.wav"), 1.0);
 						gi.cprintf(targ, PRINT_HIGH,
 							"Kevlar Helmet absorbed some of %s's AP sniper round\n",
 							attacker->client->pers.netname);
@@ -598,6 +603,8 @@ void T_Damage (edict_t * targ, edict_t * inflictor, edict_t * attacker, vec3_t d
 					Stats_AddHit( attacker, mod, LOC_LDAM );
 					gi.cprintf(attacker, PRINT_HIGH, "You hit %s in the legs\n",
 						client->pers.netname);
+					if (hitsounds->value)
+						unicastSound(attacker, gi.soundindex("hitsounds/leg.wav"), 1.0);
 				}
 
 				gi.cprintf(targ, PRINT_HIGH, "Leg damage\n");
@@ -614,6 +621,8 @@ void T_Damage (edict_t * targ, edict_t * inflictor, edict_t * attacker, vec3_t d
 					Stats_AddHit(attacker, mod, LOC_SDAM);
 					gi.cprintf(attacker, PRINT_HIGH, "You hit %s in the stomach\n",
 						client->pers.netname);
+					if (hitsounds->value)
+						unicastSound(attacker, gi.soundindex("hitsounds/stomach.wav"), 1.0);
 				}
 					
 				//TempFile bloody gibbing
@@ -638,6 +647,8 @@ void T_Damage (edict_t * targ, edict_t * inflictor, edict_t * attacker, vec3_t d
 					if (attacker->client)
 						gi.cprintf(attacker, PRINT_HIGH, "You hit %s in the chest\n",
 							client->pers.netname);
+					if (hitsounds->value)
+						unicastSound(attacker, gi.soundindex("hitsounds/chest.wav"), 1.0);
 
 					//TempFile bloody gibbing
 					if (mod == MOD_SNIPER && sv_gib->value)
@@ -649,6 +660,8 @@ void T_Damage (edict_t * targ, edict_t * inflictor, edict_t * attacker, vec3_t d
 					{
 						gi.cprintf (attacker, PRINT_HIGH, "%s has a Kevlar Vest, too bad you have AP rounds...\n",
 							client->pers.netname);
+						if (hitsounds->value)
+							unicastSound(attacker, gi.soundindex("hitsounds/kevlar.wav"), 1.0);
 						gi.cprintf (targ, PRINT_HIGH, "Kevlar Vest absorbed some of %s's AP sniper round\n",
 							attacker->client->pers.netname);
 					}
@@ -660,6 +673,8 @@ void T_Damage (edict_t * targ, edict_t * inflictor, edict_t * attacker, vec3_t d
 					{
 						gi.cprintf(attacker, PRINT_HIGH, "%s has a Kevlar Vest - AIM FOR THE HEAD!\n",
 							client->pers.netname);
+						if (hitsounds->value)
+							unicastSound(attacker, gi.soundindex("hitsounds/kevlar.wav"), 1.0);
 						gi.cprintf(targ, PRINT_HIGH, "Kevlar Vest absorbed most of %s's shot\n",
 							attacker->client->pers.netname);
 					}

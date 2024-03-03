@@ -532,6 +532,8 @@ void ProduceShotgunDamageReport (edict_t *self)
 			break;
 	}
 	gi.cprintf(self, PRINT_HIGH, "You hit %s in the body\n", textbuf);
+    if (hitsounds->value)
+        unicastSound(self, gi.soundindex("hitsounds/body.wav"), 1.0);
 
 	// TNG Stats
 	if (self->client->curr_weap == M3_NUM)
