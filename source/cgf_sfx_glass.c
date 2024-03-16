@@ -257,9 +257,14 @@ CGF_SFX_ShootBreakableGlass (edict_t * aGlassPane, edict_t * anAttacker,
   int destruct;
 
   // depending on mod, destroy window or emit fragments
+  // Updated in 2024 to include all weapons
   switch (mod)
     {
       // break for ap, shotgun, handcannon, and kick, destory window
+    case MOD_MK23: //2024
+    case MOD_DUAL: //2024
+    case MOD_MP5: //2024
+    case MOD_M4: //2024
     case MOD_M3:
     case MOD_HC:
     case MOD_SNIPER:
