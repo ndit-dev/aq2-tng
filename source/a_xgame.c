@@ -703,3 +703,30 @@ void addTimedMessage(int teamNum, edict_t *ent, int seconds, char *msg) {
     timedMessages[numMessages].fired = false;
     numMessages++;
 }
+
+/*
+Rebuild broken parts of the map
+*/
+void RebuildFunc_Objects(void)
+{
+	// iterate over all funcs
+	edict_t *object;
+	object = 0;
+
+	// Iterate over func_wall objects
+	while ((object = G_Find (object, FOFS (classname), "func_wall")) != NULL) {
+		// object is broken if solid != SOLID_BSP
+		if (object->solid != SOLID_BSP)
+			SP_func_wall(object);
+	}
+
+	// Reset object pointer
+	object = 0;
+
+	// Iterate over func_object objects
+	while ((object = G_Find (object, FOFS (classname), "func_object")) != NULL) {
+		// object is broken if solid != SOLID_BSP
+		if (object->solid != SOLID_BSP)
+			SP_func_object(object);
+	}
+}
