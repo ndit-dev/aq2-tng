@@ -1890,6 +1890,8 @@ void CleanLevel ()
 	CleanBodies();
 	// fix glass
 	CGF_SFX_RebuildAllBrokenGlass ();
+	// fix objects/walls
+	RebuildFunc_Objects();
 }
 
 void MakeAllLivePlayersObservers(void);
