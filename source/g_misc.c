@@ -774,13 +774,20 @@ void ResetObjects(void)
         if (object->movetype == MOVETYPE_TOSS) {
             // Make object disappear
             gi.dprintf("Reset: I ran for %s!\n", object->model);
-            object->use = func_wall_use;
+            object->movetype = MOVETYPE_PUSH;
+            object->solid = SOLID_NOT;
+            object->svflags &= ~SVF_NOCLIENT;
+            object->use = func_object_use;
         }
         // Copy back its original properties
         memcpy(&object, &tempobject, sizeof(object));
-        object->svflags = SVF_NOCLIENT;
         gi.dprintf("Reset: NEWobj Properties: classname: %s, model: %s, solid: %d, movetype: %d, spawnflags: %d, dmg: %d, svflags: %d, clipmask: %d, effects: %d\n", object->classname, object->model, object->solid, object->movetype, object->spawnflags, object->dmg, object->svflags, object->clipmask, object->s.effects);
-
+        if (object == tempobject) {
+            gi.dprintf("Reset: Objects are the same\n");
+        } else {
+            gi.dprintf("Reset: Objects are different\n");
+        }
+        ED_CallSpawn(object);
     }
 }
 
