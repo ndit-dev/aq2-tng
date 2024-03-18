@@ -527,7 +527,10 @@ void InitGame( void )
 	use_flashlight = gi.cvar( "use_flashlight", "0", 0 );
 	use_classic = gi.cvar( "use_classic", "0", 0 ); // Reset Grenade Strength to 1.52
 
-	CGF_SFX_InstallGlassSupport();	// william for CGF (glass fx)
+	// Breakable glass support
+	breakableglass = gi.cvar("breakableglass", "0", 0);
+  	glassfragmentlimit = gi.cvar("glassfragmentlimit", "30", 0);
+	//CGF_SFX_InstallGlassSupport();	// william for CGF (glass fx)
 
 	g_select_empty = gi.cvar( "g_select_empty", "0", CVAR_ARCHIVE );
 

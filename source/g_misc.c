@@ -637,6 +637,26 @@ SP_func_wall (edict_t * self)
   gi.linkentity (self);
 }
 
+/*
+Reset walls in the map
+*/
+void ResetWalls(void)
+{
+    // iterate over all funcs
+    edict_t *wall;
+    wall = 0;
+
+    // Iterate over func_wall objects
+    while ((wall = G_Find (wall, FOFS (classname), "func_wall")) != NULL) {
+        // Reset wall properties
+        wall->solid = SOLID_BSP;
+        wall->svflags &= ~SVF_NOCLIENT;
+        wall->use = func_wall_use;
+
+        // Link the wall entity to the game world
+        gi.linkentity(wall);
+    }
+}
 
 /*QUAKED func_object (0 .5 .8) ? TRIGGER_SPAWN ANIMATED ANIMATED_FAST
 This is solid bmodel that will fall if it's support it removed.
@@ -710,8 +730,58 @@ SP_func_object (edict_t * self)
     self->s.effects |= EF_ANIM_ALLFAST;
 
   self->clipmask = MASK_MONSTERSOLID;
-
   gi.linkentity (self);
+}
+
+// void RecreateObjects(void)
+// {
+//     edict_t *object;
+//     object = 0;
+
+//     // Iterate over func_object objects
+//     while ((object = G_Find (object, FOFS (classname), "func_object")) != NULL) {
+//         // Reset object properties
+
+//         // Print all object properties to gi.dprintf
+//         gi.dprintf("Recreate: Object Properties: classname: %s, model: %s, solid: %d, movetype: %d, spawnflags: %d, dmg: %d, svflags: %d, clipmask: %d, effects: %d\n", object->classname, object->model, object->solid, object->movetype, object->spawnflags, object->dmg, object->svflags, object->clipmask, object->s.effects);
+        
+//         gi.dprintf("Recreate: I ran for %s!\n", object->model);
+//         object->solid = SOLID_NOT;
+//         object->svflags &= ~SVF_NOCLIENT;
+//         object->use = func_object_use;
+//         gi.linkentity(object);
+
+//     }
+// }
+
+/*
+Reset objects in the map
+*/
+void ResetObjects(void)
+{
+    edict_t *object, *tempobject;
+    object = 0;
+
+    // Iterate over func_object objects
+    while ((object = G_Find (object, FOFS (classname), "func_object")) != NULL) {
+        memcpy(&tempobject, &object, sizeof(object));
+        // Reset object properties
+
+        // Print all object properties to gi.dprintf
+        gi.dprintf("Reset: Object Properties: classname: %s, model: %s, solid: %d, movetype: %d, spawnflags: %d, dmg: %d, svflags: %d, clipmask: %d, effects: %d\n", object->classname, object->model, object->solid, object->movetype, object->spawnflags, object->dmg, object->svflags, object->clipmask, object->s.effects);
+        
+        // Detect if object moved (destructible environment)
+        if (object->movetype == MOVETYPE_TOSS) {
+            // Make object disappear
+            gi.dprintf("Reset: I ran for %s!\n", object->model);
+            object->use = func_wall_use;
+        }
+        // Copy back its original properties
+        memcpy(&object, &tempobject, sizeof(object));
+        object->svflags = SVF_NOCLIENT;
+        gi.dprintf("Reset: NEWobj Properties: classname: %s, model: %s, solid: %d, movetype: %d, spawnflags: %d, dmg: %d, svflags: %d, clipmask: %d, effects: %d\n", object->classname, object->model, object->solid, object->movetype, object->spawnflags, object->dmg, object->svflags, object->clipmask, object->s.effects);
+
+    }
 }
 
 

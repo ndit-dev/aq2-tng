@@ -61,6 +61,5 @@ void Cmd_SetFlag1_f(edict_t *self);
 void Cmd_SetFlag2_f(edict_t *self);
 void Cmd_SaveFlags_f(edict_t *self);
 
-void RebuildFunc_Objects(void);
-void SP_func_wall (edict_t * self);
-void SP_func_object (edict_t * self);
+void ResetWalls(void);
+void ResetObjects(void);

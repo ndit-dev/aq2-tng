@@ -44,12 +44,12 @@ extern "C"
 #include "cgf_sfx_glass.h"
 #endif
 
+// Set as global externs, so they can be used in other files
+// // cvar for breaking glass
+// static cvar_t *breakableglass;
 
-// cvar for breaking glass
-static cvar_t *breakableglass = 0;
-
-// cvar for max glass fragment count
-static cvar_t *glassfragmentlimit = 0;
+// // cvar for max glass fragment count
+// static cvar_t *glassfragmentlimit;
 
 static int glassfragmentcount = 0;
 
