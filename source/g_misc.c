@@ -654,7 +654,8 @@ void ResetWalls(void)
         wall->use = func_wall_use;
 
         // Link the wall entity to the game world
-        gi.linkentity(wall);
+        gi.dprintf("Wall restored: %s\n", wall->model);
+        //ED_CallSpawn(wall);
     }
 }
 
@@ -768,7 +769,7 @@ void ResetObjects(void)
         // Reset object properties
 
         // Print all object properties to gi.dprintf
-        gi.dprintf("Reset: Object Properties: classname: %s, model: %s, solid: %d, movetype: %d, spawnflags: %d, dmg: %d, svflags: %d, clipmask: %d, effects: %d\n", object->classname, object->model, object->solid, object->movetype, object->spawnflags, object->dmg, object->svflags, object->clipmask, object->s.effects);
+        //gi.dprintf("Reset: Object Properties: classname: %s, model: %s, solid: %d, movetype: %d, spawnflags: %d, dmg: %d, svflags: %d, clipmask: %d, effects: %d\n", object->classname, object->model, object->solid, object->movetype, object->spawnflags, object->dmg, object->svflags, object->clipmask, object->s.effects);
         
         // Detect if object moved (destructible environment)
         if (object->movetype == MOVETYPE_TOSS) {
@@ -781,12 +782,12 @@ void ResetObjects(void)
         }
         // Copy back its original properties
         memcpy(&object, &tempobject, sizeof(object));
-        gi.dprintf("Reset: NEWobj Properties: classname: %s, model: %s, solid: %d, movetype: %d, spawnflags: %d, dmg: %d, svflags: %d, clipmask: %d, effects: %d\n", object->classname, object->model, object->solid, object->movetype, object->spawnflags, object->dmg, object->svflags, object->clipmask, object->s.effects);
-        if (object == tempobject) {
-            gi.dprintf("Reset: Objects are the same\n");
-        } else {
-            gi.dprintf("Reset: Objects are different\n");
-        }
+        // gi.dprintf("Reset: NEWobj Properties: classname: %s, model: %s, solid: %d, movetype: %d, spawnflags: %d, dmg: %d, svflags: %d, clipmask: %d, effects: %d\n", object->classname, object->model, object->solid, object->movetype, object->spawnflags, object->dmg, object->svflags, object->clipmask, object->s.effects);
+        // if (object == tempobject) {
+        //     gi.dprintf("Reset: Objects are the same\n");
+        // } else {
+        //     gi.dprintf("Reset: Objects are different\n");
+        // }
         ED_CallSpawn(object);
     }
 }
