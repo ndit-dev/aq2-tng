@@ -456,6 +456,8 @@ cvar_t *radio_repeat;		// same as radio_max, only for repeats
 cvar_t *radio_repeat_time;
 
 cvar_t *use_classic;		// Used to reset spread/gren strength to 1.52
+cvar_t *breakableglass;		// Enables breakable glass
+cvar_t *glassfragmentlimit; // Max glass fragments
 
 cvar_t *warmup;
 cvar_t *warmup_bots;
