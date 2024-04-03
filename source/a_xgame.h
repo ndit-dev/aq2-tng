@@ -61,5 +61,5 @@ void Cmd_SetFlag1_f(edict_t *self);
 void Cmd_SetFlag2_f(edict_t *self);
 void Cmd_SaveFlags_f(edict_t *self);
 
-void ResetWalls(void);
-void ResetObjects(void);
+// void ResetWalls(void);
+// void ResetObjects(void);

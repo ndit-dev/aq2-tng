@@ -1891,8 +1891,8 @@ void CleanLevel ()
 	// fix glass, objects and walls
 	if (breakableglass->value){
 		CGF_SFX_RebuildAllBrokenGlass ();
-		ResetWalls();
-		ResetObjects();
+		//ResetWalls();
+		//ResetObjects();
 	}
 }
 
