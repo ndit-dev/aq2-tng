@@ -1888,8 +1888,12 @@ void CleanLevel ()
 	}
 	
 	CleanBodies();
-	// fix glass
-	CGF_SFX_RebuildAllBrokenGlass ();
+	// fix glass, objects and walls
+	if (breakableglass->value){
+		CGF_SFX_RebuildAllBrokenGlass ();
+		//ResetWalls();
+		//ResetObjects();
+	}
 }
 
 void MakeAllLivePlayersObservers(void);

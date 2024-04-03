@@ -44,6 +44,9 @@ extern "C"
 #include "cgf_sfx_glass.h"
 #endif
 
+// Set as global externs, so they can be used in other files
+// // cvar for breaking glass
+// static cvar_t *breakableglass;
 
 // Set as global externs, so they can be used in other files
 // // cvar for breaking glass
@@ -258,6 +261,7 @@ CGF_SFX_ShootBreakableGlass (edict_t * aGlassPane, edict_t * anAttacker,
   int destruct;
 
   // depending on mod, destroy window or emit fragments
+  // Updated in 2024 to include all weapons
   switch (mod)
     {
       // break for ap, shotgun, handcannon, and kick, destory window
