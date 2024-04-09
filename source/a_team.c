@@ -1111,8 +1111,8 @@ pmenu_t pmitemmenu[] = {
   { "Laser Sight                (jmod laser)",			PMENU_ALIGN_LEFT,	NULL, ToggleLaser			},
   { "Slippers                   (jmod slippers)",		PMENU_ALIGN_LEFT,	NULL, ToggleSlippers		},
   { NULL,												PMENU_ALIGN_LEFT,	NULL, NULL					},
-  { "Respawn to Closest Spawn   (jmod spawnc)",			PMENU_ALIGN_LEFT,	NULL, Cmd_GotoPC_f   		},
-  { "Respawn to Random Spawn    (jmod spawnp)",			PMENU_ALIGN_LEFT,	NULL, Cmd_GotoP_f   		},
+  { "Respawn to Closest Spawn   (jmod spawnc)",			PMENU_ALIGN_LEFT,	NULL, Cmd_GotoPC_f_compat   },
+  { "Respawn to Random Spawn    (jmod spawnp)",			PMENU_ALIGN_LEFT,	NULL, Cmd_GotoP_f_compat   	},
 
 };
 
@@ -1516,7 +1516,7 @@ void JoinTeam (edict_t * ent, int desired_team, int skip_menuclose)
 		AddToTransparentList (ent);
 	}
 
-	#if USE_AQTION
+	#ifdef USE_AQTION
 	if (in_warmup && warmup_bots->value) {
 		PutClientInServer (ent);
 	}
@@ -2317,7 +2317,7 @@ void RunWarmup ()
 			gi.centerprintf(ent, "WARMUP");
 		}
 	}
-	#if USE_AQTION
+	#ifdef USE_AQTION
 	if (warmup_bots->value){
 		gi.cvar_forceset("am", "1");
 		gi.cvar_forceset("am_botcount", warmup_bots->string);
@@ -2803,7 +2803,7 @@ int CheckTeamRules (void)
 				gi.sound (&g_edicts[0], CHAN_VOICE | CHAN_NO_PHS_ADD,
 				gi.soundindex ("world/10_0.wav"), 1.0, ATTN_NONE, 0.0);
 
-				#if USE_AQTION
+				#ifdef USE_AQTION
 				// Cleanup and remove all bots, it's go time!
 				if (warmup_bots->value){
 					gi.cvar_forceset("am", "0");
