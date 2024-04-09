@@ -749,7 +749,7 @@ void SelectKit3(edict_t *ent, pmenu_t *p)
 // newrand returns n, where 0 >= n < top
 int newrand (int top)
 {
-	return (int) (random () * top);
+	return rand() % top;
 }
 
 void SelectRandomWeapon(edict_t *ent, pmenu_t *p)
@@ -1888,8 +1888,12 @@ void CleanLevel ()
 	}
 	
 	CleanBodies();
-	// fix glass
-	CGF_SFX_RebuildAllBrokenGlass ();
+	// fix glass, objects and walls
+	if (breakableglass->value){
+		CGF_SFX_RebuildAllBrokenGlass ();
+		//ResetWalls();
+		//ResetObjects();
+	}
 }
 
 void MakeAllLivePlayersObservers(void);

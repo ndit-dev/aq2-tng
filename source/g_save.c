@@ -530,9 +530,8 @@ void InitGame( void )
 	//CGF_SFX_InstallGlassSupport();	// william for CGF (glass fx)
 	// Breakable glass support
 	breakableglass = gi.cvar("breakableglass", "0", 0);
-  	glassfragmentlimit = gi.cvar("glassfragmentlimit", "30", 0);
-	//CGF_SFX_InstallGlassSupport();	// william for CGF (glass fx)
-
+  glassfragmentlimit = gi.cvar("glassfragmentlimit", "30", 0);
+  
 	g_select_empty = gi.cvar( "g_select_empty", "0", CVAR_ARCHIVE );
 
 	run_pitch = gi.cvar( "run_pitch", "0.002", 0 );
